@@ -21,14 +21,12 @@
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/keypad.js"></script>
-    <script type="module" src="../components/db.js"></script>
+    <script src="../components/storage.js"></script>
     <script>
+      // const bmi = getBMI();
+      // console.log(bmi);
+      document.getElementById("input-value").innerHTML = getBMI();
       document.getElementById("next-bmi").addEventListener("click", () => setBMI());
-      function setBMI() {
-        const bmi = document.getElementById("input-value").innerHTML;
-        console.log(bmi);
-        localStorage.setItem("bmi",bmi);
-      }
     </script>
   </body>
 </html>
