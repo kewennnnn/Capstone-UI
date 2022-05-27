@@ -1,8 +1,69 @@
+:root {
+    --bg: #203047;
+    --blue: #3B6DB2;
+    --orange: #EB8432;
+    --text: white;
+}  
+
 body {
     font-family: sans-serif;
+    color: var(--text);
+    background-color: var(--bg);
+}
+
+#app {
+    display: flex;
+    justify-content: space-around;
+}
+
+h1 {
+    font-size: 60px;
+}
+h2 {
+    font-size: 40px;
+    color: var(--orange);
 }
 
 #progress-bar {
     display: flex;
     text-align: center; 
+}
+
+.col-left {
+    width: 300px;
+    align-items: center;
+    text-align: center;
+}
+
+button {
+    height: 40px;
+    width: 100px;
+    background-color: var(--blue);
+    color: var(--text);
+    font-size: 20px;
+    border-radius: 15px;
+    border-width: 0;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+button:active {
+    background-color: var(--text);
+    color: var(--blue);
+}
+
+my-keypad button {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    
+    font-size: 30px;
+    font-weight: 800;
+    margin: 8px 6px;
+}
+
+#input-value {
+    width: 260px;
+    border: 3px solid var(--orange);
+    border-radius: 10px;
+    padding: 15px;
 }

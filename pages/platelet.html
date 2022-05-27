@@ -9,14 +9,22 @@
   </head>
   <body>
     <progress-bar current=2></progress-bar>
+    <div id="app">
 
-    <h1>Platelet Count: <span id="input-value"></span></h1>
+      <div class="col-left">
+        <h2>Enter Platelet Count</h2>
+        <h1 id="input-value"></h1>
+        <div>
+          <a href="./bmi.html"><button>Back</button></a>
+          <a href="./screening.html" id="next-platelet"><button>Next</button></a>
+        </div>
+      </div>
 
-    <my-keypad current=1></my-keypad>
+      <div>
+        <my-keypad/>
+      </div>
 
-    <a href="./bmi.html"><button>Back</button></a>
-    <a href="./screening.html" id="next-platelet"><button>Next</button></a>
-
+    </div>
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/keypad.js"></script>

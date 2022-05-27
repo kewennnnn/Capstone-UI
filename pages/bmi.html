@@ -9,22 +9,27 @@
   </head>
   <body>
     <progress-bar current=1></progress-bar>
+    <div id="app">
 
-    <h1>BMI: <span id="input-value"></span></h1>
+      <div class="col-left">
+        <h2>Enter BMI</h2>
+        <h1 id="input-value"></h1>
+        <div>
+          <a href="../index.html"><button>Back</button></a>
+          <a href="./platelet.html" id="next-bmi"><button>Next</button></a>
+        </div>
+      </div>
 
-    <my-keypad current=1></my-keypad>
+      <div>
+        <my-keypad/>
+      </div>
 
-    <a href="../index.html"><button>Back</button></a>
-    <a href="./platelet.html" id="next-bmi"><button>Next</button></a>
-    <!-- <a><button id="next-bmi">Next</button></a> -->
-
+    </div>
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/keypad.js"></script>
     <script src="../components/storage.js"></script>
     <script>
-      // const bmi = getBMI();
-      // console.log(bmi);
       document.getElementById("input-value").innerHTML = getBMI();
       document.getElementById("next-bmi").addEventListener("click", () => setBMI());
     </script>
