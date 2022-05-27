@@ -25,7 +25,7 @@ class ProgressBar extends HTMLElement {
     render() {
       
       this.innerHTML = `
-        <div style="text-align: center; font-family: sans-serif">
+        <div id="progress-bar">
           <h1 style="color:${this.color1}">BMI</h1>
           <h1 style="color:${this.color2}">Platelet</h1>
           <h1 style="color:${this.color3}">Screen</h1>

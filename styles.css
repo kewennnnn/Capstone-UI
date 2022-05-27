@@ -1,3 +1,8 @@
-/* styles.css */
+body {
+    font-family: sans-serif;
+}
 
-/* Add styles here to customize the appearance of your app */
+#progress-bar {
+    display: flex;
+    text-align: center; 
+}

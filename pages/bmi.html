@@ -8,27 +8,17 @@
     <title>Everest by Capstone S06</title>
   </head>
   <body>
-    <progress-bar
-      current=1
-    ></progress-bar>
-    
-    <span> 
-      <label><h1>BMI: </h1><input/> </label>
-    </span>
+    <progress-bar current=1></progress-bar>
+
+    <h1>BMI: <span id="input-value"></span></h1>
+
+    <my-keypad current=1></my-keypad>
+
+    <a href="../index.html"><button>Back</button></a>
     <a href="./platelet.html"><button>Next</button></a>
-    <div>
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-    </div>
-    <div>
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-    </div>
-    
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
+    <script src="../components/keypad.js"></script>
   </body>
 </html>
