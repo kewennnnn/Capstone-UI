@@ -34,7 +34,7 @@ class KeyPad extends HTMLElement {
     }
   }
   
-  customElements.define("my-keypad", KeyPad);
+customElements.define("my-keypad", KeyPad);
   
 document.getElementById("numpad-1").addEventListener("click", () => addKey(1));
 document.getElementById("numpad-2").addEventListener("click", () => addKey(2));

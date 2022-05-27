@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow} = require('electron');
 // Enable live reload for all the files inside your project directory
 require('electron-reload')(__dirname);
 
@@ -11,6 +11,9 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
+      // nodeIntegration: true,
+      // contextIsolation: false,
+      // enableRemoteModule: true,
       preload: path.join(__dirname, 'preload.js')
     }
   })

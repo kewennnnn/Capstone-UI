@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
     <link href="../styles.css" rel="stylesheet">
     <title>Everest by Capstone S06</title>
   </head>
@@ -15,10 +15,20 @@
     <my-keypad current=1></my-keypad>
 
     <a href="../index.html"><button>Back</button></a>
-    <a href="./platelet.html"><button>Next</button></a>
+    <a href="./platelet.html" id="next-bmi"><button>Next</button></a>
+    <!-- <a><button id="next-bmi">Next</button></a> -->
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/keypad.js"></script>
+    <script type="module" src="../components/db.js"></script>
+    <script>
+      document.getElementById("next-bmi").addEventListener("click", () => setBMI());
+      function setBMI() {
+        const bmi = document.getElementById("input-value").innerHTML;
+        console.log(bmi);
+        localStorage.setItem("bmi",bmi);
+      }
+    </script>
   </body>
 </html>

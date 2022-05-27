@@ -3,19 +3,24 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
     <link href="../styles.css" rel="stylesheet">
     <title>Everest by Capstone S06</title>
   </head>
   <body>
     <progress-bar current=4></progress-bar>
 
-    <h1>Results:</h1>
+    <h1>Results:<span id="bmi-result"></span></h1>
 
     <a href="../pages/screening.html"><button>Back</button></a>
     <a href="../main.html"><button>End Screening</button></a>
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
+    <script>
+      const bmi = localStorage.getItem("bmi");
+      console.log(bmi);
+      document.getElementById("bmi-result").innerHTML = bmi;
+    </script>
   </body>
 </html>
