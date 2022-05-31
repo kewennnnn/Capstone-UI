@@ -15,8 +15,8 @@
         <h2>Enter BMI</h2>
         <h1 id="input-value"></h1>
         <div>
-          <a href="../index.html"><button>Back</button></a>
-          <a href="./platelet.html" id="next-bmi"><button>Next</button></a>
+          <a href="../index.html" id="back-bmi"><button>Back</button></a>
+          <a href="./platelet.html" id="next-bmi"><button class="button-hollow">Skip</button></a>
         </div>
       </div>
 
@@ -31,7 +31,9 @@
     <script src="../components/storage.js"></script>
     <script>
       document.getElementById("input-value").innerHTML = getBMI();
+      updateNextButton();
       document.getElementById("next-bmi").addEventListener("click", () => setBMI());
+      document.getElementById("back-bmi").addEventListener("click", () => setBMI());
     </script>
   </body>
 </html>

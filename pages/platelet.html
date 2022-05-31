@@ -15,8 +15,8 @@
         <h2>Enter Platelet Count</h2>
         <h1 id="input-value"></h1>
         <div>
-          <a href="./bmi.html"><button>Back</button></a>
-          <a href="./screening.html" id="next-platelet"><button>Next</button></a>
+          <a href="./bmi.html" id="back-platelet"><button>Back</button></a>
+          <a href="./screening.html" id="next-platelet"><button class="button-hollow">Skip</button></a>
         </div>
       </div>
 
@@ -31,7 +31,9 @@
     <script src="../components/storage.js"></script>
     <script>
       document.getElementById("input-value").innerHTML = getPlatelet();
+      updateNextButton();
       document.getElementById("next-platelet").addEventListener("click", () => setPlatelet());
+      document.getElementById("back-platelet").addEventListener("click", () => setPlatelet());
     </script>
   </body>
 </html>

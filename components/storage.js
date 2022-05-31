@@ -1,5 +1,5 @@
 function getBMI() {
-    const bmi = localStorage.getItem("bmi");
+    const bmi = localStorage.getItem("bmi") ?? "";
     console.log(bmi);
     return bmi;
 }
@@ -11,7 +11,7 @@ function setBMI() {
 
 
 function getPlatelet() {
-    const platelet = localStorage.getItem("platelet");
+    const platelet = localStorage.getItem("platelet") ?? "";
     console.log(platelet);
     return platelet;
 }

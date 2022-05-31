@@ -64,7 +64,10 @@ document.getElementById("numpad-7").addEventListener("click", () => addKey(7));
 document.getElementById("numpad-8").addEventListener("click", () => addKey(8));
 document.getElementById("numpad-9").addEventListener("click", () => addKey(9));
 document.getElementById("numpad-0").addEventListener("click", () => addKey(0));
-document.getElementById("numpad-.").addEventListener("click", () => addDec());
+if (document.getElementById("numpad-.")) {
+    document.getElementById("numpad-.").addEventListener("click", () => addDec());
+
+}
 document.getElementById("numpad-d").addEventListener("click", () => delKey());
 
 function addKey(num) {
@@ -72,6 +75,7 @@ function addKey(num) {
     let prevVal = document.getElementById("input-value").innerText;
     console.log("prevVal",prevVal);
     document.getElementById("input-value").innerHTML = prevVal + num;
+    updateNextButton();
 }
 function addDec() {
     console.log("pressed decimal point");
@@ -82,8 +86,26 @@ function addDec() {
     } else {
         document.getElementById("input-value").innerHTML = prevVal + ".";
     }
+    updateNextButton();
 }
 function delKey() {
     console.log("pressed delete");
     document.getElementById("input-value").innerHTML = "";
+    updateNextButton();
+}
+
+function updateNextButton() {
+    let val = document.getElementById("input-value").innerText;
+    let newButton = (val == "") ? `<button class="button-hollow">Skip</button>` : `<button>Next</button>`;
+    // if (val == "") {
+    //     newButton = `<button class="button-hollow">Skip</button>`;
+    // } else {
+    //     newButton = `<button>Next</button>`;
+    // }
+    if (document.getElementById("next-bmi")) {
+        document.getElementById("next-bmi").innerHTML = newButton;
+    } else if (document.getElementById("next-platelet")) {
+        document.getElementById("next-platelet").innerHTML = newButton;
+    }
+
 }

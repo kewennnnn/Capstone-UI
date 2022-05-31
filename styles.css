@@ -57,6 +57,11 @@ button:active {
     color: var(--blue);
 }
 
+.button-hollow {
+    background-color: var(--bg);
+    border: var(--text) solid 2px;
+}
+
 my-keypad button {
     height: 70px;
     width: 70px;
