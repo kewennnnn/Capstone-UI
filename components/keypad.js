@@ -2,11 +2,12 @@
 class KeyPad extends HTMLElement {
     constructor() {
       super();
-      this.current = 0;
+      this.showDec = true;
     }
   
     connectedCallback() {
-      this.current = this.getAttribute("current");
+      this.showDec = eval(this.getAttribute("showDec")) ?? true;
+      console.log(this.showDec);
       this.render();
     }
     
@@ -29,8 +30,25 @@ class KeyPad extends HTMLElement {
                 <button id="numpad-8">8</button>
                 <button id="numpad-9">9</button>
             </div>
+            
         </div>
         `;
+        if (this.showDec) {
+            this.innerHTML += `
+            <div>
+                <button id="numpad-.">.</button>
+                <button id="numpad-0">0</button>
+                <button id="numpad-d">del</button>
+            </div>
+            `
+        } else {
+            this.innerHTML += `
+            <div>
+                <button id="numpad-0" style="margin-left:92px">0</button>
+                <button id="numpad-d">del</button>
+            </div>
+            `
+        }
     }
   }
   
@@ -45,10 +63,27 @@ document.getElementById("numpad-6").addEventListener("click", () => addKey(6));
 document.getElementById("numpad-7").addEventListener("click", () => addKey(7));
 document.getElementById("numpad-8").addEventListener("click", () => addKey(8));
 document.getElementById("numpad-9").addEventListener("click", () => addKey(9));
+document.getElementById("numpad-0").addEventListener("click", () => addKey(0));
+document.getElementById("numpad-.").addEventListener("click", () => addDec());
+document.getElementById("numpad-d").addEventListener("click", () => delKey());
 
 function addKey(num) {
     console.log("pressed",num);
     let prevVal = document.getElementById("input-value").innerText;
     console.log("prevVal",prevVal);
     document.getElementById("input-value").innerHTML = prevVal + num;
+}
+function addDec() {
+    console.log("pressed decimal point");
+    let prevVal = document.getElementById("input-value").innerText;
+    console.log("prevVal",prevVal);
+    if (prevVal.includes(".")) {
+        console.log("already have decimal point");
+    } else {
+        document.getElementById("input-value").innerHTML = prevVal + ".";
+    }
+}
+function delKey() {
+    console.log("pressed delete");
+    document.getElementById("input-value").innerHTML = "";
 }
