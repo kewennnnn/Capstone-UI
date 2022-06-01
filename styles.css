@@ -19,6 +19,14 @@ body {
     padding-top: 30px;
 }
 
+.fullscreen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 h1 {
     font-size: 60px;
 }
