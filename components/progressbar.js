@@ -18,7 +18,7 @@ class ProgressBar extends HTMLElement {
       if (this.current == 1) {
         this.stage1 += "pb-current";
       } else if (this.current > 1) {
-        this.stage1 += "pb-done";
+        this.stage1 += "pb-done pb-left-margin";
       } 
       if (this.current == 2) {
         this.stage2 += "pb-current";
@@ -32,18 +32,30 @@ class ProgressBar extends HTMLElement {
       } 
       if (this.current == 4) {
         this.stage4 += "pb-current";
-      } 
+      } else if (this.current < 4) {
+        this.stage4 += "pb-right-margin";
+      }
 
       // style for lines 
       if (this.current > 1) {
-        this.line1 += "pb-line-done";
+        this.line1 += "pb-line-done ";
+      } 
+      if (this.current == 1 || this.current == 2) {
+        this.line1 += "pb-line-short ";
       } 
       if (this.current > 2) {
-        this.line2 += "pb-line-done";
+        this.line2 += "pb-line-done ";
+      } 
+      if (this.current == 2 || this.current == 3) {
+        this.line2 += "pb-line-short ";
       } 
       if (this.current > 3) {
-        this.line3 += "pb-line-done";
+        this.line3 += "pb-line-done ";
       } 
+      if (this.current == 3 || this.current == 4) {
+        this.line3 += "pb-line-short ";
+      } 
+
 
       this.render();
     }

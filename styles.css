@@ -35,10 +35,6 @@ h2 {
     color: var(--orange);
 }
 
-#progress-bar {
-    display: flex;
-    text-align: center; 
-}
 
 .col-left {
     width: 400px;
@@ -90,6 +86,12 @@ my-keypad button {
     margin-right: auto;
 }
 
+/*** Progress Bar ***/
+
+#progress-bar {
+    display: flex;
+    text-align: center; 
+}
 
 #progress-bar-wrapper {
     display: flex;
@@ -138,4 +140,13 @@ my-keypad button {
 }
 .pb-line-done {
     background-color: var(--orange);
+}
+.pb-line-short {
+    width: 110px;
+}
+.pb-left-margin {
+    margin-left: 10px;
+}
+.pb-right-margin {
+    margin-right: 10px;
 }
