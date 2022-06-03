@@ -68,23 +68,23 @@ class ProgressBar extends HTMLElement {
       <div id="progress-bar-wrapper">
         <div id="progress-bar" class="pb">
           <div class="${this.stage1}">
-            <img src="../media/bmi.png"/>
             <p>BMI</p>
+            <img src="../media/bmi.png"/>
           </div>
           <div class="${this.line1}"></div>
           <div class="${this.stage2}">
-            <img src="../media/platelet.png"/>
             <p>Platelet</p>
+            <img src="../media/platelet.png"/>
           </div>
           <div class="${this.line2}"></div>
           <div class="${this.stage3}">
-            <img src="../media/screening.png"/>
             <p>Screen</p>
+            <img src="../media/screening.png"/>
           </div>
           <div class="${this.line3}"></div>
           <div class="${this.stage4}">
-            <img src="../media/diagnosis.png"/>
             <p>Result</p>
+            <img src="../media/diagnosis.png"/>
           </div>
         </div>
       </div>
