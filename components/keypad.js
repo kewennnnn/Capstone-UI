@@ -44,7 +44,7 @@ class KeyPad extends HTMLElement {
         } else {
             this.innerHTML += `
             <div>
-                <button id="numpad-0" style="margin-left:92px">0</button>
+                <button id="numpad-0" style="margin-left:67px">0</button>
                 <button id="numpad-d">del</button>
             </div>
             `
@@ -90,7 +90,8 @@ function addDec() {
 }
 function delKey() {
     console.log("pressed delete");
-    document.getElementById("input-value").innerHTML = "";
+    let prevVal = document.getElementById("input-value").innerText;
+    document.getElementById("input-value").innerHTML = prevVal.slice(0,-1);
     updateNextButton();
 }
 
