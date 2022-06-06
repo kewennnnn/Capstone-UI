@@ -9,6 +9,8 @@ class ProgressBar extends HTMLElement {
       this.stage3 = "pb-stage ";
       this.line3 = "pb-line ";
       this.stage4 = "pb-stage ";
+      this.line4 = "pb-line ";
+      this.stage5 = "pb-stage ";
     }
   
     connectedCallback() {
@@ -32,8 +34,13 @@ class ProgressBar extends HTMLElement {
       } 
       if (this.current == 4) {
         this.stage4 += "pb-current";
-      } else if (this.current < 4) {
-        this.stage4 += "pb-right-margin";
+      } else if (this.current > 3) {
+        this.stage4 += "pb-done";
+      } 
+      if (this.current == 5) {
+        this.stage5 += "pb-current";
+      } else if (this.current < 5) {
+        this.stage5 += "pb-right-margin";
       }
 
       // style for lines 
@@ -55,7 +62,12 @@ class ProgressBar extends HTMLElement {
       if (this.current == 3 || this.current == 4) {
         this.line3 += "pb-line-short ";
       } 
-
+      if (this.current > 4) {
+        this.line4 += "pb-line-done ";
+      } 
+      if (this.current == 4 || this.current == 5) {
+        this.line4 += "pb-line-short ";
+      } 
 
       this.render();
     }
@@ -67,34 +79,33 @@ class ProgressBar extends HTMLElement {
       this.innerHTML = `
       <div id="progress-bar-wrapper">
         <div id="progress-bar" class="pb">
-          <div class="${this.stage1}">
-            <p>BMI</p>
-            <img src="../media/bmi.png"/>
-          </div>
+          <a href="./height.html"class="${this.stage1}" id="stage1">
+            <p>Height</p>
+            <img src="../media/none.png"/>
+          </a>
           <div class="${this.line1}"></div>
-          <div class="${this.stage2}">
-            <p>Platelet</p>
-            <img src="../media/platelet.png"/>
-          </div>
+          <a href="./weight.html" class="${this.stage2}" id="stage2">
+            <p>Weight</p>
+            <img src="../media/none.png"/>
+          </a>
           <div class="${this.line2}"></div>
-          <div class="${this.stage3}">
-            <p>Screen</p>
-            <img src="../media/screening.png"/>
-          </div>
+          <a href="./platelet.html" class="${this.stage3}" id="stage3">
+            <p>Platelet</p>
+            <img src="../media/none.png"/>
+          </a>
           <div class="${this.line3}"></div>
-          <div class="${this.stage4}">
+          <a href="./screening.html" class="${this.stage4}" id="stage4">
+            <p>Screen</p>
+            <img src="../media/none.png"/>
+          </a>
+          <div class="${this.line4}"></div>
+          <a href="./results.html" class="${this.stage5}" id="stage5">
             <p>Result</p>
-            <img src="../media/diagnosis.png"/>
-          </div>
+            <img src="../media/none.png"/>
+          </a>
         </div>
       </div>
       `;
-        // <div id="progress-bar">
-        //   <h1 style="color:${this.color1}">BMI</h1>
-        //   <h1 style="color:${this.color2}">Platelet</h1>
-        //   <h1 style="color:${this.color3}">Screen</h1>
-        //   <h1 style="color:${this.color4}">Results</h1>
-        // </div>
     }
   }
   

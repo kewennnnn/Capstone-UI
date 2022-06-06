@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="../styles.css" rel="stylesheet">
+    <title>Everest by Capstone S06</title>
+  </head>
+  <body>
+    <progress-bar current=2></progress-bar>
+    <div id="app">
+
+      <div class="col-left">
+        <h2>Enter Weight</h2>
+        <h1 id="input-value"></h1>
+        <div>
+          <a href="./height.html" id="back"><button>Back</button></a>
+          <a href="./platelet.html" id="next"><button class="button-hollow">Skip</button></a>
+        </div>
+      </div>
+
+      <div>
+        <my-keypad showDec="true" />
+      </div>
+
+    </div>
+    <script src="../renderer.js"></script>
+    <script src="../components/progressbar.js"></script>
+    <script src="../components/keypad.js"></script>
+    <script src="../components/storage.js"></script>
+    <script>
+      document.getElementById("input-value").innerHTML = getWeight();
+      updateNextButton();
+      document.getElementById("next").addEventListener("click", () => setWeight());
+      document.getElementById("back").addEventListener("click", () => setWeight());
+    </script>
+  </body>
+</html>

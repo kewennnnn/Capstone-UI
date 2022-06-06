@@ -103,10 +103,11 @@ function updateNextButton() {
     // } else {
     //     newButton = `<button>Next</button>`;
     // }
-    if (document.getElementById("next-bmi")) {
-        document.getElementById("next-bmi").innerHTML = newButton;
-    } else if (document.getElementById("next-platelet")) {
-        document.getElementById("next-platelet").innerHTML = newButton;
-    }
 
+    // if (document.getElementById("next-bmi")) {
+    //     document.getElementById("next-bmi").innerHTML = newButton;
+    // } else if (document.getElementById("next-platelet")) {
+    //     document.getElementById("next-platelet").innerHTML = newButton;
+    // }
+    document.getElementById("next").innerHTML = newButton;
 }

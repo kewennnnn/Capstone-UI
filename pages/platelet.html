@@ -8,15 +8,15 @@
     <title>Everest by Capstone S06</title>
   </head>
   <body>
-    <progress-bar current=2></progress-bar>
+    <progress-bar current=3></progress-bar>
     <div id="app">
 
       <div class="col-left">
         <h2>Enter Platelet Count</h2>
         <h1 id="input-value"></h1>
         <div>
-          <a href="./bmi.html" id="back-platelet"><button>Back</button></a>
-          <a href="./screening.html" id="next-platelet"><button class="button-hollow">Skip</button></a>
+          <a href="./weight.html" id="back"><button>Back</button></a>
+          <a href="./screening.html" id="next"><button class="button-hollow">Skip</button></a>
         </div>
       </div>
 
@@ -32,8 +32,8 @@
     <script>
       document.getElementById("input-value").innerHTML = getPlatelet();
       updateNextButton();
-      document.getElementById("next-platelet").addEventListener("click", () => setPlatelet());
-      document.getElementById("back-platelet").addEventListener("click", () => setPlatelet());
+      document.getElementById("next").addEventListener("click", () => setPlatelet());
+      document.getElementById("back").addEventListener("click", () => setPlatelet());
     </script>
   </body>
 </html>
