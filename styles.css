@@ -3,6 +3,9 @@
     --blue: #3B6DB2;
     --orange: #EB8432;
     --text: white;
+    --text-XL: 80px; 
+    --text-L: 50px; 
+    --text-S: 30px; 
 }  
 
 body {
@@ -15,7 +18,7 @@ body {
 
 #app {
     display: flex;
-    justify-content: space-around;
+    justify-content: center; /*space-around;*/
     padding-top: 20px;
 }
 
@@ -33,24 +36,28 @@ body {
 h2 {
     /* font-size: 40px; */
     color: var(--orange);
+    font-size: var(--text-L);
 }
 
 
 .col-left {
-    width: 280px;
+    /* width: 50vw; */
     align-items: center;
     text-align: center;
+    margin-right: 80px;
 }
 .align-center {
     text-align: center;
 }
 
 button {
-    height: 30px;
-    width: 80px;
+    /* height: 30px; */
+    /* width: 80px; */
+    padding: 10px 30px;
+    margin: 5px;
     background-color: var(--blue);
     color: var(--text);
-    font-size: 15px;
+    font-size: var(--text-S);
     border-radius: 15px;
     border-width: 0;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
@@ -67,28 +74,30 @@ button:active {
 }
 
 my-keypad button {
-    height: 50px;
-    width: 50px;
+    height: 100px;
+    width: 100px;
     border-radius: 50%;
-    font-size: 20px;
-    font-weight: 800;
+    font-size: var(--text-L);
+    font-weight: bold;
     margin: 6px 4px;
 }
 
 #input-value {
-    height: 35px;
-    width: 150px;
+    height: 90px;
+    width: 450px;
     border: 3px solid var(--orange);
     border-radius: 10px;
     padding: 15px;
     margin-left: auto;
     margin-right: auto;
+    font-size: var(--text-XL);
 }
 
 /*** Progress Bar ***/
 
 #progress-bar {
-    height: 60px;
+    padding-top: 10px;
+    height: 80px;
     display: flex;
     text-align: center; 
 }
@@ -105,7 +114,7 @@ my-keypad button {
 }
 
 .pb-stage {
-    width: 30px;
+    width: 50px;
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -117,14 +126,16 @@ my-keypad button {
     border-radius: 50%;
     background-color: var(--blue);
     position: relative;
-    bottom: 50px;
+    bottom: 54px;
     /* filter: opacity(0); */
 }
 .pb p {
-    width: 80px;
+    width: 160px;
     position: relative;
-    bottom: 50px;
-    right: 24px;
+    bottom: 60px;
+    right: 54px;
+    font-size: var(--text-S);
+    margin: 10px 0;
 }
 .pb a {
     color: var(--text);
@@ -134,8 +145,8 @@ my-keypad button {
     background-color: var(--orange);
 }
 .pb-current {
-    height: 30px;
-    width: 30px;
+    height: 50px;
+    /* width: 30px; */
     padding: 5px;
     border-radius: 50%;
     border: solid var(--orange) 5px;
@@ -143,16 +154,16 @@ my-keypad button {
 }
 .pb-line {
     height: 5px;
-    width: 70px;
+    width: 150px;
     background-color: var(--blue);
     position: relative;
-    top: 22px;
+    top: 34px;
 }
 .pb-line-done {
     background-color: var(--orange);
 }
 .pb-line-short {
-    width: 60px;
+    width: 140px;
 }
 .pb-left-margin {
     margin-left: 10px;

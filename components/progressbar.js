@@ -95,7 +95,7 @@ class ProgressBar extends HTMLElement {
           </a>
           <div class="${this.line3}"></div>
           <a href="./screening.html" class="${this.stage4}" id="stage4">
-            <p>Screen</p>
+            <p>Screening</p>
             <img src="../media/none.png"/>
           </a>
           <div class="${this.line4}"></div>
