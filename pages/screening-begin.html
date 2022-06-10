@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <link href="../styles.css" rel="stylesheet">
+    <title>Everest by Capstone S06</title>
+  </head>
+  <body>
+    <progress-bar current=4></progress-bar>
+    <div id="app" class="flex-col">
+      <div class="section flex-row">
+        <h2 class="no-margin">Probe Size:</h2>
+        <div>
+          <button>M</button>
+          <button>XL</button>
+        </div>
+      </div>
+      <div class="flex-row">
+        <img id="instruction4" src="../media/instruction4.png"/>
+        <h1 class="align-center">Click the button on the probe to send pulse</h1>
+      </div>
+      
+    </div>
+    <!-- <a href="./screening-intro.html"><button>Back</button></a>
+    <a href="./screening.html"><button>Next</button></a> -->
+
+    <script src="../renderer.js"></script>
+    <script src="../components/progressbar.js"></script>
+    <script>
+      document.getElementById("instruction4").addEventListener("click", () => window.location.href = './screening.html');
+    </script>
+  </body>
+</html>

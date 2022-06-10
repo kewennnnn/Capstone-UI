@@ -44,7 +44,7 @@ class KeyPad extends HTMLElement {
         } else {
             this.innerHTML += `
             <div>
-                <button id="numpad-0" style="margin-left:138px">0</button>
+                <button id="numpad-0" style="margin-left:136px">0</button>
                 <button id="numpad-d">del</button>
             </div>
             `

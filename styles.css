@@ -5,9 +5,10 @@
     --text: white;
     --text-XL: 80px; 
     --text-L: 50px; 
+    --text-M: 40px; 
     --text-S: 30px; 
-    --font-fam: verdana;
-    /* --font-fam: "times new roman"; */
+    /* --font-fam: verdana; */
+    --font-fam: "times new roman";
     /* --font-fam: lato; */
     /* --font-fam: roboto; */
     /* --font-fam: sans-serif; */
@@ -24,7 +25,8 @@ body {
 #app {
     display: flex;
     justify-content: center; /*space-around;*/
-    padding-top: 20px;
+    /* padding-top: 20px; */
+    padding: 20px 50px;
 }
 
 .fullscreen {
@@ -35,13 +37,16 @@ body {
     align-items: center;
 }
 
-/* h1 {
-    font-size: 60px;
-} */
+h1 {
+    font-size: var(--text-XL);
+}
 h2 {
     /* font-size: 40px; */
     color: var(--orange);
     font-size: var(--text-L);
+}
+h3 {
+    font-size: var(--text-M);
 }
 
 
@@ -49,7 +54,7 @@ h2 {
     /* width: 50vw; */
     align-items: center;
     text-align: center;
-    margin-right: 80px;
+    margin-right: 30px;
 }
 .col {
     align-items: center;
@@ -98,13 +103,13 @@ my-keypad button {
 
 #input-value {
     height: 90px;
-    width: 450px;
+    width: 400px;
     border: 3px solid var(--orange);
     border-radius: 15px;
     padding: 15px;
     margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 75px;
+    margin-right: 75px;
     font-size: var(--text-XL);
     display: inline-block;
 }
@@ -114,9 +119,8 @@ my-keypad button {
     display: inline-block;
     /* width: 0px; */
     position: relative;
-    right: 130px;
-    bottom: 18px;
-    
+    right: 200px;
+    bottom: 12px;
     align-items: flex-end;
 } 
 #input-unit h2 {
@@ -213,4 +217,22 @@ my-keypad button {
     flex: 1 1 0;
     align-items: center;
     text-align: center;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#app img {
+    width: 100%;
+}
+#instruction4{
+    max-width: 40%
 }
