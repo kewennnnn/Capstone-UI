@@ -51,8 +51,15 @@ h2 {
     text-align: center;
     margin-right: 80px;
 }
+.col {
+    align-items: center;
+    text-align: center;
+}
 .align-center {
     text-align: center;
+}
+.no-margin {
+    margin: 0;
 }
 
 button {
@@ -95,9 +102,26 @@ my-keypad button {
     border: 3px solid var(--orange);
     border-radius: 15px;
     padding: 15px;
+    margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
     font-size: var(--text-XL);
+    display: inline-block;
+}
+#input-unit {
+    height: 90px;
+    width: 0px;
+    display: inline-block;
+    /* width: 0px; */
+    position: relative;
+    right: 130px;
+    bottom: 18px;
+    
+    align-items: flex-end;
+} 
+#input-unit h2 {
+    width: 100px;
+    text-align: right;
 }
 
 /*** Progress Bar ***/
@@ -185,6 +209,8 @@ my-keypad button {
     border: var(--orange) solid 2px;
     border-radius: 15px;
     padding: 30px;
+    margin: 0 10px;
+    flex: 1 1 0;
     align-items: center;
     text-align: center;
 }
