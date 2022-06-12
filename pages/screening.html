@@ -10,12 +10,33 @@
   <body>
     <progress-bar current=4></progress-bar>
 
-    <h1>Screen:</h1>
-
-    <a href="./screening-intro.html"><button>Back</button></a>
-    <a href="./results.html"><button>Next</button></a>
+    <div id="app" class="flex-col">
+      <probe-toggle></probe-toggle>
+      <div class="flex-row">
+        <!-- <div class="col-left">
+          <h2>Elasticity</h2>
+          <h1 id="input-value">487</h1>
+          <span id="input-unit"><h2>kPa</h2></span>
+        </div> -->
+        <div class="section" style="justify-content: space-around">
+          <h2 style="margin: 0;">Elasticity</h2>
+          <div class="flex-row">
+            <h1 id="elasticity-value">487</h1>
+            <span id="elasticity-unit"><h2>kPa</h2></span>
+          </div>
+        </div>
+        <!-- <span id="elasticity-unit"><h2>kPa</h2></span> -->
+        <div class="section" style="border-color: transparent;">
+          <h3 style="margin-top: 0;">Press button again to get another reading</h3>
+          <a href="./results.html"><button>Finish</button></a>
+        </div>
+        
+      </div>
+      
+    </div>
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
+    <script src="../components/probetoggle.js"></script>
   </body>
 </html>

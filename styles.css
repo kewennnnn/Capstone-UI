@@ -70,6 +70,7 @@ h3 {
 button {
     /* height: 30px; */
     /* width: 80px; */
+    width: max-content;
     padding: 20px 60px;
     margin: 5px;
     background-color: var(--blue);
@@ -89,6 +90,7 @@ button:active {
 .button-hollow {
     background-color: var(--bg);
     border: var(--text) solid 2px;
+    padding: 18px 60px;
 }
 
 my-keypad button {
@@ -117,7 +119,6 @@ my-keypad button {
     height: 90px;
     width: 0px;
     display: inline-block;
-    /* width: 0px; */
     position: relative;
     right: 200px;
     bottom: 12px;
@@ -213,10 +214,13 @@ my-keypad button {
     border: var(--orange) solid 2px;
     border-radius: 15px;
     padding: 30px;
-    margin: 0 10px;
+    margin: 10px;
     flex: 1 1 0;
     align-items: center;
     text-align: center;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between;
 }
 
 .flex-row {
@@ -233,6 +237,29 @@ my-keypad button {
 #app img {
     width: 100%;
 }
-#instruction4{
-    max-width: 40%
+#instruction4 {
+    /* max-width: 40%; */
+    width: auto;
+    max-height: 50vh;
+}
+#elasticity-value {
+    margin: 0;
+}
+/* #elasticity-unit {
+    margin: 0;
+    position: relative;
+    top: 20px;
+} */
+#elasticity-unit {
+    height: 90px;
+    width: 0px;
+    display: inline-block;
+    position: relative;
+    right: 0px;
+    bottom: 12px;
+    align-items: flex-end;
+} 
+#elasticity-unit h2 {
+    width: 100px;
+    text-align: right;
 }

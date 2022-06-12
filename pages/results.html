@@ -9,12 +9,36 @@
   </head>
   <body>
     <progress-bar current=5></progress-bar>
+    <div id="app">
+      
+      <div class="col-left" style="width: min-content;">
+        <h3>Patient is at High risk, please refer to specialist</h3>
+        <div class="flex-row" style="align-items:flex-end;">
+          <a href="../pages/screening.html"><button class="button-hollow">Redo</button></a>
+          <div>
+            <p class="no-margin">Data will be deleted permanently</p>
+            <a href="../index.html"><button>End Screening</button></a>
+          </div>
+        </div>
+      </div>
 
-    <h1>BMI:<span id="bmi-result"></span></h1>
-    <h1>Platelet Count:<span id="platelet-result"></span></h1>
+      <div class="col" style="width: max-content;">
+        <div class="section" style="border-color: rgb(51, 248, 51);">
+          <h3 class="no-margin">BMI: <span id="bmi-result"></span></h3>
+        </div>
+        <div class="section">
+          <h3 class="no-margin">Platelet Count: <span id="platelet-result"></span></h3>
+        </div>
+        <div class="section" style="border-color: rgb(248, 51, 100);">
+          <h3 class="no-margin">Elasticity: <span id="elasticity-result">487</span></h3>
+        </div>
+      </div>
 
-    <a href="../pages/screening.html"><button>Back</button></a>
-    <a href="../main.html"><button>End Screening</button></a>
+    </div>
+
+    
+
+    
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>

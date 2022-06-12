@@ -9,28 +9,30 @@
   </head>
   <body>
     <progress-bar current=4></progress-bar>
-    <div id="app">
-      <div class="section">
-        <h2 class="no-margin">1</h2>
-        <h3>Prepare Probe</h3>
-        <img src="../media/instruction1.png"/>
+    <div id="app" class="flex-col">
+      <div class="flex-row">
+        <div class="section">
+          <h2 class="no-margin">1</h2>
+          <h3 style="margin-top: 0;">Prepare Probe</h3>
+          <img src="../media/instruction1.png" style="max-width: 70%;"/>
+        </div>
+        <div class="section">
+          <h2 class="no-margin">2</h2>
+          <h3 style="margin-top: 0;">Apply Gel</h3>
+          <img src="../media/instruction2.png" style="max-width: 70%;"/>
+        </div>
+        <div class="section">
+          <h2 class="no-margin">3</h2>
+          <h3 style="margin-top: 0;">Position on patient</h3>
+          <img src="../media/instruction3.png" style="max-width: 70%;"/>
+        </div>
       </div>
-      <div class="section">
-        <h2 class="no-margin">2</h2>
-        <h3>Apply Gel</h3>
-        <img src="../media/instruction2.png"/>
+      <div class="col">
+        <a href="./screening-begin.html"><button>Begin Screening</button></a>
       </div>
-      <div class="section">
-        <h2 class="no-margin">3</h2>
-        <h3>Position on patient</h3>
-        <img src="../media/instruction3.png"/>
-      </div>
-
       <!-- <a href="./platelet.html"><button>Back</button></a> -->
     </div>  
-    <div class="col">
-      <a href="./screening-begin.html"><button>Begin Screening</button></a>
-    </div>
+    
     
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
