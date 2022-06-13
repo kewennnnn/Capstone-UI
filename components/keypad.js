@@ -68,7 +68,7 @@ if (document.getElementById("numpad-.")) {
     document.getElementById("numpad-.").addEventListener("click", () => addDec());
 
 }
-document.getElementById("numpad-d").addEventListener("click", () => delKey());
+// document.getElementById("numpad-d").addEventListener("click", () => delKey());
 
 function addKey(num) {
     console.log("pressed",num);
@@ -88,16 +88,21 @@ function addDec() {
     }
     updateNextButton();
 }
-function delKey() {
+function delKey(allowSkip=true) {
     console.log("pressed delete");
     let prevVal = document.getElementById("input-value").innerText;
     document.getElementById("input-value").innerHTML = prevVal.slice(0,-1);
-    updateNextButton();
+    updateNextButton(allowSkip);
 }
 
-function updateNextButton() {
-    let val = document.getElementById("input-value").innerText;
-    let newButton = (val == "") ? `<button class="button-hollow">Skip</button>` : `<button>Next</button>`;
+function updateNextButton(allowSkip=true) {
+    let val = document.getElementById("input-value").innerText; 
+    let newButton;
+    if (allowSkip) {
+        newButton = (val == "") ? `<button class="button-hollow">Skip</button>` : `<button>Next</button>`;
+    } else {
+        newButton = (val == "") ? null : `<button>Next</button>`;
+    }
     // if (val == "") {
     //     newButton = `<button class="button-hollow">Skip</button>`;
     // } else {

@@ -29,8 +29,9 @@
     <script src="../components/keypad.js"></script>
     <script src="../components/storage.js"></script>
     <script>
+      document.getElementById("numpad-d").addEventListener("click", () => delKey(allowSkip=false));
       document.getElementById("input-value").innerHTML = getHeight();
-      updateNextButton();
+      updateNextButton(allowSkip=false);
       document.getElementById("next").addEventListener("click", () => setHeight());
       document.getElementById("back").addEventListener("click", () => setHeight());
     </script>
