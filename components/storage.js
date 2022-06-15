@@ -1,3 +1,10 @@
+function clearAll() {
+    localStorage.removeItem("height");
+    localStorage.removeItem("weight");
+    localStorage.removeItem("platelet");
+    console.log("storage cleared!");
+}
+
 function getBMI() {
     // const bmi = localStorage.getItem("bmi") ?? "";
     // console.log(bmi);

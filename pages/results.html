@@ -12,24 +12,24 @@
     <div id="app">
       
       <div class="col-left" style="width: min-content;">
-        <h3>Patient is at High risk, please refer to specialist</h3>
+        <h3>Patient is at stage F2/F3, please refer to specialist</h3>
         <div class="flex-row" style="align-items:flex-end;">
           <a href="../pages/screening.html"><button class="button-hollow">Redo</button></a>
           <div>
             <p class="no-margin">Data will be deleted permanently</p>
-            <a href="../index.html"><button>End Screening</button></a>
+            <a href="../index.html"><button id="end-screening">End Screening</button></a>
           </div>
         </div>
       </div>
 
       <div class="col" style="width: max-content;">
-        <div class="section" style="border-color: rgb(51, 248, 51);">
+        <div id="bmi-section" class="section align-left" style="border-color: rgb(51, 248, 51);">
           <h3 class="no-margin">BMI: <span id="bmi-result"></span></h3>
         </div>
-        <div class="section">
+        <div id="platelet-section" class="section align-left" style="border-color: rgb(248, 51, 100);">
           <h3 class="no-margin">Platelet Count: <span id="platelet-result"></span></h3>
         </div>
-        <div class="section" style="border-color: rgb(248, 51, 100);">
+        <div id="elasticity-section" class="section align-left" style="border-color: rgb(248, 51, 100);">
           <h3 class="no-margin">Elasticity: <span id="elasticity-result">487</span></h3>
         </div>
       </div>
@@ -49,7 +49,17 @@
       // const bmi = getBMI();
       // console.log(bmi);
       document.getElementById("bmi-result").innerHTML = getBMI();
+      if (document.getElementById("bmi-result").innerHTML == "") {
+        document.getElementById("bmi-result").innerHTML = "-";
+        document.getElementById("bmi-result").style.borderColor = rgb(51, 248, 51);
+      } 
+      //TODO: add if else to change color of borders according to ranges
       document.getElementById("platelet-result").innerHTML = getPlatelet();
+      if (document.getElementById("platelet-result").innerHTML == "") {
+        document.getElementById("platelet-result").innerHTML = "-";
+        document.getElementById("platelet-section").style.borderColor = "var(--blue)";
+      }
+      document.getElementById("end-screening").addEventListener("click",clearAll());
 </script>
   </body>
 </html>

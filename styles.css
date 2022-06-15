@@ -67,6 +67,9 @@ h3 {
 .align-center {
     text-align: center;
 }
+.align-left {
+    text-align: left !important;
+}
 .no-margin {
     margin: 0;
 }
