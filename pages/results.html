@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
     <link href="../styles.css" rel="stylesheet">
     <title>Everest by Capstone S06</title>
   </head>
@@ -23,14 +22,26 @@
       </div>
 
       <div class="col" style="width: max-content;">
-        <div id="bmi-section" class="section align-left" style="border-color: rgb(51, 248, 51);">
-          <h3 class="no-margin">BMI: <span id="bmi-result"></span></h3>
+        <div id="bmi-section" class="section align-left flex-row" style="border-color: var(--green);">
+          <h3 class="no-margin" style="color: var(--green)">BMI: <span id="bmi-result" style="color: var(--text)"></span><span style="color: var(--text)"> cm</span></h3>
+          <lord-icon
+              src="https://cdn.lordicon.com/epurqyya.json"
+              trigger="loop"
+              colors="primary:#16c72e"
+              style="width:50px;height:50px;padding-left:30px;">
+          </lord-icon>
         </div>
-        <div id="platelet-section" class="section align-left" style="border-color: rgb(248, 51, 100);">
+        <div id="platelet-section" class="section align-left flex-row" style="border-color: var(--blue);">
           <h3 class="no-margin">Platelet Count: <span id="platelet-result"></span></h3>
         </div>
-        <div id="elasticity-section" class="section align-left" style="border-color: rgb(248, 51, 100);">
-          <h3 class="no-margin">Elasticity: <span id="elasticity-result">487</span></h3>
+        <div id="elasticity-section" class="section align-left flex-row" style="border-color: rgb(248, 51, 100);">
+          <h3 class="no-margin">Elasticity: <span id="elasticity-result">487</span> kPa</h3>
+          <lord-icon
+              src="https://cdn.lordicon.com/rslnizbt.json"
+              trigger="loop"
+              colors="primary:#e83a30"
+              style="width:50px;height:50px;padding-left:30px;">
+          </lord-icon>
         </div>
       </div>
 
@@ -43,6 +54,9 @@
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/storage.js"></script>
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> <!-- animation for warning -->
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> <!-- animation for thumbs up -->
+
     <script>
       // const bmi = localStorage.getItem("bmi");
       // console.log(bmi);
@@ -50,16 +64,18 @@
       // console.log(bmi);
       document.getElementById("bmi-result").innerHTML = getBMI();
       if (document.getElementById("bmi-result").innerHTML == "") {
-        document.getElementById("bmi-result").innerHTML = "-";
-        document.getElementById("bmi-result").style.borderColor = rgb(51, 248, 51);
+        document.getElementById("bmi-result").innerHTML = "NA";
+        document.getElementById("bmi-result").style.borderColor = "var(--green)";
       } 
       //TODO: add if else to change color of borders according to ranges
       document.getElementById("platelet-result").innerHTML = getPlatelet();
       if (document.getElementById("platelet-result").innerHTML == "") {
-        document.getElementById("platelet-result").innerHTML = "-";
+        document.getElementById("platelet-result").innerHTML = "NA";
         document.getElementById("platelet-section").style.borderColor = "var(--blue)";
+      } else {
+        console.log(document.getElementById("platelet-result").innerHTML);
       }
-      document.getElementById("end-screening").addEventListener("click",clearAll());
+      document.getElementById("end-screening").addEventListener("click", () => clearAll());
 </script>
   </body>
 </html>

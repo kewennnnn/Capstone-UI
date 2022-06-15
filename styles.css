@@ -3,6 +3,8 @@
     --blue: #3B6DB2;
     --orange: #EB8432;
     --text: white;
+    --green: rgb(51, 248, 51);
+    --red: rgb(248, 51, 100);
     --text-XL: 80px; 
     --text-L: 50px; 
     --text-M: 40px; 
@@ -128,7 +130,7 @@ my-keypad button {
     display: inline-block;
     position: relative;
     right: 200px;
-    bottom: 12px;
+    /* bottom: 12px; */
     align-items: flex-end;
 } 
 #input-unit h2 {
