@@ -13,15 +13,18 @@
 
       <div class="col-left">
         <h2>Enter Platelet Count</h2>
-        <h1 id="input-value"></h1>
-        <span id="input-unit"><h2></h2></span>
+        <div class="flex-row">
+          <h1 id="input-value"></h1>
+          <!-- <span id="input-unit"><h2>kg</h2></span> -->
+        </div>
         <div>
-          <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a>
+          <!-- <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a> -->
+          <a href="../index.html" id="back"><button class="button-hollow">Back</button></a>
           <a href="./screening-intro.html" id="next"><button class="button-hollow">Skip</button></a>
         </div>
       </div>
 
-      <div>
+      <div class="col-right">
         <my-keypad showDec="false" />
       </div>
 
@@ -35,6 +38,7 @@
       updateNextButton();
       document.getElementById("next").addEventListener("click", () => setPlatelet());
       document.getElementById("back").addEventListener("click", () => setPlatelet());
+      document.getElementById("numpad-d").addEventListener("click", () => delKey());
     </script>
   </body>
 </html>

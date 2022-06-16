@@ -2,26 +2,20 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
     <link href="../styles.css" rel="stylesheet">
     <title>Everest by Capstone S06</title>
   </head>
   <body>
     <progress-bar current=4></progress-bar>
 
-    <div id="app" class="flex-col"> <!-- style="justify-content: flex-start"> -->
+    <div id="app"> <!-- style="justify-content: flex-start"> -->
       <!-- <probe-toggle></probe-toggle> -->
-      <div class="flex-row" style="width: 100%">
-        <!-- <div class="col-left">
-          <h2>Elasticity</h2>
-          <h1 id="input-value">487</h1>
-          <span id="input-unit"><h2>kPa</h2></span>
-        </div> -->
+      <!-- <div class="flex-row" style="width: 100%"> -->
+
         <div class="col-left">
-          <h2 style="margin: 0;">Elasticity</h2>
+          <h2>Elasticity</h2>
           <div class="flex-row">
-            <h1 id="input-value">487</h1>
+            <h1 id="input-value"></h1>
             <span id="input-unit"><h2>kPa</h2></span>
           </div>
           <!-- <div class="flex-row">
@@ -30,17 +24,37 @@
           </div> -->
         </div>
         <!-- <span id="elasticity-unit"><h2>kPa</h2></span> -->
-        <div class="section" style="border-color: transparent;">
-          <h3 style="margin-top: 0;">Press button again to get another reading</h3>
-          <a href="./results.html"><button>Finish</button></a>
+        <div class="col-right align-center">
+          <h3 id="screening-prompt" style="margin-top: 0;"></h3>
+          <div class="flex-row" style="min-width: max-content;">
+            <button id="screening-activate">Send Pulse</button>
+            <a id="screening-done"><button>Finish</button></a>
+          </div>
+          
         </div>
         
       </div>
       
-    </div>
+    <!-- </div> -->
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/probetoggle.js"></script>
+    <script src="../components/storage.js"></script>
+
+    <script>
+      document.getElementById("screening-activate").addEventListener("click", () => setElasticity());
+      // document.getElementById("input-value").innerHTML = getElasticity();
+      displayElasticity();
+      // if (document.getElementById("input-value").innerHTML == "") {
+      //   document.getElementById("input-value").innerHTML = "-";
+      //   document.getElementById("screening-prompt").innerHTML = "Press button to get a reading from probe";
+      //   document.getElementById("screening-done").className = "button-hollow";
+      // } else {
+      //   document.getElementById("screening-prompt").innerHTML = "Press button again to get another reading";
+      //   document.getElementById("screening-done").className = "";
+      // }
+
+    </script>
   </body>
 </html>

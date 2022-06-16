@@ -30,7 +30,8 @@ class ProgressBar extends HTMLElement {
       if (this.current == 3) {
         this.stage3 += "pb-current";
       } else if (this.current > 3) {
-        this.stage3 += "pb-done";
+        // this.stage3 += "pb-done";
+        this.stage3 += "pb-done pb-left-margin";
       } 
       if (this.current == 4) {
         this.stage4 += "pb-current";
@@ -75,20 +76,11 @@ class ProgressBar extends HTMLElement {
     
   
     render() {
-      
+
       this.innerHTML = `
       <div id="progress-bar-wrapper">
         <div id="progress-bar" class="pb">
-          <a href="./height.html"class="${this.stage1}" id="stage1">
-            <p>Height</p>
-            <img src="../media/none.png"/>
-          </a>
-          <div class="${this.line1}"></div>
-          <a href="./weight.html" class="${this.stage2}" id="stage2">
-            <p>Weight</p>
-            <img src="../media/none.png"/>
-          </a>
-          <div class="${this.line2}"></div>
+          
           <a href="./platelet.html" class="${this.stage3}" id="stage3">
             <p>Platelet</p>
             <img src="../media/none.png"/>
@@ -106,6 +98,37 @@ class ProgressBar extends HTMLElement {
         </div>
       </div>
       `;
+      
+      // this.innerHTML = `
+      // <div id="progress-bar-wrapper">
+      //   <div id="progress-bar" class="pb">
+      //     <a href="./height.html"class="${this.stage1}" id="stage1">
+      //       <p>Height</p>
+      //       <img src="../media/none.png"/>
+      //     </a>
+      //     <div class="${this.line1}"></div>
+      //     <a href="./weight.html" class="${this.stage2}" id="stage2">
+      //       <p>Weight</p>
+      //       <img src="../media/none.png"/>
+      //     </a>
+      //     <div class="${this.line2}"></div>
+      //     <a href="./platelet.html" class="${this.stage3}" id="stage3">
+      //       <p>Platelet</p>
+      //       <img src="../media/none.png"/>
+      //     </a>
+      //     <div class="${this.line3}"></div>
+      //     <a href="./screening-intro.html" class="${this.stage4}" id="stage4">
+      //       <p>Screening</p>
+      //       <img src="../media/none.png"/>
+      //     </a>
+      //     <div class="${this.line4}"></div>
+      //     <a href="./results.html" class="${this.stage5}" id="stage5">
+      //       <p>Result</p>
+      //       <img src="../media/none.png"/>
+      //     </a>
+      //   </div>
+      // </div>
+      // `;
     }
   }
   

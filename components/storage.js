@@ -2,6 +2,7 @@ function clearAll() {
     localStorage.removeItem("height");
     localStorage.removeItem("weight");
     localStorage.removeItem("platelet");
+    localStorage.removeItem("elasticity");
     console.log("storage cleared!");
 }
 
@@ -54,4 +55,29 @@ function setPlatelet() {
     const platelet = document.getElementById("input-value").innerHTML;
     console.log(platelet);
     localStorage.setItem("platelet",platelet);
+}
+
+function getElasticity() {
+    const elasticity = localStorage.getItem("elasticity") ?? "";
+    console.log(elasticity);
+    return elasticity;
+}
+function setElasticity() {
+    // const elasticity = "";
+    const elasticity = Math.floor(Math.random()*1000);
+    console.log(elasticity);
+    localStorage.setItem("elasticity",elasticity);
+    displayElasticity();
+}
+function displayElasticity() {
+    const elasticity = getElasticity();
+    if (elasticity == "") {
+        document.getElementById("input-value").innerHTML = "-";
+        document.getElementById("screening-prompt").innerHTML = "Press button to get a reading from probe";
+        document.getElementById("screening-done").innerHTML = `<button class="button-grey">Finish</button>`;
+    } else {
+        document.getElementById("input-value").innerHTML = elasticity;
+        document.getElementById("screening-prompt").innerHTML = "Press button again to get another reading";
+        document.getElementById("screening-done").innerHTML = `<button onclick="location.href='./results.html';">Finish</button>`;
+    }
 }
