@@ -452,7 +452,7 @@ while True:
 #         #start_PS6000.findmaxvoltageandtime_tx()
             start_PS6000.plotgraph2checkwave()
             # start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
-            start_PS6000.savecsv('test_1', './data', "./le_test.csv", 0.2)
+            start_PS6000.savecsv('test_1', './', "./le_test.csv", 0.2)
             txt_file = open(filepath,'w')
             txt_file.write('works')
             txt_file = open(filepath,'r')
