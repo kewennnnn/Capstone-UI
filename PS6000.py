@@ -4,13 +4,14 @@ from datetime import date
 from turtle import shearfactor
 from webbrowser import get
 import numpy as np
-from picosdk.ps2000a import ps2000a as ps
+# from picosdk.ps2000a import ps2000a as ps
 import matplotlib.pyplot as plt
-from picosdk.functions import adc2mV, assert_pico_ok
+# from picosdk.functions import adc2mV, assert_pico_ok
 import time
 import pandas as pd
 # from Tx import Tx
 from scipy.fft import fft, fftfreq, irfft
+from time import sleep
 
 #generate signal or receive a signal
 #print the signal n convert into csv
@@ -309,7 +310,7 @@ class PS6000:
         print(str(stiffness_inkPa) + " kPa")
         return stiffness_inkPa
 
-    def plotgraph2checkwave(self, file = "../le_test.csv"):
+    def plotgraph2checkwave(self, file = "./le_test.csv"):
         #export as current waveform from picotech 
         # time_ls = []
         # voltage_ls = []
@@ -352,7 +353,7 @@ class PS6000:
         plt.ylabel('Voltage (V)')
         plt.show()
 
-    def findmaxvoltageandtime_tx(self, file = "../lol.csv"):
+    def findmaxvoltageandtime_tx(self, file = "./le_test.csv"):
             #find maximum voltage from the graph and subsequent times for transmitting end
             trace = pd.read_csv(file, skiprows=3)
             trace_x = trace.iloc[:,0].values #time
@@ -380,7 +381,7 @@ class PS6000:
             # print(time_tx_ls)
             return time_tx_ls
 
-    def findmaxvoltageandtime_rx(self, file = "../lol.csv"):
+    def findmaxvoltageandtime_rx(self, file = "./le_test.csv"):
             #find maximum voltage from the graph and subsequent times for transmitting end
             trace = pd.read_csv(file, skiprows=3)
             trace_x = trace.iloc[:,0].values #time
@@ -410,7 +411,7 @@ class PS6000:
             # print(time_rx_ls) 
             return time_rx_ls   
 
-    def getswv(self, file = "../lol.csv", dist = 0.2):
+    def getswv(self, file = "./le_test.csv", dist = 0.2):
         time_rx_ls = self.findmaxvoltageandtime_rx(file)
         time_tx_ls = self.findmaxvoltageandtime_tx(file)
         time_diff_ls = []
@@ -421,31 +422,43 @@ class PS6000:
         for k in time_diff_ls:
             sumofk = sumofk + k
         average_time_diff = sumofk/len(time_diff_ls)
+        print("average time = ", average_time_diff)
         shear_wave_velocity = dist/average_time_diff
+        print("shear wave velocity =" ,shear_wave_velocity)
         return shear_wave_velocity                        
     
-    def swv2stiffness_csvextract(self, file = "../lol.csv", dist = 0.2):
+    def swv2stiffness_csvextract(self, file = "./le_test.csv", dist = 0.2):
         swv_val = self.getswv(file, dist)
         #g/ml to kg/m^3
         stiffness = 1.07 *1000 *(swv_val**2)
-        stiffness_inkPa = stiffness/1000
+        stiffness_inkPa = stiffness/10000000000000
         print("Stiffness:" + str(stiffness_inkPa) + " kPa")
         return stiffness_inkPa
 
         #find maximum voltage from the graph and subsequent times for reciving end
         #find time difference, shear wave velocity, stiffness
 
-
+start_PS6000 = PS6000()
+filepath = "./command.txt"
+txt_file = open(filepath,'r')
 while True:
-        start_PS6000 = PS6000()
-        filepath = "./cmd.txt"
-        txt_file = open(filepath,'r')
-        if txt_file == "run":
+        print("running")
+        read_txt = txt_file.read()
+        print("read_txt =",read_txt)
+        if read_txt == "run":
 #         # start_PS6000.open_ps2000a()
 #         # start_PS6000.block_example()
 #         # start_PS6000.savecsv()
 #         #start_PS6000.findmaxvoltageandtime_tx()
-        start_PS6000.plotgraph2checkwave()
+            start_PS6000.plotgraph2checkwave()
+            # start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
+            start_PS6000.savecsv('test_1', './data', "./le_test.csv", 0.2)
+            txt_file = open(filepath,'w')
+            txt_file.write('works')
+            txt_file = open(filepath,'r')
+            print("txt file: run -> works")
+        sleep(10)
+
 
     #DFT Noise Filtering
     # def dft_filter(self):
