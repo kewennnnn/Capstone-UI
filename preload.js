@@ -14,10 +14,15 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const screeningButton = document.getElementById('screening-activate');
+  const storage = require('electron-localStorage');
   screeningButton.addEventListener('click', (event) => {
     console.log("am here");
-    ipcRenderer.send("saveText","run");
-      
+    let res = ipcRenderer.send("saveText","run");
+    // console.log("res =",res);
+    // localStorage.setItem("elasticity",res);
+    // document.getElementById('input-unit').innerHTML = res;
+    let val = storage.getItem("elasticity");
+    document.getElementById('input-value').innerHTML = val;
   });
 
 })

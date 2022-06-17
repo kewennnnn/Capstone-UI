@@ -13,8 +13,8 @@ function createWindow () {
     height: 720,
     webPreferences: {
       nodeIntegration: true,
-      // contextIsolation: false,
-      // enableRemoteModule: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
       preload: path.join(__dirname, 'preload.js')
     }
   })
@@ -49,13 +49,32 @@ app.on('window-all-closed', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+const commandFilePath = "./command.txt";
+// const storage = require("./components/storage.js");
+const storage = require('electron-localStorage');
 ipcMain.on("saveText", (event, txtval) => {
-  console.log("ahahaha");
-  fs.writeFile("./command.txt", txtval.toString(), (err) => {
-    if (!err) {
-      console.log("yay file written");
-    } else {
-      console.log(err);
-    }
-  })
+  let currentCommand = fs.readFileSync(commandFilePath, "utf8");
+  if (currentCommand != "run") {
+    fs.unwatchFile(commandFilePath);
+    console.log("Writing file...");
+    fs.writeFile(commandFilePath, txtval.toString(), (err) => {
+      if (!err) {
+        currentCommand = fs.readFileSync(commandFilePath, "utf8");
+        console.log("File written! currentCommand =",currentCommand);
+        fs.watchFile(commandFilePath, () => {
+          currentCommand = fs.readFileSync(commandFilePath, "utf8");
+          console.log("Data file changed to",currentCommand);
+          storage.setItem("elasticity",currentCommand);
+          console.log(storage.getItem("elasticity"));
+          // return currentCommand;
+        });
+      } else {
+        console.log(err);
+      }
+    })
+  } else {
+    console.log("Already running");
+  }
+
+  
 });

@@ -58,13 +58,15 @@ function setPlatelet() {
 }
 
 function getElasticity() {
-    const elasticity = localStorage.getItem("elasticity") ?? "";
+    const storage = require('electron-localStorage');
+    // const elasticity = localStorage.getItem("elasticity") ?? "";
+    const elasticity = storage.getItem("elasticity") ?? "";
     console.log(elasticity);
     return elasticity;
 }
-function setElasticity() {
+function setElasticity(elasticity) {
     // const elasticity = "";
-    const elasticity = Math.floor(Math.random()*1000);
+    // const elasticity = Math.floor(Math.random()*1000);
     console.log(elasticity);
     localStorage.setItem("elasticity",elasticity);
     displayElasticity();
@@ -81,3 +83,5 @@ function displayElasticity() {
         document.getElementById("screening-done").innerHTML = `<button onclick="location.href='./results.html';">Finish</button>`;
     }
 }
+
+// exports.setElasticity = setElasticity;

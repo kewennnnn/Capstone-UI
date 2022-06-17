@@ -20,6 +20,7 @@
     "electron": "^19.0.0"
   },
   "dependencies": {
+    "electron-localstorage": "^1.0.5",
     "electron-reload": "^2.0.0-alpha.1"
   }
 }
