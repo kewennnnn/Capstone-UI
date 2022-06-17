@@ -438,9 +438,9 @@ class PS6000:
 
 while True:
         start_PS6000 = PS6000()
-#     filepath = "smt"
-#     txt_file = open(filepath,'r')
-#     if txt_file == "Run":
+        filepath = "./cmd.txt"
+        txt_file = open(filepath,'r')
+        if txt_file == "run":
 #         # start_PS6000.open_ps2000a()
 #         # start_PS6000.block_example()
 #         # start_PS6000.savecsv()
