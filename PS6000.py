@@ -234,10 +234,10 @@ class PS6000:
         # display status returns
         print(status)
 
-    def savecsv(self, fname = 'test_1', fdest ='C:\\Users\\Charis\\OneDrive\\Capstone\\capstone\\CSV Files', file = "C:\\Users\\Charis\\OneDrive\\Capstone\\lol.csv", dist = 0.2):
+    def savecsv(self, fname = 'test_1', fdest ='./CSV Files', file = "../lol.csv", dist = 0.2):
         # self.channel_a = self.adc2mVChAMax[:]
         # self.channel_b = self.adc2mVChBMax[:]
-        #file = 'C:\\Users\\Charis\\OneDrive\\Capstone\\capstone\\CSV Files\\' + str(fname) + '.csv'
+        #file = '../capstone\\CSV Files\\' + str(fname) + '.csv'
         #write_file = open(file, 'w')
         #trace = pd.read_csv(file, sep='\t', skiprows=16, header=None)
         #trace = trace.loc[self.channel_a, self.time]
@@ -309,14 +309,14 @@ class PS6000:
         print(str(stiffness_inkPa) + " kPa")
         return stiffness_inkPa
 
-    def plotgraph2checkwave(self, file = "C:\\Users\\Charis\\OneDrive\\Capstone\\le_test.csv"):
+    def plotgraph2checkwave(self, file = "../le_test.csv"):
         #export as current waveform from picotech 
         # time_ls = []
         # voltage_ls = []
         # for i in range(1,33):
         #     if i < 10:
         #         if i == 1:
-                    # file = "C:\\Users\\Charis\\OneDrive\\Capstone\\Waveform\\" + "Waveform_0" + str(i) + ".csv"
+                    # file = "../Waveform\\" + "Waveform_0" + str(i) + ".csv"
         trace = pd.read_csv(file, skiprows=3)
         plt.plot(trace.iloc[:, 0].values, trace.iloc[:, 1].values)
         plt.plot(trace.iloc[:, 0].values, (trace.iloc[:, 2].values/1000))
@@ -325,7 +325,7 @@ class PS6000:
                     # voltage_ls.append(trace[:,1])
                     # plt.plot(time_ls, voltage_ls)
                 # else:
-                #     file = "C:\\Users\\Charis\\OneDrive\\Capstone\\Waveform\\" + "Waveform_0" + str(i) + ".csv"
+                #     file = "../Waveform\\" + "Waveform_0" + str(i) + ".csv"
                 #     trace = pd.read_csv(file, skiprows=3)
                 # #     # j_ls = []
                 # #     # trace.iloc[0, 0]
@@ -338,7 +338,7 @@ class PS6000:
                 #     plt.plot(trace.iloc[:, 0].values, trace.iloc[:, 1].values)
 
             # if i >= 10:
-            #     file = "C:\\Users\\Charis\\OneDrive\\Capstone\\Waveform\\" + "Waveform_" + str(i) + ".csv"
+            #     file = "../Waveform\\" + "Waveform_" + str(i) + ".csv"
             #     trace = pd.read_csv(file, skiprows=3)
             #     # trace = trace.loc[:, 0:1]
             #     # time_ls.append(trace[:, 0:1])
@@ -352,7 +352,7 @@ class PS6000:
         plt.ylabel('Voltage (V)')
         plt.show()
 
-    def findmaxvoltageandtime_tx(self, file = "C:\\Users\\Charis\\OneDrive\\Capstone\\lol.csv"):
+    def findmaxvoltageandtime_tx(self, file = "../lol.csv"):
             #find maximum voltage from the graph and subsequent times for transmitting end
             trace = pd.read_csv(file, skiprows=3)
             trace_x = trace.iloc[:,0].values #time
@@ -380,7 +380,7 @@ class PS6000:
             # print(time_tx_ls)
             return time_tx_ls
 
-    def findmaxvoltageandtime_rx(self, file = "C:\\Users\\Charis\\OneDrive\\Capstone\\lol.csv"):
+    def findmaxvoltageandtime_rx(self, file = "../lol.csv"):
             #find maximum voltage from the graph and subsequent times for transmitting end
             trace = pd.read_csv(file, skiprows=3)
             trace_x = trace.iloc[:,0].values #time
@@ -410,7 +410,7 @@ class PS6000:
             # print(time_rx_ls) 
             return time_rx_ls   
 
-    def getswv(self, file = "C:\\Users\\Charis\\OneDrive\\Capstone\\lol.csv", dist = 0.2):
+    def getswv(self, file = "../lol.csv", dist = 0.2):
         time_rx_ls = self.findmaxvoltageandtime_rx(file)
         time_tx_ls = self.findmaxvoltageandtime_tx(file)
         time_diff_ls = []
@@ -424,7 +424,7 @@ class PS6000:
         shear_wave_velocity = dist/average_time_diff
         return shear_wave_velocity                        
     
-    def swv2stiffness_csvextract(self, file = "C:\\Users\\Charis\\OneDrive\\Capstone\\lol.csv", dist = 0.2):
+    def swv2stiffness_csvextract(self, file = "../lol.csv", dist = 0.2):
         swv_val = self.getswv(file, dist)
         #g/ml to kg/m^3
         stiffness = 1.07 *1000 *(swv_val**2)
@@ -454,7 +454,7 @@ while True:
     #     DURATION = 5  # Seconds
     #     N = SAMPLE_RATE * DURATION
 
-    #     file = "C:\\Users\\Charis\\OneDrive\\Capstone\\le_test.csv"
+    #     file = "../le_test.csv"
     #     trace = pd.read_csv(file, skiprows=3)
 
     #     yf = fft(trace.iloc[:, 2].values/1000)
