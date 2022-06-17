@@ -438,14 +438,16 @@ class PS6000:
 
 while True:
         start_PS6000 = PS6000()
-        filepath = "./cmd.txt"
-        txt_file = open(filepath,'r')
+        filepath = "./command.txt"
+        txt_file = open(filepath,'w')
         if txt_file == "run":
 #         # start_PS6000.open_ps2000a()
 #         # start_PS6000.block_example()
 #         # start_PS6000.savecsv()
 #         #start_PS6000.findmaxvoltageandtime_tx()
-        start_PS6000.plotgraph2checkwave()
+            txt_file.write('\n')
+            txt_file.write('works')
+            start_PS6000.plotgraph2checkwave()
 
     #DFT Noise Filtering
     # def dft_filter(self):
