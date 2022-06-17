@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@400;700&display=swap');
+
 :root {
     --bg: #203047;
     --blue: #3B6DB2;
@@ -11,10 +13,12 @@
     --text-S: 30px; 
     --text-XS: 20px; 
     /* --font-fam: verdana; */
-    --font-fam: "times new roman";
+    /* --font-fam: "times new roman"; */
     /* --font-fam: lato; */
     /* --font-fam: roboto; */
     /* --font-fam: sans-serif; */
+    --font-fam: 'Montserrat';
+    /* --font-fam: 'Poppins'; */
 }  
 
 body {

@@ -1,9 +1,10 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
+const path = require('path');
+const fs = require('fs');
+
 // Enable live reload for all the files inside your project directory
 require('electron-reload')(__dirname);
-
-const path = require('path')
 
 function createWindow () {
   // Create the browser window.
@@ -11,7 +12,7 @@ function createWindow () {
     width: 1280,
     height: 720,
     webPreferences: {
-      // nodeIntegration: true,
+      nodeIntegration: true,
       // contextIsolation: false,
       // enableRemoteModule: true,
       preload: path.join(__dirname, 'preload.js')
@@ -47,3 +48,14 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on("saveText", (event, txtval) => {
+  console.log("ahahaha");
+  fs.writeFile("./command.txt", txtval.toString(), (err) => {
+    if (!err) {
+      console.log("yay file written");
+    } else {
+      console.log(err);
+    }
+  })
+});
