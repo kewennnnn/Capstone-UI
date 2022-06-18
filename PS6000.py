@@ -57,10 +57,9 @@ class PS6000:
         # coupling type = PS2000A_DC = 1
         # range = PS2000A_2V = 7
         # analogue offset = 0 V
-
-        # chBRange = 7
-        # status["setChB"] = ps.ps2000aSetChannel(chandle, 1, 1, 1, chBRange, 0)
-        # assert_pico_ok(status["setChB"])
+        chBRange = 7
+        status["setChB"] = ps.ps2000aSetChannel(chandle, 1, 1, 1, chBRange, 0)
+        assert_pico_ok(status["setChB"])
 
         # Set up single trigger
         # handle = chandle
@@ -74,16 +73,16 @@ class PS6000:
         # status["trigger"] = ps.ps2000aSetSimpleTrigger(chandle, 1, 0, 1024, 2, 0, 1000)
         # assert_pico_ok(status["trigger"])
 
+        status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
+        assert_pico_ok(status["signalgen"])
+
         status["startsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 0)
         assert_pico_ok(status["startsignalgen"])
-
-        status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(chandle, 20, 50, PS2000a_sine, 1000, 1200)
-        assert_pico_ok(status["signalgen"])
-        print(status["signalgen"])
     
         status["stopsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 1)
         assert_pico_ok(status["stopsignalgen"])
-        print("signalgenworks")
+        
+        # status["changesiggen"] = ps.ps2000aSetSigGenPropertiesArbitary(chandle, 20, 40, 20, 20, )
 
         # Set number of pre and post trigger samples to be collected
         preTriggerSamples = 3
@@ -142,8 +141,8 @@ class PS6000:
         # Create buffers ready for assigning pointers for data collection
         bufferAMax = (ctypes.c_int16 * totalSamples)()
         bufferAMin = (ctypes.c_int16 * totalSamples)() # used for downsampling which isn't in the scope of this example
-        # bufferBMax = (ctypes.c_int16 * totalSamples)()
-        # bufferBMin = (ctypes.c_int16 * totalSamples)() # used for downsampling which isn't in the scope of this example
+        bufferBMax = (ctypes.c_int16 * totalSamples)()
+        bufferBMin = (ctypes.c_int16 * totalSamples)() # used for downsampling which isn't in the scope of this example
 
         # Set data buffer location for data collection from channel A
         # handle = chandle
@@ -171,14 +170,14 @@ class PS6000:
         # segment index = 0
         # ratio mode = PS2000A_RATIO_MODE_NONE = 0
 
-        # status["setDataBuffersB"] = ps.ps2000aSetDataBuffers(chandle,
-        #                                                     1,
-        #                                                     ctypes.byref(bufferBMax),
-        #                                                     ctypes.byref(bufferBMin),
-        #                                                     totalSamples,
-        #                                                     0,
-        #                                                     0)
-        # assert_pico_ok(status["setDataBuffersB"])
+        status["setDataBuffersB"] = ps.ps2000aSetDataBuffers(chandle,
+                                                            1,
+                                                            ctypes.byref(bufferBMax),
+                                                            ctypes.byref(bufferBMin),
+                                                            totalSamples,
+                                                            0,
+                                                            0)
+        assert_pico_ok(status["setDataBuffersB"])
 
         # Create overflow location
         overflow = ctypes.c_int16()
@@ -216,8 +215,7 @@ class PS6000:
 
         # plot data from channel A and signalgen
         plt.plot(self.time, self.adc2mVChAMax[:])
-        # plt.plot(self.time, self.)
-        # plt.plot(self.time, self.adc2mVChBMax[:])
+        plt.plot(self.time, self.adc2mVChBMax[:])
         plt.xlabel('Time (ns)')
         plt.ylabel('Voltage (mV)')
         plt.show()
@@ -235,7 +233,7 @@ class PS6000:
         # display status returns
         print(status)
 
-    def savecsv(self, fname = 'test_1', fdest ='./CSV Files', file = "../lol.csv", dist = 0.2):
+    def savecsv(self, fname = 'test_1', fdest ='./CSV Files', file = "./le_test.csv", dist = 0.2):
         # self.channel_a = self.adc2mVChAMax[:]
         # self.channel_b = self.adc2mVChBMax[:]
         #file = '../capstone\\CSV Files\\' + str(fname) + '.csv'
@@ -431,12 +429,52 @@ class PS6000:
         swv_val = self.getswv(file, dist)
         #g/ml to kg/m^3
         stiffness = 1.07 *1000 *(swv_val**2)
-        stiffness_inkPa = stiffness/10000000000000
+        stiffness_inkPa = stiffness/(1000*10000000000)
         print("Stiffness:" + str(stiffness_inkPa) + " kPa")
         return stiffness_inkPa
 
         #find maximum voltage from the graph and subsequent times for reciving end
         #find time difference, shear wave velocity, stiffness
+
+    #DFT Noise Filtering
+    def dft_filter(self):
+
+        SAMPLE_RATE = 110000  # Hertz
+        DURATION = 1  # Seconds
+        N = SAMPLE_RATE * DURATION
+
+        file = "./le_test.csv"
+        trace = pd.read_csv(file, skiprows=3)
+
+        yf = fft(trace.iloc[:, 2].values/1000)
+        print("yf = ", yf)
+        xf = fftfreq(N, 1 / SAMPLE_RATE)
+        print("xf = ", xf)
+
+        # The maximum frequency is half the sample rate
+        points_per_freq = len(xf) / (SAMPLE_RATE / 2)
+        print(points_per_freq)
+
+        # Our target frequency is 4000 Hz
+        target_idx = int(points_per_freq * 4000)
+        print(target_idx)
+
+        plt.plot(xf, np.abs(yf))
+        plt.show()
+
+        yf[target_idx - 1 : target_idx + 2] = 0
+
+        #inverse fft
+        new_sig = irfft(yf)
+
+        plt.plot(new_sig[:1000])
+        plt.show()
+
+    #Waveform Averaging
+
+# start_PS6000 = PS6000()
+# start_PS6000.plotgraph2checkwave()
+# start_PS6000.dft_filter()
 
 start_PS6000 = PS6000()
 filepath = "./command.txt"
@@ -452,48 +490,11 @@ while True:
 #         #start_PS6000.findmaxvoltageandtime_tx()
             start_PS6000.plotgraph2checkwave()
             # start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
-            start_PS6000.savecsv('test_1', './', "./le_test.csv", 0.2)
+            stiffness_val = start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
+            # noise_filter = start_PS6000.dft_filter()
+            # start_PS600cd 0.savecsv('test_1', './', "./le_test.csv", 0.2)
             txt_file = open(filepath,'w')
-            txt_file.write('works')
+            txt_file.write(str(stiffness_val))
             txt_file = open(filepath,'r')
             print("txt file: run -> works")
         sleep(10)
-
-
-    #DFT Noise Filtering
-    # def dft_filter(self):
-
-    #     SAMPLE_RATE = 44100  # Hertz
-    #     DURATION = 5  # Seconds
-    #     N = SAMPLE_RATE * DURATION
-
-    #     file = "../le_test.csv"
-    #     trace = pd.read_csv(file, skiprows=3)
-
-    #     yf = fft(trace.iloc[:, 2].values/1000)
-    #     xf = fftfreq(N, 1 / SAMPLE_RATE)
-
-    #     # The maximum frequency is half the sample rate
-    #     points_per_freq = len(xf) / (SAMPLE_RATE / 2)
-    #     print(points_per_freq)
-
-    #     # Our target frequency is 4000 Hz
-    #     target_idx = int(points_per_freq * 4000)
-    #     print(target_idx)
-
-    #     plt.plot(xf, np.abs(yf))
-    #     plt.show()
-
-    #     yf[target_idx - 1 : target_idx + 2] = 0
-
-    #     #inverse fft
-    #     new_sig = irfft(yf)
-
-    #     plt.plot(new_sig[:1000])
-    #     plt.show()
-
-    #Waveform Averaging
-
-# start_PS6000 = PS6000()
-# start_PS6000.plotgraph2checkwave()
-# start_PS6000.dft_filter()
