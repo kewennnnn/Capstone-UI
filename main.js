@@ -3,6 +3,9 @@ const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+const commandFilePath = "./command.txt";
+const storage = require('electron-localstorage');
+
 // Enable live reload for all the files inside your project directory
 require('electron-reload')(__dirname);
 
@@ -30,12 +33,17 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow()
-
+  createWindow();
+  storage.clear();
+  fs.writeFile(commandFilePath, "-", (err) => {
+    if (err) throw err;
+    console.log('Command cleared');
+  });
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    
   })
 })
 
@@ -43,30 +51,39 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
+  storage.clear();
+  fs.writeFile(commandFilePath, "-", (err) => {
+    if (err) throw err;
+    console.log('Command cleared');
+  });
   if (process.platform !== 'darwin') app.quit()
 })
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-const commandFilePath = "./command.txt";
-// const storage = require("./components/storage.js");
-const storage = require('electron-localStorage');
+
 ipcMain.on("saveText", (event, txtval) => {
   let currentCommand = fs.readFileSync(commandFilePath, "utf8");
   if (currentCommand != "run") {
+    // if (currentCommand != "-") {
+    //   storage.setItem("elasticity",currentCommand);
+    // }
+    
     fs.unwatchFile(commandFilePath);
     console.log("Writing file...");
     fs.writeFile(commandFilePath, txtval.toString(), (err) => {
       if (!err) {
         currentCommand = fs.readFileSync(commandFilePath, "utf8");
         console.log("File written! currentCommand =",currentCommand);
-        fs.watchFile(commandFilePath, () => {
-          currentCommand = fs.readFileSync(commandFilePath, "utf8");
-          console.log("Data file changed to",currentCommand);
-          storage.setItem("elasticity",currentCommand);
-          console.log(storage.getItem("elasticity"));
-          // return currentCommand;
+        fs.watchFile(commandFilePath, {interval:100}, () => {
+          fs.readFile(commandFilePath, (err, data) => {
+            if (err) throw err;
+            console.log("Data file changed to",data.toString());
+            storage.setItem("elasticity",data.toString());
+          });
+          // console.log("Data file changed to",currentCommand);
+          // storage.setItem("elasticity",currentCommand);
         });
       } else {
         console.log(err);
@@ -76,5 +93,19 @@ ipcMain.on("saveText", (event, txtval) => {
     console.log("Already running");
   }
 
+  if (currentCommand != "-" && currentCommand != "run") {
+    console.log("hai");
+    storage.setItem("elasticity",currentCommand);
+  }
+
+  console.log("returning");
   
+});
+
+ipcMain.on("clearMemory", (event) => {
+  storage.clear();
+  fs.writeFile(commandFilePath, "-", (err) => {
+    if (err) throw err;
+    console.log('Command cleared');
+  });
 });

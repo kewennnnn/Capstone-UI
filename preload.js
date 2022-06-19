@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const screeningButton = document.getElementById('screening-activate');
-  const storage = require('electron-localStorage');
+  const storage = require('electron-localstorage');
   screeningButton.addEventListener('click', (event) => {
     console.log("am here");
     let res = ipcRenderer.send("saveText","run");
@@ -24,5 +24,12 @@ window.addEventListener('DOMContentLoaded', () => {
     let val = storage.getItem("elasticity");
     document.getElementById('input-value').innerHTML = val;
   });
+
+  const endButton = document.getElementById("end-screening");
+  endButton.addEventListener("click", () => {
+    let res = ipcRenderer.send("clearMemory");
+    // localStorage.clear();
+  });
+
 
 })
