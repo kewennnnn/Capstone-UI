@@ -470,7 +470,7 @@ class PS6000:
         plt.plot(new_sig[:1000])
         plt.show()
 
-    #Waveform Averaging
+    #Waveform Averaging cannot rly be done
 
 # start_PS6000 = PS6000()
 # start_PS6000.plotgraph2checkwave()
