@@ -58,7 +58,7 @@ function setPlatelet() {
 }
 
 function getElasticity() {
-    const storage = require('electron-localStorage');
+    const storage = require('electron-localstorage');
     // const elasticity = localStorage.getItem("elasticity") ?? "";
     const elasticity = storage.getItem("elasticity") ?? "";
     console.log(elasticity);
@@ -72,7 +72,7 @@ function setElasticity(elasticity) {
         console.log("generating fake stiffness");
         elasticity = 600 + Math.floor(Math.random()*50);
     }
-    const storage = require('electron-localStorage');
+    const storage = require('electron-localstorage');
     storage.setItem("elasticity",elasticity);
     displayElasticity();
 }

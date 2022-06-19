@@ -51,7 +51,7 @@ app.on('window-all-closed', function () {
 
 const commandFilePath = "./command.txt";
 // const storage = require("./components/storage.js");
-const storage = require('electron-localStorage');
+const storage = require('electron-localstorage');
 ipcMain.on("saveText", (event, txtval) => {
   let currentCommand = fs.readFileSync(commandFilePath, "utf8");
   if (currentCommand != "run") {
