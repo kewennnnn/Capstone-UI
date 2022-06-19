@@ -3,6 +3,8 @@ function clearAll() {
     localStorage.removeItem("weight");
     localStorage.removeItem("platelet");
     localStorage.removeItem("elasticity");
+    const storage = require('electron-localstorage');
+    storage.removeItem("elasticity");
     console.log("storage cleared!");
 }
 
