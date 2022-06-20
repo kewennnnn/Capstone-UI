@@ -206,7 +206,7 @@ class PS6000:
         self.adc2mVChAMax =  adc2mV(bufferAMax, chARange, maxADC)
         # self.adc2mVSigGen = adc2mV()
         # print(self.adc2mVChAMax)
-        # self.adc2mVChBMax =  adc2mV(bufferBMax, chBRange, maxADC)
+        self.adc2mVChBMax =  adc2mV(bufferBMax, chBRange, maxADC)
 
         # Create time data
         self.time = np.linspace(0, ((cTotalSamples.value)-1) * timeIntervalns.value, cTotalSamples.value)
@@ -479,6 +479,8 @@ class PS6000:
 start_PS6000 = PS6000()
 filepath = "./command.txt"
 txt_file = open(filepath,'r')
+start_PS6000.open_ps2000a()
+start_PS6000.block_example()
 while True:
         print("running")
         read_txt = txt_file.read()
