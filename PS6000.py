@@ -4,9 +4,9 @@ from datetime import date
 # from turtle import shearfactor
 # from webbrowser import get
 import numpy as np
-# from picosdk.ps2000a import ps2000a as ps
+from picosdk.ps2000a import ps2000a as ps
 import matplotlib.pyplot as plt
-# from picosdk.functions import adc2mV, assert_pico_ok
+from picosdk.functions import adc2mV, assert_pico_ok
 import time
 import pandas as pd
 # from Tx import Tx
