@@ -1,5 +1,5 @@
 # from argparse import ONE_OR_MORE
-# import ctypes
+import ctypes
 from datetime import date
 # from turtle import shearfactor
 # from webbrowser import get
@@ -37,6 +37,25 @@ class PS6000:
         # Open 2000 series PicoScope
         # Returns handle to chandle for use in future API functions
         status["openunit"] = ps.ps2000aOpenUnit(ctypes.byref(chandle), None)
+
+        try:
+            assert_pico_ok(status["openunit"])
+        except:
+            # powerstate becomes the status number of openunit
+            powerstate = status["openunit"]
+
+            # If powerstate is the same as 282 then it will run this if statement
+            if powerstate == 282:
+                # Changes the power input to "PICO_POWER_SUPPLY_NOT_CONNECTED"
+                status["ChangePowerSource"] = ps.ps2000aChangePowerSource(chandle, 282)
+            # If the powerstate is the same as 286 then it will run this if statement
+            elif powerstate == 286:
+                # Changes the power input to "PICO_USB3_0_DEVICE_NON_USB3_0_PORT"
+                status["ChangePowerSource"] = ps.ps2000aChangePowerSource(chandle, 286)
+            else:
+                raise
+
+            assert_pico_ok(status["ChangePowerSource"])
         assert_pico_ok(status["openunit"])
 
         # Set up channel A
@@ -73,14 +92,41 @@ class PS6000:
         # status["trigger"] = ps.ps2000aSetSimpleTrigger(chandle, 1, 0, 1024, 2, 0, 1000)
         # assert_pico_ok(status["trigger"])
 
-        status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
-        assert_pico_ok(status["signalgen"])
+        # status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
+        # assert_pico_ok(status["signalgen"])
 
-        status["startsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 0)
-        assert_pico_ok(status["startsignalgen"])
+        # status["startsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 0)
+        # assert_pico_ok(status["startsignalgen"])
     
-        status["stopsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 1)
-        assert_pico_ok(status["stopsignalgen"])
+        # status["stopsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 1)
+        # assert_pico_ok(status["stopsignalgen"])
+
+        # Output a sine wave with peak-to-peak voltage of 2 V and frequency of 10 kHz
+        # handle = chandle
+        # offsetVoltage = 0
+        # pkToPk = 2000000
+        # waveType = ctypes.c_int16(0) = PS2000A_SINE
+        # startFrequency = 10 kHz
+        # stopFrequency = 10 kHz
+        # increment = 0
+        # dwellTime = 1
+        # sweepType = ctypes.c_int16(1) = PS2000A_UP
+        # operation = 0
+        # shots = 0
+        # sweeps = 0
+        # triggerType = ctypes.c_int16(0) = PS2000A_SIGGEN_RISING
+        # triggerSource = ctypes.c_int16(0) = PS2000A_SIGGEN_NONE
+        # extInThreshold = 1
+        wavetype = ctypes.c_int16(0)
+        sweepType = ctypes.c_int32(0)
+        triggertype = ctypes.c_int32(0)
+        triggerSource = ctypes.c_int32(0)
+
+        status["SetSigGenBuiltIn"] = ps.ps2000aSetSigGenBuiltIn(chandle, 0, 2000000, wavetype, 110000, 110000, 0, 1, sweepType, 0, 0, 0, triggertype, triggerSource, 1)
+        assert_pico_ok(status["SetSigGenBuiltIn"])
+
+        # Pauses the script to show signal
+        time.sleep(10)
         
         # status["changesiggen"] = ps.ps2000aSetSigGenPropertiesArbitary(chandle, 20, 40, 20, 20, )
 
@@ -205,17 +251,32 @@ class PS6000:
         # convert ADC counts data to mV
         self.adc2mVChAMax =  adc2mV(bufferAMax, chARange, maxADC)
         # self.adc2mVSigGen = adc2mV()
-        # print(self.adc2mVChAMax)
+        # self.adc2mVChAMax_ls =[]
+
+        # for i in self.adc2mVChAMax:
+        #     i = i/1000
+        #     self.adc2mVChAMax_ls.append(i)
+
+        print("channel A (in mV) =", self.adc2mVChAMax[:])
+        
         self.adc2mVChBMax =  adc2mV(bufferBMax, chBRange, maxADC)
+
+        # self.adc2mVChBMax_ls =[]
+        
+        # for i in self.adc2mVChBMax:
+        #     i = i/1000
+        #     self.adc2mVChAMax_ls.append(i)
+
+        print("channel B (in mV) =", self.adc2mVChBMax[:])
 
         # Create time data
         self.time = np.linspace(0, ((cTotalSamples.value)-1) * timeIntervalns.value, cTotalSamples.value)
 
-        self.savecsv('test_2')
-
         # plot data from channel A and signalgen
         plt.plot(self.time, self.adc2mVChAMax[:])
         plt.plot(self.time, self.adc2mVChBMax[:])
+        # plt.plot(self.time, self.adc2mVChAMax_ls)
+        # plt.plot(self.time, self.adc2mVChBMax_ls)
         plt.xlabel('Time (ns)')
         plt.ylabel('Voltage (mV)')
         plt.show()
@@ -353,12 +414,14 @@ class PS6000:
 
     def findmaxvoltageandtime_tx(self, file = "./le_test.csv"):
             #find maximum voltage from the graph and subsequent times for transmitting end
-            trace = pd.read_csv(file, skiprows=3)
-            trace_x = trace.iloc[:,0].values #time
-            trace_cha = trace.iloc[:,1].values #voltage from channel A
+            # trace = pd.read_csv(file, skiprows=3)
+            # trace_x = trace.iloc[:,0].values #time
+            # trace_cha = trace.iloc[:,1].values #voltage from channel A
 
             time_ls = []
-            self.dict2csv = {"Time(us)": trace_x, "Voltage(V) Channel A": trace_cha}
+            # self.dict2csv = {"Time(ns)": trace_x, "Voltage(mV) Channel A": trace_cha}
+            self.dict2csv = {"Time(ns)": self.time, "Voltage(mV) Channel A": self.adc2mVChAMax[:]}
+
             self.df = pd.DataFrame(self.dict2csv)
             for i in range (0,len(self.df)):
                 volt = self.df.iloc[i][1]
@@ -381,13 +444,15 @@ class PS6000:
 
     def findmaxvoltageandtime_rx(self, file = "./le_test.csv"):
             #find maximum voltage from the graph and subsequent times for transmitting end
-            trace = pd.read_csv(file, skiprows=3)
-            trace_x = trace.iloc[:,0].values #time
-            trace_chb = trace.iloc[:,2].values #voltage from channel B
+            # trace = pd.read_csv(file, skiprows=3)
+            # trace_x = trace.iloc[:,0].values #time
+            # trace_chb = trace.iloc[:,2].values #voltage from channel B
             # print(trace_x)
 
             time_ls = []
-            self.dict2csv = {"Time(us)": trace_x, "Voltage(V) Channel B": trace_chb}
+            # self.dict2csv = {"Time(ns)": trace_x, "Voltage(mV) Channel B": trace_chb}
+            self.dict2csv = {"Time(ns)": self.time, "Voltage(mV) Channel B": self.adc2mVChBMax[:]}
+
             self.df = pd.DataFrame(self.dict2csv)
             for i in range (0,len(self.df)):
                 volt = self.df.iloc[i][1]
