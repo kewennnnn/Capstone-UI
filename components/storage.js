@@ -72,7 +72,8 @@ function setElasticity(elasticity) {
     console.log(elasticity);
     if (!elasticity) {
         console.log("generating fake stiffness");
-        elasticity = 600 + Math.floor(Math.random()*50);
+        elasticity = 121 + Math.floor(Math.random()*10);
+        elasticity /= 10;
     }
     const storage = require('electron-localstorage');
     storage.setItem("elasticity",elasticity);
