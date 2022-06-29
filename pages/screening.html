@@ -24,11 +24,11 @@
           </div> -->
         </div>
         <!-- <span id="elasticity-unit"><h2>kPa</h2></span> -->
-        <div class="col-right align-center">
+        <div class="col-right align-center" style="width:650px; margin-right:80px;">
           <h3 id="screening-prompt" style="margin-top: 0;"></h3>
-          <div class="flex-row" style="min-width: max-content;">
+          <div class="flex-row" style="min-width: max-content; justify-content: center;"">
             <button id="screening-activate">Send Pulse</button>
-            <a id="screening-done"><button>Finish</button></a>
+            <span id="screening-done"></span>
           </div>
           
         </div>
@@ -41,14 +41,16 @@
     <script src="../components/progressbar.js"></script>
     <script src="../components/probetoggle.js"></script>
     <script src="../components/storage.js"></script>
+    <script src="../components/buttons.js"></script>
 
     <script>
       displayElasticity();
+      // document.getElementById("screening-done").innerHTML = finishButton(false);
       // const screeningButton = document.getElementById('screening-activate');
       // screeningButton.addEventListener('click', (event) => {
       //   setElasticity();
       // });
-      setInterval(() => {displayElasticity();console.log("refreshed")}, 100);
+      setInterval(() => {displayElasticity();console.log("refreshed")}, 10000);
 
     </script>
   </body>

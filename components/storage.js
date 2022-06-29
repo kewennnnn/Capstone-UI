@@ -76,11 +76,11 @@ function displayElasticity() {
     if (elasticity == "") {
         document.getElementById("input-value").innerHTML = "-";
         document.getElementById("screening-prompt").innerHTML = "Press button to get a reading from probe";
-        document.getElementById("screening-done").innerHTML = `<button class="button-grey">Finish</button>`;
+        document.getElementById("screening-done").innerHTML = finishButton(false);
     } else {
         document.getElementById("input-value").innerHTML = elasticity;
         document.getElementById("screening-prompt").innerHTML = "Press button again to get another reading";
-        document.getElementById("screening-done").innerHTML = `<button onclick="location.href='./results.html';">Finish</button>`;
+        document.getElementById("screening-done").innerHTML = finishButton(true);
     }
 }
 

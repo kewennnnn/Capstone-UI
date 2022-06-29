@@ -25,13 +25,13 @@ class ProgressBar extends HTMLElement {
       if (this.current == 2) {
         this.stage2 += "pb-current";
       } else if (this.current > 2) {
-        this.stage2 += "pb-done";
+        this.stage2 += "pb-done pb-left-margin";
       } 
       if (this.current == 3) {
         this.stage3 += "pb-current";
       } else if (this.current > 3) {
         // this.stage3 += "pb-done";
-        this.stage3 += "pb-done pb-left-margin";
+        this.stage3 += "pb-done";
       } 
       if (this.current == 4) {
         this.stage4 += "pb-current";
@@ -80,13 +80,17 @@ class ProgressBar extends HTMLElement {
       this.innerHTML = `
       <div id="progress-bar-wrapper">
         <div id="progress-bar" class="pb">
-          
-          <a href="./platelet.html" class="${this.stage3}" id="stage3">
+          <a href="./platelet.html" class="${this.stage2}" id="stage2">
             <p>Platelet</p>
             <img src="../media/none.png"/>
           </a>
+          <div class="${this.line2}"></div>
+          <a href="./screening-intro.html" class="${this.stage3}" id="stage3">
+            <p>Setup</p>
+            <img src="../media/none.png"/>
+          </a>
           <div class="${this.line3}"></div>
-          <a href="./screening-intro.html" class="${this.stage4}" id="stage4">
+          <a href="./screening.html" class="${this.stage4}" id="stage4">
             <p>Screening</p>
             <img src="../media/none.png"/>
           </a>

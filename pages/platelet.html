@@ -8,7 +8,7 @@
     <title>Everest by Capstone S06</title>
   </head>
   <body>
-    <progress-bar current=3></progress-bar>
+    <progress-bar current=2></progress-bar>
     <div id="app">
 
       <div class="col-left">
@@ -19,8 +19,8 @@
         </div>
         <div>
           <!-- <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a> -->
-          <a href="../index.html" id="back"><button class="button-hollow">Back</button></a>
-          <a href="./screening-intro.html" id="next"><button class="button-hollow">Skip</button></a>
+          <a href="../index.html" id="back"></a>
+          <a href="./screening-intro.html" id="next"></a>
         </div>
       </div>
 
@@ -33,8 +33,12 @@
     <script src="../components/progressbar.js"></script>
     <script src="../components/keypad.js"></script>
     <script src="../components/storage.js"></script>
+    <script src="../components/buttons.js"></script>
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+
     <script>
       document.getElementById("input-value").innerHTML = getPlatelet();
+      document.getElementById("back").innerHTML = backButton();
       updateNextButton();
       document.getElementById("next").addEventListener("click", () => setPlatelet());
       document.getElementById("back").addEventListener("click", () => setPlatelet());

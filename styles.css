@@ -3,6 +3,7 @@
 :root {
     --bg: #203047;
     --blue: #3B6DB2;
+    --secondary: #26497A;
     --orange: #EB8432;
     --text: white;
     --green: rgb(51, 248, 51);
@@ -89,10 +90,10 @@ button {
     /* width: 80px; */
     width: max-content;
     padding: 20px 60px;
-    margin: 5px;
+    margin: 5px 15px;
     background-color: var(--blue);
     color: var(--text);
-    font-size: var(--text-S);
+    font-size: var(--text-M);
     font-family: var(--font-fam);
     border-radius: 15px;
     border-width: 0;
@@ -109,12 +110,18 @@ button:active {
     border: var(--text) solid 2px;
     padding: 18px 60px;
 }
+.button-secondary {
+    background-color: var(--secondary);
+    /* border: var(--text) solid 2px; */
+    padding: 20px 60px;
+}
 .button-grey {
     background-color: var(--bg);
     border: var(--text) solid 2px;
     opacity: 40%;
-    padding: 18px 60px;
+    padding: 20px 60px;
     box-shadow: none;
+    pointer-events: none;
 }
 
 my-keypad > div {

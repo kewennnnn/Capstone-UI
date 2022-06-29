@@ -13,7 +13,7 @@
       <div class="col-left" style="width: min-content;">
         <h3 style="margin-top: 0;">Patient is at stage F2/F3, please refer to specialist</h3>
         <div class="flex-row" style="align-items:flex-end;">
-          <a href="../pages/screening.html"><button class="button-hollow">Redo</button></a>
+          <a href="../pages/screening.html" id="back"><button class="button-hollow">Redo</button></a>
           <div>
             <p class="no-margin" style="font-size: var(--text-XS);">Data will be deleted permanently</p>
             <a href="../index.html"><button id="end-screening">End Screening</button></a>
@@ -62,10 +62,12 @@
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/storage.js"></script>
+    <script src="../components/buttons.js"></script>
     <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> <!-- animation for warning -->
     <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> <!-- animation for thumbs up (somehow the same) -->
 
     <script>
+      document.getElementById("back").innerHTML = backButton();
       // document.getElementById("bmi-result").innerHTML = getBMI();
       // if (document.getElementById("bmi-result").innerHTML == "") {
       //   document.getElementById("bmi-result").innerHTML = "NA";
