@@ -274,6 +274,8 @@ my-keypad button {
     /* position: fixed; */
     backdrop-filter: blur(40px);
     text-align: right;
+    opacity: 0;
+    display: none;
     transition: opacity 0.5s;
 }
 #tooltip-popup p {
