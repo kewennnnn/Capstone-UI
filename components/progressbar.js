@@ -100,6 +100,14 @@ class ProgressBar extends HTMLElement {
             <img src="../media/none.png"/>
           </a>
         </div>
+        <div id="pb-help">
+          <p>Help</p>
+          <lord-icon
+              src="https://cdn.lordicon.com/njjuilvq.json"
+              trigger="click"
+              colors="primary:#fff">
+          </lord-icon>
+        </div>
       </div>
       `;
       
