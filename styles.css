@@ -265,7 +265,7 @@ my-keypad button {
     width: 0;
     height: 0;
 }
-#tooltip-popup {
+.tooltip-popup {
     width: 30vw;
     height: auto;
     padding: 30px;
@@ -278,24 +278,45 @@ my-keypad button {
     display: none;
     transition: opacity 0.5s;
 }
-#tooltip-popup p {
+.tooltip-popup p {
     font-size: var(--text-S);
     text-align: left;
     margin-top: 0;
 }
-#tooltip-popup::after {
+.tooltip-popup::after {
     content: " ";
     position: absolute;
     top: 50px;
-    right: 100%; /* To the left of the tooltip */
+    right: 100%; 
     margin-top: -5px;
     border-width: 30px;
     border-style: solid;
     border-color: transparent var(--text) transparent transparent;
 }
-#tooltip-popup lord-icon {
+.tooltip-popup-right::after {
+    top: 40%;
+    right: -61px; 
+    margin-top: -5px;
+    border-color: transparent transparent transparent var(--text);
+}
+.tooltip-popup-right-top::after {
+    top: 50px;
+    right: -61px; 
+    margin-top: -5px;
+    border-color: transparent transparent transparent var(--text);
+}
+.tooltip-popup-left-bottom::after {
+    top: 150px;
+    right: 100%; 
+    margin-top: -5px;
+    border-color: transparent var(--text) transparent transparent;
+}
+.tooltip-popup lord-icon {
     width: 60px;
     height: 60px;
+}
+.tooltip-popup span {
+    font-size: var(--text-XS);
 }
 
 /*** Screening Page ***/

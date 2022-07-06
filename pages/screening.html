@@ -22,7 +22,8 @@
               <my-tooltip 
                 content1="Elasticity is..."
                 content2="This value is required for diagnosis..."
-                next="">
+                numOfTips="3"
+                tipNumber="1">
               </my-tooltip>
             </div>
           </div>
@@ -30,6 +31,14 @@
             <!-- <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a> -->
             <a href="./screening-intro.html" id="back"></a>
             <span id="screening-done"></span>
+            <div class="tooltip-positioner" style="left:650px; bottom:230px">
+              <my-tooltip 
+                content1="You will be able to proceed after..."
+                numOfTips="3"
+                tipNumber="3"
+                position="tooltip-popup-left-bottom">
+              </my-tooltip>
+            </div>
           </div>
         </div>
         <!-- <span id="elasticity-unit"><h2>kPa</h2></span> -->
@@ -37,6 +46,15 @@
           <h3 id="screening-prompt" style="margin-top: 0;"></h3>
           <div class="flex-row" style="min-width: max-content; justify-content: center;"">
             <button id="screening-activate">Send Pulse</button>
+            <div class="tooltip-positioner" style="right:850px; bottom:100px">
+              <my-tooltip 
+                content1="Press this button..."
+                content2="Get from probe..."
+                numOfTips="3"
+                tipNumber="2"
+                position="tooltip-popup-right">
+              </my-tooltip>
+            </div>
             <!-- <span id="screening-done"></span> -->
           </div>
           
