@@ -42,7 +42,7 @@ function finishButton(active) {
     if (!active) {
         return (
         `<button class="button-grey">
-            Finish
+            Next
             <lord-icon
                 src="https://cdn.lordicon.com/iifryyua.json"
                 colors="primary:#ffffff"
@@ -53,7 +53,7 @@ function finishButton(active) {
         
     return (
     `<button onclick="location.href='./results.html';">
-        Finish
+        Next
         <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
         <lord-icon
             src="https://cdn.lordicon.com/iifryyua.json"

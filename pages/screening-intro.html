@@ -25,12 +25,12 @@
           <img src="../media/instruction3.png" style="max-width: 60%;"/>
         </div>
       </div>
-      <div class="col">
+      <div class="flex-row">
         <!-- <a href="./screening-begin.html"><button>Begin Screening</button></a> -->
-        <a href="./screening.html">
-          <button>
+        <a href="./platelet.html" id="back"></a>
+        <a href="./screening.html" id="next">
+          <!-- <button>
             Begin Screening
-            <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
             <lord-icon
                 src="https://cdn.lordicon.com/iifryyua.json"
                 trigger="loop"
@@ -38,7 +38,7 @@
                 state="hover-1"
                 style="width:44px;height:44px;">
             </lord-icon>
-          </button>
+          </button> -->
         </a>
       </div>
       <!-- <a href="./platelet.html"><button>Back</button></a> -->
@@ -47,5 +47,11 @@
     
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
+    <script src="../components/buttons.js"></script>
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+    <script>
+      document.getElementById("back").innerHTML = backButton();
+      document.getElementById("next").innerHTML = nextButton();
+    </script>
   </body>
 </html>

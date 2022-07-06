@@ -34,7 +34,6 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
-  storage.clear();
   fs.writeFile(commandFilePath, "-", (err) => {
     if (err) throw err;
     console.log('Command cleared');
@@ -81,6 +80,11 @@ ipcMain.on("saveText", (event, txtval) => {
             if (err) throw err;
             console.log("Data file changed to",data.toString());
             storage.setItem("elasticity",data.toString());
+            fs.unwatchFile(commandFilePath);
+            fs.writeFile(commandFilePath, "-", (err) => {
+              if (err) throw err;
+              console.log('Command cleared');
+            });
           });
           // console.log("Data file changed to",currentCommand);
           // storage.setItem("elasticity",currentCommand);
@@ -96,16 +100,23 @@ ipcMain.on("saveText", (event, txtval) => {
   if (currentCommand != "-" && currentCommand != "run") {
     console.log("hai");
     storage.setItem("elasticity",currentCommand);
+    // fs.unwatchFile(commandFilePath);
+    // fs.writeFile(commandFilePath, "-", (err) => {
+    //   if (err) throw err;
+    //   console.log('Command cleared');
+    // });
   }
 
   console.log("returning");
   
 });
 
-ipcMain.on("clearMemory", (event) => {
-  storage.clear();
-  fs.writeFile(commandFilePath, "-", (err) => {
-    if (err) throw err;
-    console.log('Command cleared');
-  });
-});
+// ipcMain.on("clearMemory", (event) => {
+//   storage.clear();
+//   fs.writeFile(commandFilePath, "-", (err) => {
+//     if (err) throw err;
+//     console.log('Command cleared');
+//   });
+//   // window.location.href='./pages/platelet.html';
+//   // console.log(window.location.href);
+// });

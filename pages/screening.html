@@ -14,25 +14,26 @@
 
         <div class="col-left">
           <h2>Elasticity</h2>
-          <div class="flex-row">
+          <div class="flex-row" style="justify-content: center">
             <h1 id="input-value"></h1>
             <span id="input-unit"><h2>kPa</h2></span>
           </div>
-          <!-- <div class="flex-row">
-            <h1 id="elasticity-value">487</h1>
-            <span id="elasticity-unit"><h2>kPa</h2></span>
-          </div> -->
+          <div>
+            <!-- <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a> -->
+            <a href="./screening-intro.html" id="back"></a>
+            <span id="screening-done"></span>
+          </div>
         </div>
         <!-- <span id="elasticity-unit"><h2>kPa</h2></span> -->
-        <div class="col-right align-center" style="width:650px; margin-right:80px;">
+        <div class="col-right align-center">
           <h3 id="screening-prompt" style="margin-top: 0;"></h3>
           <div class="flex-row" style="min-width: max-content; justify-content: center;"">
             <button id="screening-activate">Send Pulse</button>
-            <span id="screening-done"></span>
+            <!-- <span id="screening-done"></span> -->
           </div>
           
         </div>
-        
+
       </div>
       
     <!-- </div> -->
@@ -45,6 +46,7 @@
     <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
 
     <script>
+      document.getElementById("back").innerHTML = backButton();
       displayElasticity();
       // document.getElementById("screening-done").innerHTML = finishButton(false);
       // const screeningButton = document.getElementById('screening-activate');
