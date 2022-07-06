@@ -286,13 +286,12 @@ my-keypad button {
 #tooltip-popup::after {
     content: " ";
     position: absolute;
-    top: 10%;
+    top: 50px;
     right: 100%; /* To the left of the tooltip */
     margin-top: -5px;
     border-width: 30px;
     border-style: solid;
     border-color: transparent var(--text) transparent transparent;
-    backdrop-filter: blur(40px);
 }
 #tooltip-popup lord-icon {
     width: 60px;

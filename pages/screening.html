@@ -14,9 +14,17 @@
 
         <div class="col-left">
           <h2>Elasticity</h2>
+          
           <div class="flex-row" style="justify-content: center">
             <h1 id="input-value"></h1>
             <span id="input-unit"><h2>kPa</h2></span>
+            <div class="tooltip-positioner" style="right:130px; bottom:150px">
+              <my-tooltip 
+                content1="Elasticity is..."
+                content2="This value is required for diagnosis..."
+                next="">
+              </my-tooltip>
+            </div>
           </div>
           <div>
             <!-- <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a> -->
@@ -43,6 +51,7 @@
     <script src="../components/probetoggle.js"></script>
     <script src="../components/storage.js"></script>
     <script src="../components/buttons.js"></script>
+    <script src="../components/tooltip.js"></script>
     <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
 
     <script>
