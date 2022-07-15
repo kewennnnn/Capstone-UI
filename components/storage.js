@@ -49,7 +49,7 @@ function setWeight() {
 
 
 function getPlatelet() {
-    const platelet = localStorage.getItem("platelet") ?? "";
+    const platelet = localStorage.getItem("platelet") ? parseInt(localStorage.getItem("platelet")) : "";
     console.log(platelet);
     return platelet;
 }
@@ -62,7 +62,7 @@ function setPlatelet() {
 function getElasticity() {
     const storage = require('electron-localstorage');
     // const elasticity = localStorage.getItem("elasticity") ?? "";
-    const elasticity = storage.getItem("elasticity") ?? "";
+    const elasticity = storage.getItem("elasticity") ? parseInt(storage.getItem("elasticity")) : "";
     console.log(elasticity);
     return elasticity;
 }
