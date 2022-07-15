@@ -84,6 +84,9 @@ h3 {
 .no-margin {
     margin: 0;
 }
+.low-z {
+    z-index: -1;
+}
 
 button {
     /* height: 30px; */
@@ -266,7 +269,7 @@ my-keypad button {
     height: 0;
 }
 .tooltip-popup {
-    width: 30vw;
+    width: 400px;
     height: auto;
     padding: 30px;
     border: var(--text) 3px solid;
@@ -305,8 +308,14 @@ my-keypad button {
     margin-top: -5px;
     border-color: transparent transparent transparent var(--text);
 }
+.tooltip-popup-right-bottom::after {
+    top: 350px;
+    right: -61px; 
+    margin-top: -5px;
+    border-color: transparent transparent transparent var(--text);
+}
 .tooltip-popup-left-bottom::after {
-    top: 150px;
+    top: 250px;
     right: 100%; 
     margin-top: -5px;
     border-color: transparent var(--text) transparent transparent;

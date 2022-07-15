@@ -87,8 +87,26 @@ class Tooltip extends HTMLElement {
     }
   }
 
+  function toggleTips(tipNumber=1) {
+    const thisTip = document.getElementById("tooltip-popup-"+tipNumber);
+    if (!thisTip) {
+      console.log("Couldnt find tooltip-popup-"+tipNumber);
+      return;
+    }
+    fadeTip(tipNumber);
+    for (let i=1; i<4; i++) {
+      if (i != tipNumber) {
+        closeTip(i);
+      }
+    }
+  }
+
   function closeTip(tipNumber=1) {
     const thisTip = document.getElementById("tooltip-popup-"+tipNumber);
+    if (!thisTip) {
+      console.log("Couldnt find tooltip-popup-"+tipNumber);
+      return;
+    }
     thisTip.style.opacity = 0;
     setTimeout(()=>{thisTip.style.display = "none";}, 500);
   }
@@ -112,7 +130,7 @@ class Tooltip extends HTMLElement {
     setTimeout(()=>{nextTip.style.opacity = 1;}, 100);
   }
 
-  document.getElementById("pb-help").addEventListener("click", () => {fadeTip(1);});
+  document.getElementById("pb-help").addEventListener("click", () => {toggleTips(1);});
   document.getElementById("tooltip-cross-1").addEventListener("click", () => {closeTip(1);});
   let cross2 = document.getElementById("tooltip-cross-2");
   if (cross2) cross2.addEventListener("click", () => {closeTip(2);});

@@ -77,7 +77,7 @@ function displayElasticity() {
     const elasticity = getElasticity();
     if (elasticity == "") {
         document.getElementById("input-value").innerHTML = "-";
-        document.getElementById("screening-prompt").innerHTML = 'Press "Send Pulse" to get a reading from probe';
+        document.getElementById("screening-prompt").innerHTML = 'Press "Send Pulse" to get an elasticity reading from probe';
         document.getElementById("screening-done").innerHTML = finishButton(false);
     } else {
         document.getElementById("input-value").innerHTML = elasticity;
