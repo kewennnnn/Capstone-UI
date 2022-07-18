@@ -3,6 +3,7 @@
 :root {
     --bg: #203047;
     --blue: #3B6DB2;
+    --secondary: #26497A;
     --orange: #EB8432;
     --text: white;
     --green: rgb(51, 248, 51);
@@ -83,20 +84,24 @@ h3 {
 .no-margin {
     margin: 0;
 }
+.low-z {
+    z-index: -1;
+}
 
 button {
     /* height: 30px; */
     /* width: 80px; */
     width: max-content;
     padding: 20px 60px;
-    margin: 5px;
+    margin: 5px 15px;
     background-color: var(--blue);
     color: var(--text);
-    font-size: var(--text-S);
+    font-size: var(--text-M);
     font-family: var(--font-fam);
     border-radius: 15px;
     border-width: 0;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    transition: 0.3s;
 }
 
 button:active {
@@ -109,12 +114,18 @@ button:active {
     border: var(--text) solid 2px;
     padding: 18px 60px;
 }
+.button-secondary {
+    background-color: var(--secondary);
+    /* border: var(--text) solid 2px; */
+    padding: 20px 60px;
+}
 .button-grey {
     background-color: var(--bg);
     border: var(--text) solid 2px;
     opacity: 40%;
-    padding: 18px 60px;
+    padding: 20px 60px;
     box-shadow: none;
+    pointer-events: none;
 }
 
 my-keypad > div {
@@ -169,6 +180,7 @@ my-keypad button {
 #progress-bar-wrapper {
     display: flex;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    padding-left: 130px;
 }
 .pb {
     display: flex;
@@ -237,6 +249,87 @@ my-keypad button {
     margin-right: 10px;
 }
 
+#pb-help {
+    padding: 0 25px;
+}
+#pb-help p {
+    font-size: var(--text-S);
+    margin: 10px 0;
+    text-align: center;
+}
+#progress-bar-wrapper lord-icon {
+    width: 60px;
+    height: 60px;
+    padding: 0 10px;
+    /* padding: 25px; */
+    /* padding: 25px 60px 25px 0; */
+}
+.tooltip-positioner {
+    position: relative;
+    width: 0;
+    height: 0;
+    z-index: 1;
+}
+.tooltip-popup {
+    width: 400px;
+    height: auto;
+    padding: 30px;
+    border: var(--text) 3px solid;
+    border-radius: 20px;
+    /* position: fixed; */
+    backdrop-filter: blur(40px);
+    text-align: right;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s;
+}
+.tooltip-popup p {
+    font-size: var(--text-S);
+    text-align: left;
+    margin-top: 0;
+}
+.tooltip-popup::after {
+    content: " ";
+    position: absolute;
+    top: 50px;
+    right: 100%; 
+    margin-top: -5px;
+    border-width: 30px;
+    border-style: solid;
+    border-color: transparent var(--text) transparent transparent;
+}
+.tooltip-popup-right::after {
+    top: 40%;
+    right: -61px; 
+    margin-top: -5px;
+    border-color: transparent transparent transparent var(--text);
+}
+.tooltip-popup-right-top::after {
+    top: 50px;
+    right: -61px; 
+    margin-top: -5px;
+    border-color: transparent transparent transparent var(--text);
+}
+.tooltip-popup-right-bottom::after {
+    top: 350px;
+    right: -61px; 
+    margin-top: -5px;
+    border-color: transparent transparent transparent var(--text);
+}
+.tooltip-popup-left-bottom::after {
+    top: 250px;
+    right: 100%; 
+    margin-top: -5px;
+    border-color: transparent var(--text) transparent transparent;
+}
+.tooltip-popup lord-icon {
+    width: 60px;
+    height: 60px;
+}
+.tooltip-popup span {
+    font-size: var(--text-XS);
+}
+
 /*** Screening Page ***/
 .section {
     border: var(--orange) solid 2px;
@@ -294,4 +387,35 @@ my-keypad button {
 
 probe-toggle {
     width: 100%;
+}
+
+#result-bar-container {
+    margin-bottom: 30px;
+    text-align: left;
+    width: 100%;
+}
+#result-bar {
+    height: 30px;
+    width: 100%;
+    background: linear-gradient(90deg, #14FF00 0%, #FFA800 50%, #FF0000 100%, rgba(217, 217, 217, 0) 100%, #FF000F 100%);
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    margin: 0;
+    /* transform: rotate(-90deg); */
+}
+#result-bar-pointer-container {
+    position: relative;
+    right: 20px;
+}
+#result-bar-pointer {
+    content: " ";
+    display: inline-block;
+    position: relative;
+    top: 20px;
+    width: 0px;
+    height: 00px;
+    left: 0%; /* set this value according to percentage on bar */
+    margin-top: -5px;
+    border-width: 20px;
+    border-style: solid;
+    border-color: var(--text) transparent transparent transparent;
 }

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <link href="../styles.css" rel="stylesheet">
-    <title>Everest by Capstone S06</title>
+    <title>LivUltra by Capstone S06</title>
   </head>
   <body>
-    <progress-bar current=4></progress-bar>
+    <progress-bar current=3></progress-bar>
     <div id="app" class="flex-col">
       <div class="flex-row">
         <div class="section">
@@ -25,9 +25,21 @@
           <img src="../media/instruction3.png" style="max-width: 60%;"/>
         </div>
       </div>
-      <div class="col">
+      <div class="flex-row">
         <!-- <a href="./screening-begin.html"><button>Begin Screening</button></a> -->
-        <a href="./screening.html"><button>Begin Screening</button></a>
+        <a href="./platelet.html" id="back"></a>
+        <a href="./screening.html" id="next">
+          <!-- <button>
+            Begin Screening
+            <lord-icon
+                src="https://cdn.lordicon.com/iifryyua.json"
+                trigger="loop"
+                colors="primary:#ffffff"
+                state="hover-1"
+                style="width:44px;height:44px;">
+            </lord-icon>
+          </button> -->
+        </a>
       </div>
       <!-- <a href="./platelet.html"><button>Back</button></a> -->
     </div>  
@@ -35,5 +47,11 @@
     
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
+    <script src="../components/buttons.js"></script>
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+    <script>
+      document.getElementById("back").innerHTML = backButton();
+      document.getElementById("next").innerHTML = nextButton();
+    </script>
   </body>
 </html>

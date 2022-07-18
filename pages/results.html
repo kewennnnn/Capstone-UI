@@ -4,52 +4,88 @@
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <link href="../styles.css" rel="stylesheet">
-    <title>Everest by Capstone S06</title>
+    <title>LivUltra by Capstone S06</title>
   </head>
   <body>
     <progress-bar current=5></progress-bar>
-    <div id="app">
+    <div id="app" class="flex-col">
       
-      <div class="col-left" style="width: min-content;">
-        <h3 style="margin-top: 0;">Patient is at stage F2/F3, please refer to specialist</h3>
-        <div class="flex-row" style="align-items:flex-end;">
-          <a href="../pages/screening.html"><button class="button-hollow">Redo</button></a>
+      <div class="flex-row" style="max-width: 100%;">
+        <div id="result-col" class="col-left flex-col" style="width: max-content; max-width: 620px;">
+          
           <div>
-            <p class="no-margin" style="font-size: var(--text-XS);">Data will be deleted permanently</p>
-            <a href="../index.html"><button id="end-screening">End Screening</button></a>
+            <div class="flex-row" style="justify-content: center">
+              <h1 id="result-stage" class="no-margin"></h1>
+              <div class="tooltip-positioner" style="left:50px; bottom:30px">
+                <my-tooltip 
+                  content1="Liver Fibrosis is categorized into stages F0-F4..."
+                  content2="Get from probe..."
+                  numOfTips="3"
+                  tipNumber="1">
+                </my-tooltip>
+              </div>
+            </div>
+            <h3 class="no-margin">Likelihood of Cirrhosis</h3>
+          </div>
+
+          <div id="result-bar-container">
+            <div id="result-bar-pointer-container">
+              <div id="result-bar-pointer"></div>
+            </div>
+            <div id="result-bar"></div>
+          </div>
+
+          <h3 id="result-advice" class="no-margin"></h3>
+          <!-- <div class="flex-row" style="align-items:flex-end;">
+            <a href="../pages/screening.html" id="back"></a>
+            <div>
+              <p class="no-margin" style="font-size: var(--text-XS);">Data will be deleted permanently</p>
+              <a href="../index.html"><button id="end-screening">End Screening</button></a>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="col" style="width: 500px;">
+          <div class="tooltip-positioner" style="right:500px; bottom:15px">
+            <my-tooltip 
+              content1="..."
+              content2="Haha..."
+              numOfTips="3"
+              tipNumber="2"
+              position="tooltip-popup-right-top">
+            </my-tooltip>
+          </div>
+          <div id="platelet-section" class="section align-left" style="border-color: var(--blue);" onclick="window.location.href = './platelet.html'">
+            <div class="flex-row" style="width: 100%;">
+              <h3 id="platelet-label" class="no-margin">Platelet: <span id="platelet-result"></span></h3>
+              <span id="platelet-icon" class="low-z"></span>
+            </div>
+            <p id="platelet-details" style="width:100%; margin:0; font-size:var(--text-XS);">This value was not recorded, tap to add.</p>
+          </div>
+          <div class="tooltip-positioner" style="right:500px; bottom:15px">
+            <my-tooltip 
+              content1="..."
+              content2="Haha..."
+              numOfTips="3"
+              tipNumber="3"
+              position="tooltip-popup-right-top">
+            </my-tooltip>
+          </div>
+          <div id="elasticity-section" class="section align-left" style="border-color: var(--blue);" onclick="window.location.href = './screening.html'">
+            <div class="flex-row" style="width: 100%;">
+              <h3 id="elasticity-label" class="no-margin">Elasticity: <span id="elasticity-result"></span> kPa</h3>
+              <span id="elasticity-icon" class="low-z"></span>
+            </div>
+            <p id="elasticity-details" style="width:100%; margin:0; font-size:var(--text-XS);">This value was not recorded, tap to add.</p>
           </div>
         </div>
       </div>
 
-      <div class="col" style="width: max-content;">
-        <!-- <div id="bmi-section" class="section align-left flex-row" style="border-color: var(--green);">
-          <h3 id="bmi-label" class="no-margin">BMI: <span id="bmi-result" style="color: var(--text)"></span><span style="color: var(--text)"> cm</span></h3>
-          <lord-icon
-              src="https://cdn.lordicon.com/epurqyya.json"
-              trigger="loop"
-              colors="primary:#16c72e"
-              style="width:50px;height:50px;padding-left:30px;">
-          </lord-icon>
-        </div> -->
-        <div id="platelet-section" class="section align-left flex-row" style="border-color: var(--blue);">
-          <h3 id="platelet-label" class="no-margin">Platelet: <span id="platelet-result"></span></h3>
-          <span id="platelet-icon"></span>
-          <!-- <lord-icon
-              src="https://cdn.lordicon.com/epurqyya.json"
-              trigger="loop"
-              colors="primary:#16c72e"
-              style="width:50px;height:50px;padding-left:30px;">
-          </lord-icon> -->
-        </div>
-        <div id="elasticity-section" class="section align-left flex-row" style="border-color: var(--blue);">
-          <h3 id="elasticity-label" class="no-margin">Elasticity: <span id="elasticity-result">487</span> kPa</h3>
-          <span id="elasticity-icon"></span>
-          <!-- <lord-icon
-              src="https://cdn.lordicon.com/rslnizbt.json"
-              trigger="loop"
-              colors="primary:#e83a30"
-              style="width:50px;height:50px;padding-left:30px;">
-          </lord-icon> -->
+      <div class="flex-row" style="align-items:flex-end; padding-top: 40px;">
+        <a href="../pages/screening.html" id="back"></a>
+        <div>
+          <p class="no-margin" style="font-size: var(--text-XS); text-align: center;">Data will be deleted permanently</p>
+          <a href="../index.html"><button id="end-screening">End Screening</button></a>
         </div>
       </div>
 
@@ -62,48 +98,21 @@
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/storage.js"></script>
-    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> <!-- animation for warning -->
-    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> <!-- animation for thumbs up (somehow the same) -->
-
+    <script src="../components/buttons.js"></script>
+    <script src="../components/results.js"></script>
+    <script src="../components/tooltip.js"></script>
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> 
     <script>
-      // document.getElementById("bmi-result").innerHTML = getBMI();
-      // if (document.getElementById("bmi-result").innerHTML == "") {
-      //   document.getElementById("bmi-result").innerHTML = "NA";
-      //   document.getElementById("bmi-section").style.borderColor = "var(--blue)";
-      //   document.getElementById("bmi-label").style.color = "var(--blue)";
-      // } 
-      //TODO: add if else to change color of borders according to ranges
-      document.getElementById("platelet-result").innerHTML = getPlatelet();
-      if (document.getElementById("platelet-result").innerHTML == "") {
-        document.getElementById("platelet-result").innerHTML = "NA";
-        document.getElementById("platelet-section").style.borderColor = "var(--blue)";
-      } else {
-        console.log(document.getElementById("platelet-result").innerHTML);
-        document.getElementById("platelet-section").style.borderColor = "var(--green)";
-        document.getElementById("platelet-icon").innerHTML = `
-          <lord-icon
-              src="https://cdn.lordicon.com/epurqyya.json"
-              trigger="loop"
-              colors="primary:#16c72e"
-              style="width:50px;height:50px;padding-left:30px;">
-          </lord-icon>`;
-      }
+      displayResults();
+      // displayPlatelet();
+      // displayElasticity();
+      document.getElementById("back").innerHTML = backButton();
 
-      document.getElementById("elasticity-result").innerHTML = getElasticity();
-      if (document.getElementById("elasticity-result").innerHTML == "") {
-        document.getElementById("elasticity-result").innerHTML = "NA";
-        document.getElementById("elasticity-section").style.borderColor = "var(--blue)";
-      } else {
-        console.log(document.getElementById("elasticity-result").innerHTML);
-        document.getElementById("elasticity-section").style.borderColor = "var(--red)";
-        document.getElementById("elasticity-icon").innerHTML = `
-          <lord-icon
-              src="https://cdn.lordicon.com/rslnizbt.json"
-              trigger="loop"
-              colors="primary:#e83a30"
-              style="width:50px;height:50px;padding-left:30px;">
-          </lord-icon>`
-      }
+
+      
+
+
+
 
 
 

@@ -3,6 +3,8 @@ function clearAll() {
     localStorage.removeItem("weight");
     localStorage.removeItem("platelet");
     localStorage.removeItem("elasticity");
+    const storage = require('electron-localstorage');
+    storage.clear();
     console.log("storage cleared!");
 }
 
@@ -47,7 +49,7 @@ function setWeight() {
 
 
 function getPlatelet() {
-    const platelet = localStorage.getItem("platelet") ?? "";
+    const platelet = localStorage.getItem("platelet") ? parseInt(localStorage.getItem("platelet")) : "";
     console.log(platelet);
     return platelet;
 }
@@ -60,7 +62,7 @@ function setPlatelet() {
 function getElasticity() {
     const storage = require('electron-localstorage');
     // const elasticity = localStorage.getItem("elasticity") ?? "";
-    const elasticity = storage.getItem("elasticity") ?? "";
+    const elasticity = storage.getItem("elasticity") ? parseInt(storage.getItem("elasticity")) : "";
     console.log(elasticity);
     return elasticity;
 }
@@ -75,12 +77,12 @@ function displayElasticity() {
     const elasticity = getElasticity();
     if (elasticity == "") {
         document.getElementById("input-value").innerHTML = "-";
-        document.getElementById("screening-prompt").innerHTML = "Press button to get a reading from probe";
-        document.getElementById("screening-done").innerHTML = `<button class="button-grey">Finish</button>`;
+        document.getElementById("screening-prompt").innerHTML = 'Press "Send Pulse" to get an elasticity reading from probe';
+        document.getElementById("screening-done").innerHTML = finishButton(false);
     } else {
         document.getElementById("input-value").innerHTML = elasticity;
-        document.getElementById("screening-prompt").innerHTML = "Press button again to get another reading";
-        document.getElementById("screening-done").innerHTML = `<button onclick="location.href='./results.html';">Finish</button>`;
+        document.getElementById("screening-prompt").innerHTML = 'Press "Send Pulse" again to get another reading';
+        document.getElementById("screening-done").innerHTML = finishButton(true);
     }
 }
 

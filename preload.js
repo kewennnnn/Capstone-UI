@@ -15,21 +15,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const screeningButton = document.getElementById('screening-activate');
   const storage = require('electron-localstorage');
-  screeningButton.addEventListener('click', (event) => {
-    console.log("am here");
-    let res = ipcRenderer.send("saveText","run");
-    // console.log("res =",res);
-    // localStorage.setItem("elasticity",res);
-    // document.getElementById('input-unit').innerHTML = res;
-    let val = storage.getItem("elasticity");
-    document.getElementById('input-value').innerHTML = val;
-  });
-
-  const endButton = document.getElementById("end-screening");
-  endButton.addEventListener("click", () => {
-    let res = ipcRenderer.send("clearMemory");
-    // localStorage.clear();
-  });
-
-
+  if (screeningButton) {
+    screeningButton.addEventListener('click', (event) => {
+      console.log("am here");
+      let res = ipcRenderer.send("saveText","run");
+      let val = storage.getItem("elasticity");
+      document.getElementById('input-value').innerHTML = val;
+    });
+  }
+  
 })

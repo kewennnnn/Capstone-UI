@@ -99,7 +99,7 @@ function updateNextButton(allowSkip=true) {
     let val = document.getElementById("input-value").innerText; 
     let newButton;
     if (allowSkip) {
-        newButton = (val == "") ? `<button class="button-hollow">Skip</button>` : `<button>Next</button>`;
+        newButton = (val == "") ? skipButton() : nextButton();
     } else {
         newButton = (val == "") ? null : `<button>Next</button>`;
     }
