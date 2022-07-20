@@ -6,7 +6,7 @@ from tracemalloc import start
 # from webbrowser import get
 import numpy as np
 from picosdk.ps2000a import ps2000a as ps
-from picoscope import ps2000a as ps_2
+from picoscope import ps2000a 
 import matplotlib.pyplot as plt
 from picosdk.functions import adc2mV, assert_pico_ok
 import time
@@ -17,45 +17,54 @@ from scipy import fftpack
 from scipy import signal
 from time import sleep
 import math
-import FreqMeasure as fm
 
 class PS6000:
 
+    # def open_ps2000a(self):
+
+    #     with ps.open_unit() as device:
+    #         print('Device info: {}'.format(device.info))
+
+    #     # This example opens a 2000a driver device, sets up two channels and a trigger then collects a block of data.
+    #     # This data is then plotted as mV against time in ns.
+
+    #     # Create chandle and status ready for use
+    #     self.chandle = ctypes.c_int16()
+    #     self.status = {}
+
+    #     # Open 2000 series PicoScope
+    #     # Returns handle to chandle for use in future API functions
+    #     self.status["openunit"] = ps.ps2000aOpenUnit(ctypes.byref(self.chandle), None)
+
+    #     try:
+    #         assert_pico_ok(self.status["openunit"])
+    #     except:
+    #         # powerstate becomes the status number of openunit
+    #         powerstate = self.status["openunit"]
+
+    #         # If powerstate is the same as 282 then it will run this if statement
+    #         if powerstate == 282:
+    #             # Changes the power input to "PICO_POWER_SUPPLY_NOT_CONNECTED"
+    #             self.status["ChangePowerSource"] = ps.ps2000aChangePowerSource(self.chandle, 282)
+    #         # If the powerstate is the same as 286 then it will run this if statement
+    #         elif powerstate == 286:
+    #             # Changes the power input to "PICO_USB3_0_DEVICE_NON_USB3_0_PORT"
+    #             self.status["ChangePowerSource"] = ps.ps2000aChangePowerSource(self.chandle, 286)
+    #         else:
+    #             raise
+
+    #         assert_pico_ok(self.status["ChangePowerSource"])
+    #     assert_pico_ok(self.status["openunit"])
+
     def open_ps2000a(self):
 
-        with ps.open_unit() as device:
-            print('Device info: {}'.format(device.info))
+        print("Attempting to open Picoscope 2000A...")
 
-        # This example opens a 2000a driver device, sets up two channels and a trigger then collects a block of data.
-        # This data is then plotted as mV against time in ns.
+        # Uncomment this line to use with the 2000a/2000b series
+        self.ps = ps2000a.PS2000a()
 
-        # Create chandle and status ready for use
-        self.chandle = ctypes.c_int16()
-        self.status = {}
-
-        # Open 2000 series PicoScope
-        # Returns handle to chandle for use in future API functions
-        self.status["openunit"] = ps.ps2000aOpenUnit(ctypes.byref(self.chandle), None)
-
-        try:
-            assert_pico_ok(self.status["openunit"])
-        except:
-            # powerstate becomes the status number of openunit
-            powerstate = self.status["openunit"]
-
-            # If powerstate is the same as 282 then it will run this if statement
-            if powerstate == 282:
-                # Changes the power input to "PICO_POWER_SUPPLY_NOT_CONNECTED"
-                self.status["ChangePowerSource"] = ps.ps2000aChangePowerSource(self.chandle, 282)
-            # If the powerstate is the same as 286 then it will run this if statement
-            elif powerstate == 286:
-                # Changes the power input to "PICO_USB3_0_DEVICE_NON_USB3_0_PORT"
-                self.status["ChangePowerSource"] = ps.ps2000aChangePowerSource(self.chandle, 286)
-            else:
-                raise
-
-            assert_pico_ok(self.status["ChangePowerSource"])
-        assert_pico_ok(self.status["openunit"])
+        print("Found the following picoscope:")
+        print(self.ps.getAllUnitInfo())
 
     def block_example(self):
 
@@ -97,6 +106,9 @@ class PS6000:
         # coupling type = PS2000A_DC = 1
         # range = PS2000A_2V = 7
         # analogue offset = 0 V
+
+        # ps_2 = ps2000a.PS2000a()
+
         chARange = 7
         self.status["setChA"] = ps.ps2000aSetChannel(self.chandle, 0, 1, 1, chARange, 0)
         assert_pico_ok(self.status["setChA"])
@@ -124,8 +136,8 @@ class PS6000:
         # self.status["trigger"] = ps.ps2000aSetSimpleTrigger(self.chandle, 1, 0, 1024, 2, 0, 1000)
         # assert_pico_ok(self.status["trigger"])
 
-        # status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
-        # assert_pico_ok(status["signalgen"])
+        # self.status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(self.chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
+        # assert_pico_ok(self.status["signalgen"])
 
         # status["startsignalgen"] = ps.ps2000aSigGenSoftwareControl(chandle, 0)
         # assert_pico_ok(status["startsignalgen"])
@@ -149,12 +161,12 @@ class PS6000:
         # triggerType = ctypes.c_int16(0) = PS2000A_SIGGEN_RISING
         # triggerSource = ctypes.c_int16(0) = PS2000A_SIGGEN_NONE
         # extInThreshold = 1
-        wavetype = ctypes.c_int16(0)
-        sweepType = ctypes.c_int32(1)
-        triggertype = ctypes.c_int32(0)
-        triggerSource = ctypes.c_int32(0)
-        indexMode = ctypes.c_int32(0)
-        print(indexMode)
+        # wavetype = ctypes.c_int16(0)
+        # sweepType = ctypes.c_int32(1)
+        # triggertype = ctypes.c_int32(0)
+        # triggerSource = ctypes.c_int32(0)
+        # indexMode = ctypes.c_int32(0)
+        # print(indexMode)
         startDeltaPhase = 0
         stopDeltaPhase = startDeltaPhase
         # arbitraryWaveformSize = ps.ps2000aSigGenArbitraryMinMaxValues(self.chandle, 0, 0, 0, 0)
@@ -164,28 +176,10 @@ class PS6000:
         # arbitaryWaveform = awgbufferPointer
         # arbitraryWaveformSize = 1024
 
-        # self.status["setSigGenArbitrary"] = ps.ps2000aSetSigGenArbitrary(self.chandle, 0, 2000000, 0, 0, 0, 0, awgbufferPointer, 1024, 0, 0, 0, 1, 0, 0, 0, 0)
-        # assert_pico_ok(self.status["setSigGenArbitrary"])
+        # self.status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(self.chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
+        # assert_pico_ok(self.status["signalgen"])
 
-        #set pulse transmit here
-
-        waveform_desired_duration = 1E-5 #change waveform desired duration to set the frequency of the wave
-        obs_duration = 3 * waveform_desired_duration
-        sampling_interval = obs_duration / 4096
-
-        (actualSamplingInterval, nSamples, maxSamples) = \
-            ps_2.setSamplingInterval(sampling_interval, obs_duration)
-        print("Sampling interval = %f ns" % (actualSamplingInterval * 1E9))
-        print("Taking  samples = %d" % nSamples)
-        print("Maximum samples = %d" % maxSamples)
-
-        waveformAmplitude = 1.5
-        waveformOffset = 0
-        
-        freq = 110000
-        fs = int(2*freq) # sample rate
         t = np.linspace(0, 3, 1000, endpoint = False)
-
         noise1 = 0
         noise2 = 0.01*np.sin(2*np.pi * 0.1*t) + 0.01*np.sin(2*np.pi * 1.8*t) + 0.01*np.sin(2*np.pi * 0.4*t)
 
@@ -194,9 +188,114 @@ class PS6000:
 
         sig = np.append(sig, [realSignal, noise2, realSignal, noise1*noise2])
 
-        (waveform_duration, deltaPhase) = ps_2.setAWGSimple(
-        sig, waveform_desired_duration, offsetVoltage=0.0,
-        indexMode="Single", triggerSource='None')
+        waveform = np.array(sig, dtype=np.int16)
+
+        phase = ctypes.c_uint32()
+        #get the start & stop DeltaPhase values for the SetSig function.
+        phase = ps.ps2000aSigGenFrequencyToPhase(self.chandle, 1650000, 0, len(waveform), ctypes.byref(phase))
+
+        offsetVoltage = 0
+        pkToPk = ctypes.c_uint32(int(2000000 * 1E6))
+        startDeltaPhase = phase
+        stopDeltaPhase = phase
+        deltaPhaseIncrement = ctypes.c_uint32(0) #0
+        dwellCount = ctypes.c_uint32(0) #0
+        arbitraryWaveform = waveform.ctypes.data_as(ctypes.POINTER(ctypes.c_int16))
+        arbitraryWaveformSize = ctypes.c_int32(len(waveform)) #len(waveform)
+        sweepType = 0
+        operation = 0
+        indexMode = 0
+        pulses = 3
+        shots = ctypes.c_uint32(3) #ctypes.c_uint32(pulses)
+        sweeps = ctypes.c_uint32(0) #ctypes.c_uint32(1)
+        triggerType = 0
+        triggerSource = 3
+        extInThreshold = ctypes.c_int16(0) #0
+
+        # self.status["trigger"] = ps.ps2000aSetSimpleTrigger(self.chandle, 1, 0, 1024, 2, 0, 1000)
+        # assert_pico_ok(self.status["trigger"])
+
+        ret = ps.ps2000aSetSigGenArbitrary(
+                                            self.chandle,
+                                            offsetVoltage,
+                                            pkToPk, 
+                                            startDeltaPhase,
+                                            stopDeltaPhase,
+                                            deltaPhaseIncrement,
+                                            dwellCount,
+                                            arbitraryWaveform,
+                                            arbitraryWaveformSize,
+                                            sweepType,
+                                            operation,
+                                            indexMode, 
+                                            shots, 
+                                            sweeps,
+                                            triggerType,
+                                            triggerSource,
+                                            extInThreshold)
+
+        self.status["startsignalgen"] = ps.ps2000aSigGenSoftwareControl(self.chandle, 1)
+
+        self.status["startsignalgen"] = ps.ps2000aSigGenSoftwareControl(self.chandle, 0)
+
+        # self.status["setSigGenArbitrary"] = ps.ps2000aSetSigGenArbitrary(self.chandle, 0, 2000000, 0, 0, 0, 0, awgbufferPointer, 1024, 0, 0, 0, 1, 0, 0, 0, 0)
+        # assert_pico_ok(self.status["setSigGenArbitrary"])
+
+        #set pulse transmit here
+
+        # Output a sine wave with peak-to-peak voltage of 2 V and frequency of 10 kHz
+        # handle = chandle
+        # offsetVoltage = 0
+        # pkToPk = 2000000
+        # waveType = ctypes.c_int16(0) = PS2000A_SINE
+        # startFrequency = 10 kHz
+        # stopFrequency = 10 kHz
+        # increment = 0
+        # dwellTime = 1
+        # sweepType = ctypes.c_int16(1) = PS2000A_UP
+        # operation = 0
+        # shots = 0
+        # sweeps = 0
+        # triggerType = ctypes.c_int16(0) = PS2000A_SIGGEN_RISING
+        # triggerSource = ctypes.c_int16(0) = PS2000A_SIGGEN_NONE
+        # extInThreshold = 1
+        wavetype = ctypes.c_int16(0) #square
+        sweepType = ctypes.c_int32(0)
+        triggertype = ctypes.c_int32(0)
+        triggerSource = ctypes.c_int32(0)
+
+        # self.status["SetSigGenBuiltIn"] = ps.ps2000aSetSigGenBuiltIn(self.chandle, 0, 2000000, wavetype, 1000000, 1000000, 0, 1, sweepType, 0, 0, 0, triggertype, triggerSource, 1)
+        # self.status["SetSigGenArb"] = ps.ps2000aSetSigGenArbitrary(self.chandle, 0,2000000,0, 0, 0,0  )
+        # assert_pico_ok(self.status["SetSigGenBuiltIn"])
+
+        # waveform_desired_duration = 1E-5 #change waveform desired duration to set the frequency of the wave
+        # obs_duration = 3 * waveform_desired_duration
+        # sampling_interval = obs_duration / 4096
+
+        # (actualSamplingInterval, nSamples, maxSamples) = \
+        #     ps_2.setSamplingInterval(sampling_interval, obs_duration)
+        # print("Sampling interval = %f ns" % (actualSamplingInterval * 1E9))
+        # print("Taking  samples = %d" % nSamples)
+        # print("Maximum samples = %d" % maxSamples)
+
+        # waveformAmplitude = 1.5
+        # waveformOffset = 0
+        
+        # freq = 110000
+        # fs = int(2*freq) # sample rate
+        # t = np.linspace(0, 3, 1000, endpoint = False)
+
+        # noise1 = 0
+        # noise2 = 0.01*np.sin(2*np.pi * 0.1*t) + 0.01*np.sin(2*np.pi * 1.8*t) + 0.01*np.sin(2*np.pi * 0.4*t)
+
+        # realSignal = 2*np.sin(2*np.pi* t)
+        # sig = noise1
+
+        # sig = np.append(sig, [realSignal, noise2, realSignal, noise1*noise2])
+
+        # (waveform_duration, deltaPhase) = ps_2.setAWGSimple(
+        # sig, waveform_desired_duration, offsetVoltage=0.0,
+        # indexMode="Single", triggerSource='None')
 
         # Pauses the script to show signal
         time.sleep(10)
@@ -365,6 +464,79 @@ class PS6000:
         # display status returns
         print(self.status)
 
+    def trigger(self):
+
+        waveform_desired_duration = 7E-3 #change waveform desired duration to set the frequency of the wave
+        obs_duration = 3 * waveform_desired_duration
+        sampling_interval = obs_duration / 4096
+
+        (actualSamplingInterval, nSamples, maxSamples) = \
+            self.ps.setSamplingInterval(sampling_interval, obs_duration)
+        print("Sampling interval = %f ns" % (actualSamplingInterval * 1E9))
+        print("Taking  samples = %d" % nSamples)
+        print("Maximum samples = %d" % maxSamples)
+
+        waveformAmplitude = 2.0
+        # x = np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False)
+
+        freq = 110000
+        fs = int(2*freq) # sample rate
+        t = np.linspace(0, 3, 1000, endpoint = False)
+
+        # waveformAmplitude = 5
+        # waveformOffset = 0
+        # # x = np.sin(np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False, retstep=True))
+
+        noise1 = 0
+        noise2 = 0.01*np.sin(2*np.pi * 0.1*t) + 0.01*np.sin(2*np.pi * 1.8*t) + 0.01*np.sin(2*np.pi * 0.4*t)
+
+        realSignal = 2*np.sin(2*np.pi* t)
+        sig = noise1
+
+        sig = np.append(sig, [realSignal, noise2, realSignal, noise1*noise2])
+        print("signal=", sig)
+
+        (waveform_duration, deltaPhase) = self.ps.setAWGSimple(
+            sig, waveform_desired_duration, offsetVoltage=0.0,
+            indexMode="Single", triggerSource='None')
+
+        # the setChannel command will chose the next largest amplitude
+        # BWLimited = 1 for 6402/6403, 2 for 6404, 0 for all
+        channelARange = self.ps.setChannel('A', 'DC', waveformAmplitude, 0.0,
+                                    enabled=True, BWLimited=False)
+        channelBRange = self.ps.setChannel('B', 'DC', waveformAmplitude, 0.0,
+                                    enabled=True, BWLimited=False)
+
+        print("Chosen channel range = %d" % channelARange)
+
+        self.ps.setSimpleTrigger('A', 1.0, 'Falling', delay=0, timeout_ms=100,
+                            enabled=True)
+        # ps.setSimpleTrigger('B', 1.0, 'Falling', delay=0, timeout_ms=100,
+        #                     enabled=True)
+
+        self.ps.runBlock()
+        self.ps.waitReady()
+        print("Waiting for awg to settle.")
+        time.sleep(2.0)
+        self.ps.runBlock()
+        self.ps.waitReady()
+        print("Done waiting for trigger")
+        self.adc2mVChAMax = self.ps.getDataV('A', nSamples, returnOverflow=False)
+        self.adc2mVChBMax = self.ps.getDataV('B', nSamples, returnOverflow=False)
+
+        self.time = np.arange(nSamples) * actualSamplingInterval
+
+        self.ps.stop()
+        self.ps.close()
+
+        plt.plot(self.time, self.adc2mVChAMax, label="Tx")
+        plt.plot(self.time,self.adc2mVChBMax, label="Rx")
+        plt.title("Picoscope 2000A waveforms")
+        plt.ylabel("Voltage (V)")
+        plt.xlabel("Time (ms)")
+        plt.legend()
+        plt.show()
+
     # def savecsv(self, fname = 'test_1', fdest ='./CSV Files', file = "./le_test.csv", dist = 0.2):
     #     # self.channel_a = self.adc2mVChAMax[:]
     #     # self.channel_b = self.adc2mVChBMax[:]
@@ -502,8 +674,11 @@ class PS6000:
                 # print(k)
             # print("chb=",chB_ls)
 
+            filter_val = self.digital_filter()
+
             time_ls=[]
-            self.dict2csv = {"Time(us)": self.time, "Voltage(mV) Channel B": self.adc2mVChBMax[:]}
+            self.dict2csv = {"Time(us)": self.time, "Voltage(mV) Channel B": filter_val}
+
             self.df = pd.DataFrame(self.dict2csv)
             # print("length=", len(self.df))
             print(self.df)
@@ -512,14 +687,14 @@ class PS6000:
                 print(volt)
                 if volt > 360: #change accordingly
                     if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
-                        if self.df.iloc[i][1] > self.df.iloc[i+1][1]:
+                        if self.df.iloc[i][1] >= self.df.iloc[i+1][1]:
                             get_time = self.df.iloc[i][0]
                             time_ls.append(get_time)
                             # print(get_time)
                     else:
                         None
 
-            print("time_ls = ", time_ls)
+            print("time_rx_ls = ", time_ls)
             # time_rx_ls = []
             # print("time_ls_rx = ", time_ls)
             # time_rx_ls.append(time_ls[0])
@@ -531,6 +706,7 @@ class PS6000:
             return time_ls
 
     def findmaxvoltageandtime_tx_run(self):
+        
         #find maximum voltage from the graph and subsequent times for transmitting end
         # trace = pd.read_csv(file, skiprows=3)
         # trace_x = trace.iloc[:,0].values #time
@@ -554,15 +730,15 @@ class PS6000:
         for i in range (0,len(self.df)):
             volt = self.df.iloc[i][1]
             # print(self.df.iloc[0][1])
-            if volt > 200: #change accordingly
+            if volt > 1.9: #change accordingly
                 if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
-                    if self.df.iloc[i][1] > self.df.iloc[i+1][1]:
+                    if self.df.iloc[i][1] >= self.df.iloc[i+1][1]:
                         get_time = self.df.iloc[i][0]
                         time_ls.append(get_time)
                         # print(get_time)
                 else:
                     None
-        print("time_ls = ", time_ls)
+        print("time_tx_ls = ", time_ls)
         # time_tx_ls = []
         # print("time_ls_tx = ", time_ls)
         # time_tx_ls.append(time_ls[0])
@@ -662,7 +838,7 @@ class PS6000:
         sumofk = 0
         for i in time_rx_ls:
             for j in time_tx_ls:
-                time_diff_ls.append(float(i-j)/1000000) 
+                time_diff_ls.append(float(i-j)/1000) 
         for k in time_diff_ls:
             sumofk = sumofk + k
         average_time_diff = sumofk/len(time_diff_ls)
@@ -690,66 +866,102 @@ class PS6000:
         #find time difference, shear wave velocity, stiffness
 
     #DFT Noise Filtering - via automation you receive a single tx n receiving signal
-    def dft_filter(self, file = "./le_test.csv", threshold = 0):
+    # def dft_filter(self, file = "./le_test.csv", threshold = 0):
 
-        SAMPLE_RATE = 110000  # Hertz try to change n see also
-        # DURATION = 1  # Seconds
-        # N = SAMPLE_RATE * DURATION
-        N = 12503 #try to change n see if it affects
+    #     SAMPLE_RATE = 110000  # Hertz try to change n see also
+    #     # DURATION = 1  # Seconds
+    #     # N = SAMPLE_RATE * DURATION
+    #     N = 12503 #try to change n see if it affects
 
-        trace = pd.read_csv(file, skiprows=3)
+    #     trace = pd.read_csv(file, skiprows=3)
 
-        # yf = fft(trace.iloc[:, 1].values)
-        signal = trace.iloc[:, 2].values
-        # zf_unfiltered = fft(signal)
-        zf = fftpack.rfft(signal)
-        # print("yf = ", yf)
-        xf = fftpack.fftfreq(signal.size, 1 / SAMPLE_RATE)
-        # print("sig size =", signal.size)
-        # xf = fftfreq(signal.size, d=20e-3/signal.size)
-        # xf = fftfreq(N, d=0.008)
+    #     # yf = fft(trace.iloc[:, 1].values)
+    #     signal = trace.iloc[:, 2].values
+    #     # zf_unfiltered = fft(signal)
+    #     zf = fftpack.rfft(signal)
+    #     # print("yf = ", yf)
+    #     xf = fftpack.fftfreq(signal.size, 1 / SAMPLE_RATE)
+    #     # print("sig size =", signal.size)
+    #     # xf = fftfreq(signal.size, d=20e-3/signal.size)
+    #     # xf = fftfreq(N, d=0.008)
 
-        zf[xf>threshold] = 0 #if Frequency less than threshold, then set all to 0 to take out noise
+    #     zf[xf>threshold] = 0 #if Frequency less than threshold, then set all to 0 to take out noise
 
-        # The maximum frequency is half the sample rate
-        # points_per_freq = len(xf) / (SAMPLE_RATE / 2)
-        # print(points_per_freq)
+    #     # The maximum frequency is half the sample rate
+    #     # points_per_freq = len(xf) / (SAMPLE_RATE / 2)
+    #     # print(points_per_freq)
 
-        # Our target frequency is 4000 Hz
-        # target_idx = int(points_per_freq * 110000)
-        # print(target_idx)
+    #     # Our target frequency is 4000 Hz
+    #     # target_idx = int(points_per_freq * 110000)
+    #     # print(target_idx)
 
-        # plt.plot(xf, np.abs(yf), label = "channel A")
-        plt.plot(xf, np.abs(zf), label = "channel B")
-        # plt.plot(xf, np.abs(zf_unfiltered), label = "unfiltered chb")
-        plt.xlabel("Frequency")
-        plt.ylabel("mV")
-        plt.legend()
-        plt.title("FFT")
+    #     # plt.plot(xf, np.abs(yf), label = "channel A")
+    #     plt.plot(xf, np.abs(zf), label = "channel B")
+    #     # plt.plot(xf, np.abs(zf_unfiltered), label = "unfiltered chb")
+    #     plt.xlabel("Frequency")
+    #     plt.ylabel("mV")
+    #     plt.legend()
+    #     plt.title("FFT")
+    #     plt.show()
+
+    #     # zf[target_idx - 1 : target_idx + 2] = 0
+
+    #     #inverse fft
+    #     # new_sig = irfft(yf)
+    #     new_sig_2 = fftpack.irfft(zf)
+    #     # print("sig_2=", new_sig_2)
+    #     # new_sig_3 = irfft(zf_unfiltered)
+
+    #     # plt.plot((trace.iloc[:,0].values/2)-25, new_sig_3[:N]-10, label = "Unfiltered")
+    #     plt.plot(trace.iloc[:,0].values, signal, label = "Raw")
+    #     # plt.plot((trace.iloc[:,0].values/2)-25, new_sig_2[:N]-10, label = "Filtered")
+    #     plt.plot(trace.iloc[:,0].values, new_sig_2[:N], label = "Filtered")
+    #     # plt.plot(new_sig[:1000], label = "Tx Signal")
+    #     plt.xlabel("Time")
+    #     plt.ylabel("mV")
+    #     plt.legend()
+    #     plt.title("FFT Denoising")
+    #     plt.show()
+
+    def digital_filter(self):
+
+        fs = 11000000
+        b, a = signal.iirfilter(4, Wn=500000, fs=fs, btype="low", ftype="butter")
+        print(b, a, sep="\n")
+
+        signal_raw = self.adc2mVChBMax
+        y_lfilter = signal.lfilter(b, a, signal_raw)
+
+        # plt.figure(figsize=[6.4, 2.4])
+        # plt.plot(self.time, signal_raw, label="Raw signal")
+        # plt.plot(self.time, y_lfilter, alpha=0.8, lw=3, label="SciPy lfilter")
+        # plt.xlabel("Time (us)")
+        # plt.ylabel("Amplitude (mV)")
+        # plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=2,
+        #         fontsize="smaller")
+
+        # plt.tight_layout()
+        # plt.savefig("simple-lowpass-lfilter.png", dpi=100)
+
+        # apply filter forward and backward using filtfilt
+        self.y_filtfilt = signal.filtfilt(b, a, signal_raw)
+
+        plt.figure(figsize=[6.4, 2.4])
+        plt.plot(self.time, signal_raw, label="Raw signal")
+        plt.plot(self.time, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
+        plt.plot(self.time, self.y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
+        plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=3,
+                fontsize="smaller")
+        plt.xlabel("Time (us)")
+        plt.ylabel("Amplitude (mV)")
+
+        plt.tight_layout()
+        # plt.savefig("lowpass-filtfilt.png", dpi=100)
         plt.show()
 
-        # zf[target_idx - 1 : target_idx + 2] = 0
+        return self.y_filtfilt
 
-        #inverse fft
-        # new_sig = irfft(yf)
-        new_sig_2 = fftpack.irfft(zf)
-        # print("sig_2=", new_sig_2)
-        # new_sig_3 = irfft(zf_unfiltered)
-
-        # plt.plot((trace.iloc[:,0].values/2)-25, new_sig_3[:N]-10, label = "Unfiltered")
-        plt.plot(trace.iloc[:,0].values, signal, label = "Raw")
-        # plt.plot((trace.iloc[:,0].values/2)-25, new_sig_2[:N]-10, label = "Filtered")
-        plt.plot(trace.iloc[:,0].values, new_sig_2[:N], label = "Filtered")
-        # plt.plot(new_sig[:1000], label = "Tx Signal")
-        plt.xlabel("Time")
-        plt.ylabel("mV")
-        plt.legend()
-        plt.title("FFT Denoising")
-        plt.show()
-
-    #Waveform Averaging cannot rly be done unless find two values from the receiving signal, get average of both - need to setup rapid block mode
-
-    def digital_filter(self, file = "./le_test.csv"):
+    def digital_filter_old(self, file):
         fs = 11000000
         b, a = signal.iirfilter(4, Wn=500000, fs=fs, btype="low", ftype="butter")
         print(b, a, sep="\n")
@@ -1115,8 +1327,8 @@ class PS6000:
 # start_PS6000.dft_filter()
 
 start_PS6000 = PS6000()
-# start_PS6000.open_ps2000a()
 filepath = "./command.txt"
+start_PS6000.open_ps2000a()
 # start_PS6000.block_example()
 # txt_file = open(filepath,'r')
 # start_PS6000.plotgraph2checkwave("C:/Users/Charis/Downloads/Waveforms/Waveforms/agar testing/pulse/Testing_agar_pulse_10mm/Testing_agar_pulse_10mm_05.csv")
@@ -1131,8 +1343,8 @@ while True:
         read_txt = txt_file.read()
         print("read_txt =",read_txt)
         if read_txt == "run":
-            start_PS6000.open_ps2000a()
-            start_PS6000.block_example()
+            start_PS6000.trigger()
+            # start_PS6000.block_example()
 #         # start_PS6000.savecsv()
 #         #start_PS6000.findmaxvoltageandtime_tx()
             # start_PS6000.open_ps2000a()
@@ -1140,10 +1352,6 @@ while True:
             # start_PS6000.plotgraph2checkwave()
             # start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
             # stiffness_val = start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
-
-            start_PS6000.swv2stiffness_csvextract("./jellllllllllyyyyyyyy_2_23.csv", 0.05)
-            start_PS6000.plotgraph2checkwave("./jellllllllllyyyyyyyy_2_23.csv")
-
             stiffness_val_run = start_PS6000.getstiffness(0.005)
             # noise_filter = start_PS6000.dft_filter()
             # start_PS600cd 0.savecsv('test_1', './', "./le_test.csv", 0.2)
