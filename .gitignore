@@ -1,2 +1,4 @@
 node_modules
 command.txt
+release-builds
+*.pyc
