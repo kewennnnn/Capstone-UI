@@ -6,6 +6,7 @@ from tracemalloc import start
 # from webbrowser import get
 import numpy as np
 from picosdk.ps2000a import ps2000a as ps
+from picoscope import ps2000a as ps_2
 import matplotlib.pyplot as plt
 from picosdk.functions import adc2mV, assert_pico_ok
 import time
@@ -56,11 +57,8 @@ class PS6000:
             assert_pico_ok(self.status["ChangePowerSource"])
         assert_pico_ok(self.status["openunit"])
 
-
-    def open_ps6(self):
-        return None
-
     def block_example(self):
+
         # # This example opens a 2000a driver device, sets up two channels and a trigger then collects a block of data.
         # # This data is then plotted as mV against time in ns.
 
@@ -123,8 +121,8 @@ class PS6000:
         # delay = 0 s
         # auto Trigger = 1000 ms
 
-        # status["trigger"] = ps.ps2000aSetSimpleTrigger(chandle, 1, 0, 1024, 2, 0, 1000)
-        # assert_pico_ok(status["trigger"])
+        # self.status["trigger"] = ps.ps2000aSetSimpleTrigger(self.chandle, 1, 0, 1024, 2, 0, 1000)
+        # assert_pico_ok(self.status["trigger"])
 
         # status["signalgen"] = ps.ps2000aSetSigGenBuiltIn(chandle, 20, 50, 0, 1000, 1200, 0, 20, PS2000A_UP, PS2000A_ES_OFF, 1, 0, PS2000A_SIGGEN_GATE_HIGH, PS2000A_SIGGEN_NONE, 0)
         # assert_pico_ok(status["signalgen"])
@@ -163,29 +161,45 @@ class PS6000:
         # create a custom waveform
         awgBuffer = np.sin(np.linspace(0,2*math.pi,1024))
         awgbufferPointer = awgBuffer.ctypes.data_as(ctypes.POINTER(ctypes.c_int16))
-        arbitaryWaveform = awgbufferPointer
-        arbitraryWaveformSize = 1024
-        # shots = ps.ps2000a.
+        # arbitaryWaveform = awgbufferPointer
+        # arbitraryWaveformSize = 1024
 
-        # self.status["SetSigGenBuiltIn"] = ps.ps2000aSetSigGenBuiltIn(self.chandle, 0, 2000000, wavetype, 110000, 110000, 0, 1, sweepType, 0, 0, 0, triggertype, triggerSource, 1)
-        # assert_pico_ok(self.status["SetSigGenBuiltIn"])
+        # self.status["setSigGenArbitrary"] = ps.ps2000aSetSigGenArbitrary(self.chandle, 0, 2000000, 0, 0, 0, 0, awgbufferPointer, 1024, 0, 0, 0, 1, 0, 0, 0, 0)
+        # assert_pico_ok(self.status["setSigGenArbitrary"])
 
-        # print("siggen arbitrary will run soon")
-        # self.status["SetSigGenArbitrary"] = ps.ps2000aSetSigGenArbitrary(self.chandle, 0, 2000000, startDeltaPhase, stopDeltaPhase, 0, 0, arbitaryWaveform, arbitraryWaveformSize, sweepType, 0, indexMode, 0, 1, triggertype, triggerSource, 0)
-        # # assert_pico_ok(self.status["SetSigGenArbitrary"])
-        # print("siggen arbitrary has run")
+        #set pulse transmit here
 
-        self.status["setSigGenArbitrary"] = ps.ps2000aSetSigGenArbitrary(self.chandle, 0, 2000000, 0, 0, 0, 0, awgbufferPointer, 1024, 0, 0, 0, 1, 0, 0, 0, 0)
-        assert_pico_ok(self.status["setSigGenArbitrary"])
+        waveform_desired_duration = 1E-5 #change waveform desired duration to set the frequency of the wave
+        obs_duration = 3 * waveform_desired_duration
+        sampling_interval = obs_duration / 4096
 
-        # print("sig gen builtin will run")
-        # self.status["SetSigGenBuiltIn"] = ps.ps2000aSetSigGenBuiltIn(self.chandle, 0, 2000000, wavetype, 110000, 110000, 0, 1, sweepType, 0, 0, 0, triggertype, triggerSource, 1)
-        # print("sig gen builtin has run")
+        (actualSamplingInterval, nSamples, maxSamples) = \
+            ps_2.setSamplingInterval(sampling_interval, obs_duration)
+        print("Sampling interval = %f ns" % (actualSamplingInterval * 1E9))
+        print("Taking  samples = %d" % nSamples)
+        print("Maximum samples = %d" % maxSamples)
+
+        waveformAmplitude = 1.5
+        waveformOffset = 0
+        
+        freq = 110000
+        fs = int(2*freq) # sample rate
+        t = np.linspace(0, 3, 1000, endpoint = False)
+
+        noise1 = 0
+        noise2 = 0.01*np.sin(2*np.pi * 0.1*t) + 0.01*np.sin(2*np.pi * 1.8*t) + 0.01*np.sin(2*np.pi * 0.4*t)
+
+        realSignal = 2*np.sin(2*np.pi* t)
+        sig = noise1
+
+        sig = np.append(sig, [realSignal, noise2, realSignal, noise1*noise2])
+
+        (waveform_duration, deltaPhase) = ps_2.setAWGSimple(
+        sig, waveform_desired_duration, offsetVoltage=0.0,
+        indexMode="Single", triggerSource='None')
 
         # Pauses the script to show signal
         time.sleep(10)
-        
-        # status["changesiggen"] = ps.ps2000aSetSigGenPropertiesArbitary(chandle, 20, 40, 20, 20, )
 
         # Set number of pre and post trigger samples to be collected
         preTriggerSamples = 3
@@ -351,72 +365,72 @@ class PS6000:
         # display status returns
         print(self.status)
 
-    def savecsv(self, fname = 'test_1', fdest ='./CSV Files', file = "./le_test.csv", dist = 0.2):
-        # self.channel_a = self.adc2mVChAMax[:]
-        # self.channel_b = self.adc2mVChBMax[:]
-        #file = '../capstone\\CSV Files\\' + str(fname) + '.csv'
-        #write_file = open(file, 'w')
-        #trace = pd.read_csv(file, sep='\t', skiprows=16, header=None)
-        #trace = trace.loc[self.channel_a, self.time]
-        # self.dict2csv = {"Voltage(mV)": self.channel_a, "Time(ns)": self.time}
-         # trace.columns = ['voltage (mV)','time (ns)']
-        # self.df = pd.DataFrame(self.dict2csv)
-        # print(self.df)
-        stiffness_val = self.swv2stiffness_csvextract(file, float(dist))
-        stiffness_val_df = pd.DataFrame({'stiffness' : [stiffness_val]})
+    # def savecsv(self, fname = 'test_1', fdest ='./CSV Files', file = "./le_test.csv", dist = 0.2):
+    #     # self.channel_a = self.adc2mVChAMax[:]
+    #     # self.channel_b = self.adc2mVChBMax[:]
+    #     #file = '../capstone\\CSV Files\\' + str(fname) + '.csv'
+    #     #write_file = open(file, 'w')
+    #     #trace = pd.read_csv(file, sep='\t', skiprows=16, header=None)
+    #     #trace = trace.loc[self.channel_a, self.time]
+    #     # self.dict2csv = {"Voltage(mV)": self.channel_a, "Time(ns)": self.time}
+    #      # trace.columns = ['voltage (mV)','time (ns)']
+    #     # self.df = pd.DataFrame(self.dict2csv)
+    #     # print(self.df)
+    #     stiffness_val = self.swv2stiffness_csvextract(file, float(dist))
+    #     stiffness_val_df = pd.DataFrame({'stiffness' : [stiffness_val]})
 
-        # fdest ="add in filepath for RPi"
-        # fname = "test" + [date]
+    #     # fdest ="add in filepath for RPi"
+    #     # fname = "test" + [date]
 
-        # print(stiffness_val_df)
-        # print(fdest + '\\' + fname + '.csv')
-        stiffness_val_df.to_csv(fdest + '\\' + fname + '.csv', sep='\t', encoding='utf-8', index = False)
+    #     # print(stiffness_val_df)
+    #     # print(fdest + '\\' + fname + '.csv')
+    #     stiffness_val_df.to_csv(fdest + '\\' + fname + '.csv', sep='\t', encoding='utf-8', index = False)
 
-    def graph2speed(self, distance = 2.0):
+    # def graph2speed(self, distance = 2.0):
 
-        Tx_obj = Tx()
+    #     Tx_obj = Tx()
 
-        #display both transmitting and receiving graphs
-        plt.plot(self.time, self.adc2mVChBMax[:])
-        plt.plot(self.time, Tx_obj.return_pwm())
-        plt.xlabel('Time (ns)')
-        plt.ylabel('Voltage (mV)')
-        plt.show()
+    #     #display both transmitting and receiving graphs
+    #     plt.plot(self.time, self.adc2mVChBMax[:])
+    #     plt.plot(self.time, Tx_obj.return_pwm())
+    #     plt.xlabel('Time (ns)')
+    #     plt.ylabel('Voltage (mV)')
+    #     plt.show()
 
-        #find time between both graphs
-        #get the first voltage value > 0
-        abovezerovals_receiving = []
-        for i in self.adc2mVChAMax[:]:
-            if i>0:
-                abovezerovals_receiving.append(i)
+    #     #find time between both graphs
+    #     #get the first voltage value > 0
+    #     abovezerovals_receiving = []
+    #     for i in self.adc2mVChAMax[:]:
+    #         if i>0:
+    #             abovezerovals_receiving.append(i)
 
-        getfirstval_receiving = abovezerovals_receiving[0]
+    #     getfirstval_receiving = abovezerovals_receiving[0]
 
-        #get time from the voltage 
-        for i in range (0,5000):
-            for j in self.df.iloc[i][0]:
-                if j == getfirstval_receiving:
-                    firstval_receiving_time = self.df.iloc[i][1]
-                    break
+    #     #get time from the voltage 
+    #     for i in range (0,5000):
+    #         for j in self.df.iloc[i][0]:
+    #             if j == getfirstval_receiving:
+    #                 firstval_receiving_time = self.df.iloc[i][1]
+    #                 break
 
-        #do the same as above for transmitting circuit too
-        abovezerovals_transmit = []
-        for i in self.df():
-            if i>0:
-                abovezerovals_transmit.append(i)
+    #     #do the same as above for transmitting circuit too
+    #     abovezerovals_transmit = []
+    #     for i in self.df():
+    #         if i>0:
+    #             abovezerovals_transmit.append(i)
 
-        getfirstval_transmitting = abovezerovals_receiving[0]
+    #     getfirstval_transmitting = abovezerovals_receiving[0]
 
-        #get time from the voltage 
-        for i in range (0,5000):
-            for j in self.df.iloc[i][0]:
-                if j == getfirstval_transmitting:
-                    firstval_transmitting_time = self.df.iloc[i][1]
-                    break
+    #     #get time from the voltage 
+    #     for i in range (0,5000):
+    #         for j in self.df.iloc[i][0]:
+    #             if j == getfirstval_transmitting:
+    #                 firstval_transmitting_time = self.df.iloc[i][1]
+    #                 break
 
-        time_diff = firstval_receiving_time - firstval_transmitting_time
-        shear_wave_velocity = distance/time_diff
-        return shear_wave_velocity
+    #     time_diff = firstval_receiving_time - firstval_transmitting_time
+    #     shear_wave_velocity = distance/time_diff
+    #     return shear_wave_velocity
 
     def swv2stiffness(self):
         swv = self.graph2speed()
@@ -435,8 +449,8 @@ class PS6000:
         #         if i == 1:
                     # file = "../Waveform\\" + "Waveform_0" + str(i) + ".csv"
         trace = pd.read_csv(file, skiprows=3)
-        plt.plot(trace.iloc[:, 0].values*1000, trace.iloc[:, 1].values*1000)
-        plt.plot(trace.iloc[:, 0].values*1000, (trace.iloc[:, 2].values))
+        plt.plot(trace.iloc[:, 0].values, trace.iloc[:, 1].values)
+        plt.plot(trace.iloc[:, 0].values, (trace.iloc[:, 2].values))
                     # trace = trace.loc[:,0:1]
                     # time_ls.append(trace[:, 0:1])
                     # voltage_ls.append(trace[:,1])
@@ -465,7 +479,7 @@ class PS6000:
                 
 
         # print(time_ls)
-        plt.xlabel('Time (ns)')
+        plt.xlabel('Time (us)')
         plt.ylabel('Voltage (mV)')
         plt.show()
 
@@ -489,16 +503,16 @@ class PS6000:
             # print("chb=",chB_ls)
 
             time_ls=[]
-            self.dict2csv = {"Time(ns)": self.time, "Voltage(mV) Channel B": self.adc2mVChBMax[:]}
+            self.dict2csv = {"Time(us)": self.time, "Voltage(mV) Channel B": self.adc2mVChBMax[:]}
             self.df = pd.DataFrame(self.dict2csv)
             # print("length=", len(self.df))
             print(self.df)
             for i in range (0,len(self.df)):
                 volt = self.df.iloc[i][1]
                 print(volt)
-                if volt > 55: #change accordingly
-                    if self.df.iloc[i][1] == self.df.iloc[i-1][1]:
-                        if self.df.iloc[i][1] == self.df.iloc[i+1][1]:
+                if volt > 360: #change accordingly
+                    if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
+                        if self.df.iloc[i][1] > self.df.iloc[i+1][1]:
                             get_time = self.df.iloc[i][0]
                             time_ls.append(get_time)
                             # print(get_time)
@@ -533,16 +547,16 @@ class PS6000:
         #     chA_ls.append(k)
         #     # print("cha=",chA_ls)
 
-        self.dict2csv = {"Time(ns)": self.time, "Voltage(mV) Channel A": self.adc2mVChAMax[:]}
+        self.dict2csv = {"Time(us)": self.time, "Voltage(mV) Channel A": self.adc2mVChAMax[:]}
         # self.dict2csv = {"Time(ns)": self.time, "Voltage(mV) Channel A": self.adc2mVChAMax[:]}
 
         self.df = pd.DataFrame(self.dict2csv)
         for i in range (0,len(self.df)):
             volt = self.df.iloc[i][1]
             # print(self.df.iloc[0][1])
-            if volt > 900: #change accordingly
-                if self.df.iloc[i][1] == self.df.iloc[i-1][1]:
-                    if self.df.iloc[i][1] == self.df.iloc[i+1][1]:
+            if volt > 200: #change accordingly
+                if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
+                    if self.df.iloc[i][1] > self.df.iloc[i+1][1]:
                         get_time = self.df.iloc[i][0]
                         time_ls.append(get_time)
                         # print(get_time)
@@ -566,13 +580,17 @@ class PS6000:
             trace_chb = trace.iloc[:,2].values #voltage from channel B
             # print(trace_x)
 
+            filter_val = self.digital_filter(file)
+            print("filtered")
+
             time_ls = []
-            self.dict2csv = {"Time(ns)": trace_x, "Voltage(mV) Channel B": trace_chb}
+            # self.dict2csv = {"Time(ns)": trace_x, "Voltage(mV) Channel B": trace_chb}
+            self.dict2csv = {"Time(ns)": trace_x, "Voltage(mV) Channel B": filter_val}
 
             self.df = pd.DataFrame(self.dict2csv)
             for i in range (0,len(self.df)):
                 volt = self.df.iloc[i][1]
-                if volt > 0.07: #change accordingly
+                if volt > 360: #change accordingly
                     if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
                         if self.df.iloc[i][1] > self.df.iloc[i+1][1]:
                             get_time = self.df.iloc[i][0]
@@ -582,12 +600,12 @@ class PS6000:
                         None
 
             time_rx_ls = []
-            # print(time_ls)
+            print("time_rx =",time_ls)
             time_rx_ls.append(time_ls[0])
             for k in range(0, len(time_ls)):
                 if (time_ls[k]-time_ls[k-1]) > 0.2:
                     time_rx_ls.append(time_ls[k])
-            # print(time_rx_ls) 
+            print("new_time_rx_ls=", time_rx_ls) 
             return time_rx_ls   
 
 
@@ -603,7 +621,7 @@ class PS6000:
         self.df = pd.DataFrame(self.dict2csv)
         for i in range (0,len(self.df)):
             volt = self.df.iloc[i][1]
-            if volt > 2: #change accordingly
+            if volt > 200: #change accordingly
                 if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
                     if self.df.iloc[i][1] > self.df.iloc[i+1][1]:
                         get_time = self.df.iloc[i][0]
@@ -613,11 +631,12 @@ class PS6000:
                     None
 
         time_tx_ls = []
+        print("time_tx",time_ls)
         time_tx_ls.append(time_ls[0])
         for k in range(0, len(time_ls)):
             if (time_ls[k]-time_ls[k-1]) > 0.2:
                 time_tx_ls.append(time_ls[k])
-        # print(time_tx_ls)
+        print("new_time_tx_ls=", time_tx_ls) 
         return time_tx_ls
 
     def getswv(self, file = "./le_test.csv", dist = 0.2):
@@ -731,8 +750,8 @@ class PS6000:
     #Waveform Averaging cannot rly be done unless find two values from the receiving signal, get average of both - need to setup rapid block mode
 
     def digital_filter(self, file = "./le_test.csv"):
-        fs = 500000
-        b, a = signal.iirfilter(4, Wn=150000, fs=fs, btype="low", ftype="butter")
+        fs = 11000000
+        b, a = signal.iirfilter(4, Wn=500000, fs=fs, btype="low", ftype="butter")
         print(b, a, sep="\n")
 
         trace = pd.read_csv(file, skiprows=3)
@@ -743,8 +762,8 @@ class PS6000:
         plt.figure(figsize=[6.4, 2.4])
         plt.plot(trace.iloc[:,0].values, signal_raw, label="Raw signal")
         plt.plot(trace.iloc[:,0].values, y_lfilter, alpha=0.8, lw=3, label="SciPy lfilter")
-        plt.xlabel("Time / s")
-        plt.ylabel("Amplitude")
+        plt.xlabel("Time (us)")
+        plt.ylabel("Amplitude (mV)")
         plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=2,
                 fontsize="smaller")
 
@@ -752,342 +771,344 @@ class PS6000:
         # plt.savefig("simple-lowpass-lfilter.png", dpi=100)
 
         # apply filter forward and backward using filtfilt
-        y_filtfilt = signal.filtfilt(b, a, signal_raw)
+        self.y_filtfilt = signal.filtfilt(b, a, signal_raw)
 
         plt.figure(figsize=[6.4, 2.4])
         plt.plot(trace.iloc[:,0].values, signal_raw, label="Raw signal")
         plt.plot(trace.iloc[:,0].values, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
-        plt.plot(trace.iloc[:,0].values, y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
+        plt.plot(trace.iloc[:,0].values, self.y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
         plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=3,
                 fontsize="smaller")
-        plt.xlabel("Time / s")
-        plt.ylabel("Amplitude")
+        plt.xlabel("Time (us)")
+        plt.ylabel("Amplitude (mV)")
 
         plt.tight_layout()
         # plt.savefig("lowpass-filtfilt.png", dpi=100)
         plt.show()
 
+        return self.y_filtfilt
 
-    def rapid_block_mode(self):
 
-        # Create chandle and status ready for use
-        status = {}
-        chandle = ctypes.c_int16()
+    # def rapid_block_mode(self):
 
-        # Opens the device/s
-        status["openunit"] = ps.ps2000aOpenUnit(ctypes.byref(chandle), None)
-        assert_pico_ok(status["openunit"])
+    #     # Create chandle and status ready for use
+    #     status = {}
+    #     chandle = ctypes.c_int16()
 
-        # Set up channel A
-        # handle = chandle
-        # channel = ps2000a_CHANNEL_A = 0
-        # enabled = 1
-        # coupling type = ps2000a_DC = 1
-        # range = ps2000a_10V = 9
-        # analogue offset = 0 V
-        chARange = 9
-        status["setChA"] = ps.ps2000aSetChannel(chandle, 0, 1, 1, chARange, 0)
-        assert_pico_ok(status["setChA"])
+    #     # Opens the device/s
+    #     status["openunit"] = ps.ps2000aOpenUnit(ctypes.byref(chandle), None)
+    #     assert_pico_ok(status["openunit"])
 
-        # Sets up single trigger
-        # andle = chandle
-        # Enable = 1
-        # Source = ps2000a_channel_A = 0
-        # Threshold = 1024 ADC counts
-        # Direction = ps2000a_Falling = 3
-        # Delay = 0
-        # autoTrigger_ms = 1000
-        status["trigger"] = ps.ps2000aSetSimpleTrigger(chandle, 1, 0, 1024, 3, 0, 1000)
-        assert_pico_ok(status["trigger"])
+    #     # Set up channel A
+    #     # handle = chandle
+    #     # channel = ps2000a_CHANNEL_A = 0
+    #     # enabled = 1
+    #     # coupling type = ps2000a_DC = 1
+    #     # range = ps2000a_10V = 9
+    #     # analogue offset = 0 V
+    #     chARange = 9
+    #     status["setChA"] = ps.ps2000aSetChannel(chandle, 0, 1, 1, chARange, 0)
+    #     assert_pico_ok(status["setChA"])
 
-        # Setting the number of sample to be collected
-        preTriggerSamples = 400
-        postTriggerSamples = 400
-        maxsamples = preTriggerSamples + postTriggerSamples
+    #     # Sets up single trigger
+    #     # andle = chandle
+    #     # Enable = 1
+    #     # Source = ps2000a_channel_A = 0
+    #     # Threshold = 1024 ADC counts
+    #     # Direction = ps2000a_Falling = 3
+    #     # Delay = 0
+    #     # autoTrigger_ms = 1000
+    #     status["trigger"] = ps.ps2000aSetSimpleTrigger(chandle, 1, 0, 1024, 3, 0, 1000)
+    #     assert_pico_ok(status["trigger"])
 
-        # Gets timebase innfomation
-        # WARNING: When using this example it may not be possible to access all Timebases as all channels are enabled by default when opening the scope.  
-        # To access these Timebases, set any unused analogue channels to off.
-        # handle = chandle
-        # Timebase = 2 = timebase
-        # Nosample = maxsamples
-        # TimeIntervalNanoseconds = ctypes.byref(timeIntervalns)
-        # MaxSamples = ctypes.byref(returnedMaxSamples)
-        # Segement index = 0
-        timebase = 2
-        timeIntervalns = ctypes.c_float()
-        returnedMaxSamples = ctypes.c_int16()
-        status["GetTimebase"] = ps.ps2000aGetTimebase2(chandle, timebase, maxsamples, ctypes.byref(timeIntervalns), 1, ctypes.byref(returnedMaxSamples), 0)
-        assert_pico_ok(status["GetTimebase"])
+    #     # Setting the number of sample to be collected
+    #     preTriggerSamples = 400
+    #     postTriggerSamples = 400
+    #     maxsamples = preTriggerSamples + postTriggerSamples
 
-        # Creates a overlow location for data
-        overflow = ctypes.c_int16()
-        # Creates converted types maxsamples
-        cmaxSamples = ctypes.c_int32(maxsamples)
+    #     # Gets timebase innfomation
+    #     # WARNING: When using this example it may not be possible to access all Timebases as all channels are enabled by default when opening the scope.  
+    #     # To access these Timebases, set any unused analogue channels to off.
+    #     # handle = chandle
+    #     # Timebase = 2 = timebase
+    #     # Nosample = maxsamples
+    #     # TimeIntervalNanoseconds = ctypes.byref(timeIntervalns)
+    #     # MaxSamples = ctypes.byref(returnedMaxSamples)
+    #     # Segement index = 0
+    #     timebase = 2
+    #     timeIntervalns = ctypes.c_float()
+    #     returnedMaxSamples = ctypes.c_int16()
+    #     status["GetTimebase"] = ps.ps2000aGetTimebase2(chandle, timebase, maxsamples, ctypes.byref(timeIntervalns), 1, ctypes.byref(returnedMaxSamples), 0)
+    #     assert_pico_ok(status["GetTimebase"])
 
-        # Handle = Chandle
-        # nSegments = 10
-        # nMaxSamples = ctypes.byref(cmaxSamples)
+    #     # Creates a overlow location for data
+    #     overflow = ctypes.c_int16()
+    #     # Creates converted types maxsamples
+    #     cmaxSamples = ctypes.c_int32(maxsamples)
 
-        status["MemorySegments"] = ps.ps2000aMemorySegments(chandle, 10, ctypes.byref(cmaxSamples))
-        assert_pico_ok(status["MemorySegments"])
+    #     # Handle = Chandle
+    #     # nSegments = 10
+    #     # nMaxSamples = ctypes.byref(cmaxSamples)
 
-        # sets number of captures
-        status["SetNoOfCaptures"] = ps.ps2000aSetNoOfCaptures(chandle, 10)
-        assert_pico_ok(status["SetNoOfCaptures"])
+    #     status["MemorySegments"] = ps.ps2000aMemorySegments(chandle, 10, ctypes.byref(cmaxSamples))
+    #     assert_pico_ok(status["MemorySegments"])
 
-        # Starts the block capture
-        # handle = chandle
-        # Number of prTriggerSamples
-        # Number of postTriggerSamples
-        # Timebase = 2 = 4ns (see Programmer's guide for more information on timebases)
-        # time indisposed ms = None (This is not needed within the example)
-        # Segment index = 0
-        # LpRead = None
-        # pParameter = None
-        status["runblock"] = ps.ps2000aRunBlock(chandle, preTriggerSamples, postTriggerSamples, timebase, 1, None, 0, None, None)
-        assert_pico_ok(status["runblock"])
+    #     # sets number of captures
+    #     status["SetNoOfCaptures"] = ps.ps2000aSetNoOfCaptures(chandle, 10)
+    #     assert_pico_ok(status["SetNoOfCaptures"])
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax = (ctypes.c_int16 * maxsamples)()
-        bufferAMin = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Starts the block capture
+    #     # handle = chandle
+    #     # Number of prTriggerSamples
+    #     # Number of postTriggerSamples
+    #     # Timebase = 2 = 4ns (see Programmer's guide for more information on timebases)
+    #     # time indisposed ms = None (This is not needed within the example)
+    #     # Segment index = 0
+    #     # LpRead = None
+    #     # pParameter = None
+    #     status["runblock"] = ps.ps2000aRunBlock(chandle, preTriggerSamples, postTriggerSamples, timebase, 1, None, 0, None, None)
+    #     assert_pico_ok(status["runblock"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 0
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax), ctypes.byref(bufferAMin), maxsamples, 0, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax1 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin1 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 0
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax), ctypes.byref(bufferAMin), maxsamples, 0, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 1
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax1), ctypes.byref(bufferAMin1), maxsamples, 1, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax1 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin1 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax2 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin2 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 1
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax1), ctypes.byref(bufferAMin1), maxsamples, 1, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 2
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax2), ctypes.byref(bufferAMin2), maxsamples, 2, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax2 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin2 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax3 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin3 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 2
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax2), ctypes.byref(bufferAMin2), maxsamples, 2, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 3
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax3), ctypes.byref(bufferAMin3), maxsamples, 3, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax3 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin3 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax4 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin4 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 3
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax3), ctypes.byref(bufferAMin3), maxsamples, 3, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 4
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax4), ctypes.byref(bufferAMin4), maxsamples, 4, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax4 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin4 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax5 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin5 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 4
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax4), ctypes.byref(bufferAMin4), maxsamples, 4, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 5
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax5), ctypes.byref(bufferAMin5), maxsamples, 5, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax5 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin5 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax6 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin6 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 5
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax5), ctypes.byref(bufferAMin5), maxsamples, 5, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 6
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax6), ctypes.byref(bufferAMin6), maxsamples, 6, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax6 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin6 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax7 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin7 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 6
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax6), ctypes.byref(bufferAMin6), maxsamples, 6, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 7
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax7), ctypes.byref(bufferAMin7), maxsamples, 7, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax7 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin7 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax8 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin8 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 7
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax7), ctypes.byref(bufferAMin7), maxsamples, 7, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 8
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax8), ctypes.byref(bufferAMin8), maxsamples, 8, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax8 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin8 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Create buffers ready for assigning pointers for data collection
-        bufferAMax9 = (ctypes.c_int16 * maxsamples)()
-        bufferAMin9 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 8
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax8), ctypes.byref(bufferAMin8), maxsamples, 8, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Setting the data buffer location for data collection from channel A
-        # handle = chandle
-        # source = ps2000a_channel_A = 0
-        # Buffer max = ctypes.byref(bufferAMax)
-        # Buffer min = ctypes.byref(bufferAMin)
-        # Buffer length = maxsamples
-        # Segment index = 9
-        # Ratio mode = ps2000a_Ratio_Mode_None = 0
-        status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax9), ctypes.byref(bufferAMin9), maxsamples, 9, 0)
-        assert_pico_ok(status["SetDataBuffers"])
+    #     # Create buffers ready for assigning pointers for data collection
+    #     bufferAMax9 = (ctypes.c_int16 * maxsamples)()
+    #     bufferAMin9 = (ctypes.c_int16 * maxsamples)() # used for downsampling which isn't in the scope of this example
 
-        # Creates a overlow location for data
-        overflow = (ctypes.c_int16 * 10)()
-        # Creates converted types maxsamples
-        cmaxSamples = ctypes.c_int32(maxsamples)
+    #     # Setting the data buffer location for data collection from channel A
+    #     # handle = chandle
+    #     # source = ps2000a_channel_A = 0
+    #     # Buffer max = ctypes.byref(bufferAMax)
+    #     # Buffer min = ctypes.byref(bufferAMin)
+    #     # Buffer length = maxsamples
+    #     # Segment index = 9
+    #     # Ratio mode = ps2000a_Ratio_Mode_None = 0
+    #     status["SetDataBuffers"] = ps.ps2000aSetDataBuffers(chandle, 0, ctypes.byref(bufferAMax9), ctypes.byref(bufferAMin9), maxsamples, 9, 0)
+    #     assert_pico_ok(status["SetDataBuffers"])
 
-        # Checks data collection to finish the capture
-        ready = ctypes.c_int16(0)
-        check = ctypes.c_int16(0)
-        while ready.value == check.value:
-            status["isReady"] = ps.ps2000aIsReady(chandle, ctypes.byref(ready))
+    #     # Creates a overlow location for data
+    #     overflow = (ctypes.c_int16 * 10)()
+    #     # Creates converted types maxsamples
+    #     cmaxSamples = ctypes.c_int32(maxsamples)
 
-        # handle = chandle
-        # noOfSamples = ctypes.byref(cmaxSamples)
-        # fromSegmentIndex = 0
-        # ToSegmentIndex = 9
-        # DownSampleRatio = 0
-        # DownSampleRatioMode = 0
-        # Overflow = ctypes.byref(overflow)
+    #     # Checks data collection to finish the capture
+    #     ready = ctypes.c_int16(0)
+    #     check = ctypes.c_int16(0)
+    #     while ready.value == check.value:
+    #         status["isReady"] = ps.ps2000aIsReady(chandle, ctypes.byref(ready))
 
-        status["GetValuesBulk"] = ps.ps2000aGetValuesBulk(chandle, ctypes.byref(cmaxSamples), 0, 9, 0, 0, ctypes.byref(overflow))
-        assert_pico_ok(status["GetValuesBulk"])
+    #     # handle = chandle
+    #     # noOfSamples = ctypes.byref(cmaxSamples)
+    #     # fromSegmentIndex = 0
+    #     # ToSegmentIndex = 9
+    #     # DownSampleRatio = 0
+    #     # DownSampleRatioMode = 0
+    #     # Overflow = ctypes.byref(overflow)
 
-        # handle = chandle
-        # Times = Times = (ctypes.c_int16*10)() = ctypes.byref(Times)
-        # Timeunits = TimeUnits = ctypes.c_char() = ctypes.byref(TimeUnits)
-        # Fromsegmentindex = 0
-        # Tosegementindex = 9
-        Times = (ctypes.c_int16*10)()
-        TimeUnits = ctypes.c_char()
-        status["GetValuesTriggerTimeOffsetBulk"] = ps.ps2000aGetValuesTriggerTimeOffsetBulk64(chandle, ctypes.byref(Times), ctypes.byref(TimeUnits), 0, 9)
-        assert_pico_ok(status["GetValuesTriggerTimeOffsetBulk"])
+    #     status["GetValuesBulk"] = ps.ps2000aGetValuesBulk(chandle, ctypes.byref(cmaxSamples), 0, 9, 0, 0, ctypes.byref(overflow))
+    #     assert_pico_ok(status["GetValuesBulk"])
 
-        # Finds the max ADC count
-        # handle = chandle
-        # Value = ctype.byref(maxADC)
-        maxADC = ctypes.c_int16()
-        status["maximumValue"] = ps.ps2000aMaximumValue(chandle, ctypes.byref(maxADC))
-        assert_pico_ok(status["maximumValue"])
+    #     # handle = chandle
+    #     # Times = Times = (ctypes.c_int16*10)() = ctypes.byref(Times)
+    #     # Timeunits = TimeUnits = ctypes.c_char() = ctypes.byref(TimeUnits)
+    #     # Fromsegmentindex = 0
+    #     # Tosegementindex = 9
+    #     Times = (ctypes.c_int16*10)()
+    #     TimeUnits = ctypes.c_char()
+    #     status["GetValuesTriggerTimeOffsetBulk"] = ps.ps2000aGetValuesTriggerTimeOffsetBulk64(chandle, ctypes.byref(Times), ctypes.byref(TimeUnits), 0, 9)
+    #     assert_pico_ok(status["GetValuesTriggerTimeOffsetBulk"])
 
-        # Converts ADC from channel A to mV
-        self.adc2mVChAMax = adc2mV(bufferAMax, chARange, maxADC)
-        self.adc2mVChAMax1 = adc2mV(bufferAMax1, chARange, maxADC)
-        self.adc2mVChAMax2 = adc2mV(bufferAMax2, chARange, maxADC)
-        self.adc2mVChAMax3 = adc2mV(bufferAMax3, chARange, maxADC)
-        self.adc2mVChAMax4 = adc2mV(bufferAMax4, chARange, maxADC)
-        self.adc2mVChAMax5 = adc2mV(bufferAMax5, chARange, maxADC)
-        self.adc2mVChAMax6 = adc2mV(bufferAMax6, chARange, maxADC)
-        self.adc2mVChAMax7 = adc2mV(bufferAMax7, chARange, maxADC)
-        self.adc2mVChAMax8 = adc2mV(bufferAMax8, chARange, maxADC)
-        self.adc2mVChAMax9 = adc2mV(bufferAMax9, chARange, maxADC)
+    #     # Finds the max ADC count
+    #     # handle = chandle
+    #     # Value = ctype.byref(maxADC)
+    #     maxADC = ctypes.c_int16()
+    #     status["maximumValue"] = ps.ps2000aMaximumValue(chandle, ctypes.byref(maxADC))
+    #     assert_pico_ok(status["maximumValue"])
 
-        # Creates the time data
-        time = np.linspace(0, (cmaxSamples.value - 1) * timeIntervalns.value, cmaxSamples.value)
+    #     # Converts ADC from channel A to mV
+    #     self.adc2mVChAMax = adc2mV(bufferAMax, chARange, maxADC)
+    #     self.adc2mVChAMax1 = adc2mV(bufferAMax1, chARange, maxADC)
+    #     self.adc2mVChAMax2 = adc2mV(bufferAMax2, chARange, maxADC)
+    #     self.adc2mVChAMax3 = adc2mV(bufferAMax3, chARange, maxADC)
+    #     self.adc2mVChAMax4 = adc2mV(bufferAMax4, chARange, maxADC)
+    #     self.adc2mVChAMax5 = adc2mV(bufferAMax5, chARange, maxADC)
+    #     self.adc2mVChAMax6 = adc2mV(bufferAMax6, chARange, maxADC)
+    #     self.adc2mVChAMax7 = adc2mV(bufferAMax7, chARange, maxADC)
+    #     self.adc2mVChAMax8 = adc2mV(bufferAMax8, chARange, maxADC)
+    #     self.adc2mVChAMax9 = adc2mV(bufferAMax9, chARange, maxADC)
 
-        # Plots the data from channel A onto a graph
-        plt.plot(time, self.adc2mVChAMax[:])
-        plt.plot(time, self.adc2mVChAMax1[:])
-        plt.plot(time, self.adc2mVChAMax2[:])
-        plt.plot(time, self.adc2mVChAMax3[:])
-        plt.plot(time, self.adc2mVChAMax4[:])
-        plt.plot(time, self.adc2mVChAMax5[:])
-        plt.plot(time, self.adc2mVChAMax6[:])
-        plt.plot(time, self.adc2mVChAMax7[:])
-        plt.plot(time, self.adc2mVChAMax8[:])
-        plt.plot(time, self.adc2mVChAMax9[:])
-        plt.xlabel('Time (ns)')
-        plt.ylabel('Voltage (mV)')
-        plt.show()
+    #     # Creates the time data
+    #     time = np.linspace(0, (cmaxSamples.value - 1) * timeIntervalns.value, cmaxSamples.value)
 
-        # Stops the scope
-        # Handle = chandle
-        status["stop"] = ps.ps2000aStop(chandle)
-        assert_pico_ok(status["stop"])
+    #     # Plots the data from channel A onto a graph
+    #     plt.plot(time, self.adc2mVChAMax[:])
+    #     plt.plot(time, self.adc2mVChAMax1[:])
+    #     plt.plot(time, self.adc2mVChAMax2[:])
+    #     plt.plot(time, self.adc2mVChAMax3[:])
+    #     plt.plot(time, self.adc2mVChAMax4[:])
+    #     plt.plot(time, self.adc2mVChAMax5[:])
+    #     plt.plot(time, self.adc2mVChAMax6[:])
+    #     plt.plot(time, self.adc2mVChAMax7[:])
+    #     plt.plot(time, self.adc2mVChAMax8[:])
+    #     plt.plot(time, self.adc2mVChAMax9[:])
+    #     plt.xlabel('Time (ns)')
+    #     plt.ylabel('Voltage (mV)')
+    #     plt.show()
 
-        # Closes the unit
-        # Handle = chandle
-        status["close"] = ps.ps2000aCloseUnit(chandle)
-        assert_pico_ok(status["close"])
+    #     # Stops the scope
+    #     # Handle = chandle
+    #     status["stop"] = ps.ps2000aStop(chandle)
+    #     assert_pico_ok(status["stop"])
 
-        # Displays the staus returns
-        print(status)
+    #     # Closes the unit
+    #     # Handle = chandle
+    #     status["close"] = ps.ps2000aCloseUnit(chandle)
+    #     assert_pico_ok(status["close"])
+
+    #     # Displays the status returns
+    #     print(status)
 
 #rapid block mode gives out waves but at different timezones; how to set all to same timezone first
-    def waveform_averaging(self):
-        for i in range(0,9):
-            for j in "self.adc2mVChAMax" + str(i) + "[:]":
-                for k in "self.adc2mVChAMax" + str(i+1) + "[:]":
-                # name = "self.adc2mVChAMax" + str(i) + "[:]"
-                # name_2 = "self.adc2mVChAMax" + str(i+1) + "[:]"
-                    j[:,0] += k[:,0]
+    # def waveform_averaging(self):
+    #     for i in range(0,9):
+    #         for j in "self.adc2mVChAMax" + str(i) + "[:]":
+    #             for k in "self.adc2mVChAMax" + str(i+1) + "[:]":
+    #             # name = "self.adc2mVChAMax" + str(i) + "[:]"
+    #             # name_2 = "self.adc2mVChAMax" + str(i+1) + "[:]"
+    #                 j[:,0] += k[:,0]
 
 # start_PS6000 = PS6000()
 # start_PS6000.plotgraph2checkwave()
@@ -1100,7 +1121,9 @@ filepath = "./command.txt"
 # txt_file = open(filepath,'r')
 # start_PS6000.plotgraph2checkwave("C:/Users/Charis/Downloads/Waveforms/Waveforms/agar testing/pulse/Testing_agar_pulse_10mm/Testing_agar_pulse_10mm_05.csv")
 # start_PS6000.dft_filter("C:/Users/Charis/Downloads/Waveforms/Waveforms/agar testing/pulse/Testing_agar_pulse_10mm/Testing_agar_pulse_10mm_05.csv",3000)
-start_PS6000.digital_filter("C:/Users/Charis/Downloads/Waveforms/Waveforms/agar testing/pulse/Testing_agar_pulse_10mm/Testing_agar_pulse_10mm_05.csv")
+# start_PS6000.digital_filter("C:/Users/Charis/Downloads/waveform/waveform/jellllllllllyyyyyyyy_2_23.csv")
+# start_PS6000.swv2stiffness_csvextract("C:/Users/Charis/Downloads/waveform/waveform/jellllllllllyyyyyyyy_2_23.csv", 0.05)
+# start_PS6000.plotgraph2checkwave("C:/Users/Charis/Downloads/waveform/waveform/jellllllllllyyyyyyyy_2_23.csv")
 
 while True:
         txt_file = open(filepath,'r')
@@ -1108,15 +1131,19 @@ while True:
         read_txt = txt_file.read()
         print("read_txt =",read_txt)
         if read_txt == "run":
-#         # start_PS6000.open_ps2000a()
-#         # start_PS6000.block_example()
+            start_PS6000.open_ps2000a()
+            start_PS6000.block_example()
 #         # start_PS6000.savecsv()
 #         #start_PS6000.findmaxvoltageandtime_tx()
             # start_PS6000.open_ps2000a()
-            start_PS6000.block_example()
+            # start_PS6000.block_example()
             # start_PS6000.plotgraph2checkwave()
             # start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
             # stiffness_val = start_PS6000.swv2stiffness_csvextract("./le_test.csv", 0.2)
+
+            start_PS6000.swv2stiffness_csvextract("./jellllllllllyyyyyyyy_2_23.csv", 0.05)
+            start_PS6000.plotgraph2checkwave("./jellllllllllyyyyyyyy_2_23.csv")
+
             stiffness_val_run = start_PS6000.getstiffness(0.005)
             # noise_filter = start_PS6000.dft_filter()
             # start_PS600cd 0.savecsv('test_1', './', "./le_test.csv", 0.2)
