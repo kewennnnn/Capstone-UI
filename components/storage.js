@@ -62,7 +62,7 @@ function setPlatelet() {
 function getElasticity() {
     const storage = require('electron-localstorage');
     // const elasticity = localStorage.getItem("elasticity") ?? "";
-    const elasticity = storage.getItem("elasticity") ? parseInt(storage.getItem("elasticity")) : "";
+    const elasticity = storage.getItem("elasticity") ? parseFloat(storage.getItem("elasticity")) : "";
     console.log(elasticity);
     return elasticity;
 }
