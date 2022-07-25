@@ -4,155 +4,124 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import time
-# from picoscope import ps2000
 from picoscope import ps2000a
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
 import pandas as pd
-from FreqMeasure import freqMeasure
 
-if __name__ == "__main__":
-    print(__doc__)
+class Trigger:
 
-    print("Attempting to open Picoscope 2000...")
+    def trigger_tx(self):
 
-    # ps = ps2000.PS2000()
-    # Uncomment this line to use with the 2000a/2000b series
-    ps = ps2000a.PS2000a()
+        print("Attempting to open Picoscope 2000A...")
 
-    print("Found the following picoscope:")
-    print(ps.getAllUnitInfo())
+        # Uncomment this line to use with the 2000a/2000b series
+        ps = ps2000a.PS2000a()
 
-    waveform_desired_duration = 1E-5 #change waveform desired duration to set the frequency of the wave
-    obs_duration = 3 * waveform_desired_duration
-    sampling_interval = obs_duration / 4096
+        print("Found the following picoscope:")
+        print(ps.getAllUnitInfo())
 
-    (actualSamplingInterval, nSamples, maxSamples) = \
-        ps.setSamplingInterval(sampling_interval, obs_duration)
-    print("Sampling interval = %f ns" % (actualSamplingInterval * 1E9))
-    print("Taking  samples = %d" % nSamples)
-    print("Maximum samples = %d" % maxSamples)
+        waveform_desired_duration = 7E-3 #change waveform desired duration to set the frequency of the wave
+        obs_duration = 3 * waveform_desired_duration
+        sampling_interval = obs_duration / 4096
 
-    waveformAmplitude = 1.5
-    waveformOffset = 0
-    # x = np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False)
-    # # generate an interesting looking waveform
-    # waveform = waveformOffset + (x / 2 + (x ** 2) / 2) * waveformAmplitude
-    
-    freq = 110000
-    fs = int(2*freq) # sample rate
-    t = np.linspace(0, 3, 1000, endpoint = False)
+        (actualSamplingInterval, nSamples, maxSamples) = \
+            ps.setSamplingInterval(sampling_interval, obs_duration)
+        print("Sampling interval = %f ns" % (actualSamplingInterval * 1E9))
+        print("Taking  samples = %d" % nSamples)
+        print("Maximum samples = %d" % maxSamples)
 
-    # fm.openScope()
+        waveformAmplitude = 2.0
+        waveformOffset = 0
+        # x = np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False)
 
-    # try:
-    #     while 1:
-    #         fm.armMeasure()
-    #         fm.measure()
-    # except KeyboardInterrupt:
-    #     pass
+        freq = 110000
+        fs = int(2*freq) # sample rate
+        t = np.linspace(0, 3, 1000, endpoint = False)
 
-    # fm.closeScope()
+        # waveformAmplitude = 5
+        # waveformOffset = 0
+        # # x = np.sin(np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False, retstep=True))
 
-    # waveformAmplitude = 5
-    # waveformOffset = 0
-    # # x = np.sin(np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False, retstep=True))
+        noise1 = 0
+        noise2 = 0.01*np.sin(2*np.pi * 0.1*t) + 0.01*np.sin(2*np.pi * 1.8*t) + 0.01*np.sin(2*np.pi * 0.4*t)
 
-    # t = np.linspace(0, 3, 1000, endpoint=False)
+        realSignal = 2*np.sin(2*np.pi* t)
+        sig = noise1
 
-    # x = np.linspace(-1, 1, num=ps.AWGMaxSamples, endpoint=False)
+        sig = np.append(sig, [realSignal, noise2, realSignal, noise1*noise2])
+        print("signal=", sig)
 
-    # pwm = signal.square(1*t, duty=0.08)
+        (waveform_duration, deltaPhase) = ps.setAWGSimple(
+            sig, waveform_desired_duration, offsetVoltage=0.0,
+            indexMode="Single", triggerSource='None')
 
-    # print ("pwm vals=",pwm)
-    # print("length of pwm", len(pwm))is 1000
-    # pwm = signal.square(2 * np.pi * 200 * t)
-    # value = pwm*sig
-    # pwm = signal.unit_impulse(100)
-    # b, a = signal.butter (4,0.5)
-    # response = signal.lfilter(b, a, pwm)
+        # the setChannel command will chose the next largest amplitude
+        # BWLimited = 1 for 6402/6403, 2 for 6404, 0 for all
+        channelARange = ps.setChannel('A', 'DC', waveformAmplitude, 0.0,
+                                    enabled=True, BWLimited=False)
+        channelBRange = ps.setChannel('B', 'DC', waveformAmplitude, 0.0,
+                                    enabled=True, BWLimited=False)
 
-    # generate an interesting looking waveform
-    # waveform = waveformOffset + (x / 2 + (x ** 2) / 2) * waveformAmplitude
+        print("Chosen channel range = %d" % channelARange)
 
-    # waveform = waveformOffset + np.sin(20*t) * waveformAmplitude
+        ps.setSimpleTrigger('A', 1.0, 'Falling', delay=0, timeout_ms=100,
+                            enabled=True)
+        # ps.setSimpleTrigger('B', 1.0, 'Falling', delay=0, timeout_ms=100,
+        #                     enabled=True)
 
-    noise1 = 0
-    noise2 = 0.01*np.sin(2*np.pi * 0.1*t) + 0.01*np.sin(2*np.pi * 1.8*t) + 0.01*np.sin(2*np.pi * 0.4*t)
+        ps.runBlock()
+        ps.waitReady()
+        print("Waiting for awg to settle.")
+        time.sleep(2.0)
+        ps.runBlock()
+        ps.waitReady()
+        print("Done waiting for trigger")
+        self.adc2mVChAMax = ps.getDataV('A', nSamples, returnOverflow=False)
+        self.adc2mVChBMax = ps.getDataV('B', nSamples, returnOverflow=False)
 
-    realSignal = 2*np.sin(2*np.pi* t)
-    sig = noise1
+        self.time = np.arange(nSamples) * actualSamplingInterval
 
-    sig = np.append(sig, [realSignal, noise2, realSignal, noise1*noise2])
-    print("signal=", sig)
+        ps.stop()
+        ps.close()
 
-    # sig = np.sin(2 * np.pi * t)
-    # pwm = signal.square(2 * np.pi * 2 * t, duty=(sig+1)/2)
+        plt.plot(self.time, self.adc2mVChAMax, label="Tx")
+        plt.plot(self.time,self.adc2mVChBMax, label="Rx")
+        plt.title("Picoscope 2000A waveforms")
+        plt.ylabel("Voltage (V)")
+        plt.xlabel("Time (ms)")
+        plt.legend()
+        plt.show()
 
-    #must be a numpy array
+    def find_freq(self):
+        # print("ChA=",self.adc2mVChAMax)
+        # print("ChB=",self.adc2mVChBMax)
+        # print(type(self.adc2mVChAMax))
 
-    #create wave from CSV file but cannot convert NaN into integer
-    # save_as_csv = pd.DataFrame(waveform).to_csv("C:/Users/Charis/Downloads/waveform_test.csv")
-    # waveform = np.genfromtxt("C:/Users/Charis/Downloads/waveform_test.csv", delimiter=";")
+        self.dict2csv = {"Time(ms)": self.time, "Voltage(V) Channel A": self.adc2mVChAMax}
 
-    # print("waveform vals=", waveform)
-    # print(len(waveform)) is 1000
-    # k_ls = np.array([], dtype = np.int16)
-    # for i in waveform:
-    #     print("i")
-    #     for j in pwm:
-    #         k = i*j
-    #         print("k")
-    #         k_ls = np.append(k_ls, k)
-    # print("done")
+        self.df = pd.DataFrame(self.dict2csv)
 
-    # print(k_ls) 
+        time_ls =[]
+        for i in range (0,len(self.df)):
+            volt = self.df.iloc[i][1]
+            print(volt)
+            if volt > 1.9: #change accordingly
+                if self.df.iloc[i][1] > self.df.iloc[i-1][1]:
+                    if self.df.iloc[i][1] >= self.df.iloc[i+1][1]:
+                        get_time = self.df.iloc[i][0]
+                        time_ls.append(get_time)
+                else:
+                    None
 
-    # print("Waveformtype=",type(waveform))
-    # waveform_arr = np.asarray(k_ls)
+        print(time_ls)
+        # if (time_ls[1] - time_ls[0])<0.01:
+        freq = 1/((time_ls[1] - time_ls[0])*1E-3)
+        # else:
+        #     freq = 1/((time_ls[2] - time_ls[1])*1E-3)
+        print ("Frequency(MHz)=", freq/1E6)
 
-    (waveform_duration, deltaPhase) = ps.setAWGSimple(
-        sig, waveform_desired_duration, offsetVoltage=0.0,
-        indexMode="Single", triggerSource='None')
-
-    # the setChannel command will chose the next largest amplitude
-    # BWLimited = 1 for 6402/6403, 2 for 6404, 0 for all
-    channelRange = ps.setChannel('A', 'DC', waveformAmplitude, 0.0,
-                                 enabled=True, BWLimited=False)
-
-    print("Chosen channel range = %d" % channelRange)
-
-    ps.setSimpleTrigger('A', 1.0, 'Falling', delay=0, timeout_ms=100,
-                        enabled=True)
-    # ps.setSimpleTrigger('TriggerAux', 0.0, 'Falling', delay=0,
-    #                     timeout_ms=100, enabled=True)
-
-    ps.runBlock()
-    ps.waitReady()
-    print("Waiting for awg to settle.")
-    time.sleep(2.0)
-    ps.runBlock()
-    ps.waitReady()
-    print("Done waiting for trigger")
-    dataA = ps.getDataV('A', nSamples, returnOverflow=False)
-    dataA_1 = ps.getDataV('A', nSamples, returnOverflow=False)
-    fm = freqMeasure()
-    dataA_1 = dataA_1 - np.mean(dataA_1)
-    freq = fm.freq_from_crossings(dataA_1)
-    print("Freqency=", freq)
-
-    dataTimeAxis = np.arange(nSamples) * actualSamplingInterval
-
-    ps.stop()
-    ps.close()
-
-    # plt.figure()
-    # plt.hold(True)
-    plt.plot(dataTimeAxis, dataA, label="Clock")
-    # plt.grid(True, which='major')
-    plt.title("Picoscope 2000 waveforms")
-    plt.ylabel("Voltage (V)")
-    plt.xlabel("Time (ms)")
-    plt.legend()
-    plt.show()
+trigger = Trigger()
+trigger.trigger_tx()
+trigger.find_freq()
