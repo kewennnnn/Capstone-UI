@@ -14,6 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const screeningButton = document.getElementById('screening-activate');
+  const screeningValue = document.getElementById('input-value');
   const storage = require('electron-localstorage');
   if (screeningButton) {
     console.log("screening-activate button found!");
@@ -25,16 +26,22 @@ window.addEventListener('DOMContentLoaded', () => {
       if (isLoading) { 
         console.log("ish loading");
         screeningButton.classList="button-grey";
+        screeningValue.innerHTML = `<lord-icon
+                src="https://cdn.lordicon.com/xjovhxra.json"
+                trigger="loop"
+                colors="primary:#ffffff"
+                style="width:100%;height:100%;position:relative;bottom:10px;">
+              </lord-icon>`;
+        ipcRenderer.invoke("readText").then((res) => {
+          console.log("readText res =",res);
+          // let val = storage.getItem("elasticity");
+          // screeningValue.innerHTML = val;
+          event.preventDefault();
+        }); 
       } else {
         console.log("nawt loading");
         screeningButton.classList="";
       }
-      ipcRenderer.invoke("readText").then((res) => {
-        console.log("readRes =",readRes);
-        let val = storage.getItem("elasticity");
-        document.getElementById('input-value').innerHTML = val;
-        event.preventDefault();
-      }); 
     });
   } else {
     console.log("screening-activate button not found");

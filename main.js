@@ -178,6 +178,7 @@ ipcMain.handle("saveText", (event, txtval) => {
 ipcMain.handle("readText", (event) => {
   let currentCommand = fs.readFileSync(commandFilePath, "utf8");
   console.log("readText: Initial command =",currentCommand);
+  fs.unwatchFile(commandFilePath);
   fs.watchFile(commandFilePath, {interval:100}, () => {
     let data = fs.readFileSync(commandFilePath, "utf8");
     console.log("Data file changed to",data.toString());
