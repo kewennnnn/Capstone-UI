@@ -71,9 +71,6 @@ function displayResults() {
     if (MLResult >= 50) {
         document.getElementById("result-stage").innerHTML = MLResult+"% (High)";
         document.getElementById("result-advice").innerHTML = "Please refer to specialist";
-    } else if (MLResult >= 30) {
-        document.getElementById("result-stage").innerHTML = MLResult+"% (Moderate)";
-        document.getElementById("result-advice").innerHTML = "Consider referral to specialist";
     } else {
         document.getElementById("result-stage").innerHTML = MLResult+"% (Low)";
         document.getElementById("result-advice").innerHTML = "Specialist referral not required";

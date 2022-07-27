@@ -16,12 +16,28 @@ window.addEventListener('DOMContentLoaded', () => {
   const screeningButton = document.getElementById('screening-activate');
   const storage = require('electron-localstorage');
   if (screeningButton) {
+    console.log("screening-activate button found!");
     screeningButton.addEventListener('click', (event) => {
+      event.preventDefault();
       console.log("am here");
-      let res = ipcRenderer.send("saveText","run");
-      let val = storage.getItem("elasticity");
-      document.getElementById('input-value').innerHTML = val;
+      let isLoading = ipcRenderer.invoke("saveText","run"); 
+      event.preventDefault();
+      if (isLoading) { 
+        console.log("ish loading");
+        screeningButton.classList="button-grey";
+      } else {
+        console.log("nawt loading");
+        screeningButton.classList="";
+      }
+      ipcRenderer.invoke("readText").then((res) => {
+        console.log("readRes =",readRes);
+        let val = storage.getItem("elasticity");
+        document.getElementById('input-value').innerHTML = val;
+        event.preventDefault();
+      }); 
     });
+  } else {
+    console.log("screening-activate button not found");
   }
   
 })
