@@ -14,6 +14,8 @@ function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
+    fullscreen: true,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -142,7 +144,7 @@ ipcMain.handle("saveText", (event, txtval) => {
   let isLoading = false;
   let currentCommand = fs.readFileSync(commandFilePath, "utf8");
   console.log("saveText: Initial command =",currentCommand);
-  if (currentCommand == "-") {
+  if (currentCommand == "-" || txtval != "run") {
     fs.writeFileSync(commandFilePath, txtval.toString());
     let data = fs.readFileSync(commandFilePath, "utf8");
     console.log("File written! currentCommand =",data.toString());
