@@ -15,9 +15,7 @@ https://nodejs.org/en/download/
 ## PicoSDK
 From https://www.picotech.com/downloads, download "Discontinued Products" > "PicoScope 2207A" > "Software" > "PicoSDK (64-bit) for Windows" 
 ```bash
-py -m  pip install picosdk
-```
-```bash
+pip install picosdk
 pip install picoscope
 ```
 
@@ -38,11 +36,6 @@ npm start
 
 # App Packaging
 ```bash
-# for use in npm scripts
-npm install electron-packager --save-dev
-# for use from cli
-npm install electron-packager -g
-# run the command for packaging our app for Windows 
 npm run package-win
 ```
 
