@@ -148,7 +148,7 @@ my-keypad button {
 
 #input-value {
     height: 90px;
-    width: 400px;
+    width: 500px;
     border: 3px solid var(--orange);
     border-radius: 15px;
     padding: 15px;
@@ -163,12 +163,12 @@ my-keypad button {
     width: 0px;
     display: inline-block;
     position: relative;
-    right: 200px;
+    right: 250px;
     /* bottom: 12px; */
     align-items: flex-end;
 } 
 #input-unit h2 {
-    width: 100px;
+    width: 150px;
     text-align: right;
 }
 
