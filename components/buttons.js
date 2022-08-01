@@ -22,10 +22,10 @@ function skipButton() {
     </button>`)
 }
 
-function nextButton() {
+function nextButton(text="Next") {
     return (
     `<button style="width:270px">
-        Next
+        ${text}
         <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
         <lord-icon
             src="https://cdn.lordicon.com/iifryyua.json"
