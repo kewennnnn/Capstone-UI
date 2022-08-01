@@ -88,6 +88,9 @@ h3 {
 .low-z {
     z-index: -1;
 }
+.inline {
+    display: inline-block;
+}
 
 button {
     /* height: 30px; */
