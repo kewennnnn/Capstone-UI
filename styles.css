@@ -281,6 +281,7 @@ my-keypad button {
     border: var(--text) 3px solid;
     border-radius: 20px;
     /* position: fixed; */
+    background-color:rgba(20, 20, 60, 0.8);
     backdrop-filter: blur(40px);
     text-align: right;
     opacity: 0;
