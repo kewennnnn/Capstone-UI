@@ -24,6 +24,7 @@ class Tooltip extends HTMLElement {
       super();
       this.content1;
       this.content2;
+      this.content3;
       this.tipNumber;
       this.next;
       this.prev;
@@ -32,6 +33,7 @@ class Tooltip extends HTMLElement {
     connectedCallback() {
       this.content1 = this.getAttribute("content1") ? `<p>${this.getAttribute("content1")}</p>` : "";
       this.content2 = this.getAttribute("content2") ? `<p>${this.getAttribute("content2")}</p>` : "";
+      this.content3 = this.getAttribute("content3") ?? "";
       this.tipNumber = (this.getAttribute("tipNumber")) ? parseInt(this.getAttribute("tipNumber")) : 1;
       this.numOfTips = (this.getAttribute("numOfTips")) ? parseInt(this.getAttribute("numOfTips")) : null;
       this.next = (this.tipNumber<this.numOfTips) ? (this.tipNumber+1) : null;
@@ -61,6 +63,7 @@ class Tooltip extends HTMLElement {
         </lord-icon>
         ${this.content1}
         ${this.content2}
+        ${this.content3}
         ${this.nav}
       </div>
       `;
