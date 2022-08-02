@@ -1,2 +1,2 @@
 START npm start 
-python PS6000.py
+python testSINE.py
