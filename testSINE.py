@@ -51,8 +51,6 @@ class PS2000A:
         # range = PS2000A_2V = 7
         # analogue offset = 0 V
 
-        # ps_2 = ps2000a.PS2000a()
-
         chARange = 7
         status["setChA"] = ps.ps2000aSetChannel(chandle, 0, 1, 1, chARange, 0)
         assert_pico_ok(status["setChA"])
@@ -244,32 +242,32 @@ class PS2000A:
 
     def digital_filter(self):
 
-            # fs = 1800000
-            fs = 180000000
-            b, a = signal.iirfilter(4, Wn=7000000, fs=fs, rp=3 ,rs=60, btype="low", ftype="ellip")
-            print(b, a, sep="\n")
+        # fs = 1800000
+        fs = 180000000
+        b, a = signal.iirfilter(4, Wn=7000000, fs=fs, rp=3 ,rs=60, btype="low", ftype="ellip")
+        print(b, a, sep="\n")
 
-            signal_raw = self.adc2mVChBMax
-            # y_lfilter = signal.lfilter(b, a, signal_raw)
+        signal_raw = self.adc2mVChBMax
+        # y_lfilter = signal.lfilter(b, a, signal_raw)
 
-            # apply filter forward and backward using filtfilt
-            y_filtfilt = signal.filtfilt(b, a, signal_raw)
+        # apply filter forward and backward using filtfilt
+        y_filtfilt = signal.filtfilt(b, a, signal_raw)
 
-            #commented out FILTER GRAPH
-            # plt.figure(figsize=[6.4, 2.4])
-            # plt.plot(self.ed_time, signal_raw, label="Raw signal")
-            # # plt.plot(self.time, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
-            # plt.plot(self.ed_time, y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
-            # plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=3,
-            #         fontsize="smaller")
-            # plt.xlabel("Time (ns)")
-            # plt.ylabel("Amplitude (mV)")
+        #commented out FILTER GRAPH
+        # plt.figure(figsize=[6.4, 2.4])
+        # plt.plot(self.ed_time, signal_raw, label="Raw signal")
+        # # plt.plot(self.time, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
+        # plt.plot(self.ed_time, y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
+        # plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=3,
+        #         fontsize="smaller")
+        # plt.xlabel("Time (ns)")
+        # plt.ylabel("Amplitude (mV)")
 
-            # plt.tight_layout()
-            # # plt.savefig("lowpass-filtfilt.png", dpi=100)
-            # plt.show()
+        # plt.tight_layout()
+        # # plt.savefig("lowpass-filtfilt.png", dpi=100)
+        # plt.show()
 
-            return y_filtfilt
+        return y_filtfilt
 
     def findmaxvoltageandtime_tx_run(self):
         # time_ls = []
@@ -308,20 +306,24 @@ class PS2000A:
         
         filter_val = self.digital_filter()
 
-        # time_ls=[]
+        time_ls=[]
         dict2csv = {"Time(ns)": self.ed_time, "Voltage(mV) Channel B": filter_val}
 
         df = pd.DataFrame(dict2csv)
 
         for i in range (0,len(df)-1):
                     volt = df.iloc[i][1]
-                    if volt > 10: #change accordingly
+                    if volt > 200: #change accordingly, initial is 10
                         if (df.iloc[i][1] > df.iloc[i-1][1]) and (df.iloc[i][1] >= df.iloc[i+1][1]):
                             get_time = df.iloc[i][0]
                             if get_time > 0.0:
                                 print("time_rx = ", get_time)
-                                return get_time
-                                # time_ls.append(get_time)
+                                # next_time = df.iloc[i+1][0]
+                                # print("next_time_rx = ", next_time)
+                                # return (get_time,next_time)
+                                time_ls.append(get_time)
+                                if (len(time_ls)>2): 
+                                    return time_ls
                         # else:
                         #     None
         return None
@@ -330,18 +332,6 @@ class PS2000A:
         # if len(time_ls)>0:
         #     time_ls = time_ls[0]
         #     return time_ls
-
-        # else:
-        #     print("Rx run again")
-        #     run.automate_ps()
-        #     self.findmaxvoltageandtime_rx_run()
-
-        # else:
-            # print("run RX again")
-            # self.automate_ps()
-            # self.findmaxvoltageandtime_tx_run()
-
-        # return time_ls
 
     def gettime_run(self):
         # time_rx_ls = None
@@ -377,11 +367,19 @@ class PS2000A:
             # if len(time_rx_ls)>0:
             if (time_rx_ls == None) or (time_tx_ls == None): 
                 return None
-            time_diff = time_rx_ls - time_tx_ls
-            print("time diff = ", time_diff)
-            if time_diff > 0:
-                print("time_diff correct")
-                return time_diff
+
+            for i in range(len(time_rx_ls)): 
+                time_diff = time_rx_ls[i] - time_tx_ls
+                print(f"time diff {i} = ", time_diff)
+                if (time_diff > 20) and (time_diff < 600):
+                    print("time_diff correct")
+                    return time_diff
+            # else: 
+            #     time_diff = time_rx_ls[1] - time_tx_ls
+            #     print("next time diff = ", time_diff)
+            #     if (time_diff > 0)
+            #     return time_diff
+                
                 # run.automate_ps()
                 # time_rx_ls = self.findmaxvoltageandtime_rx_run()
                 # if time_rx_ls != None:
@@ -402,7 +400,7 @@ class PS2000A:
         # swv_val = self.getswv_run(dist)
         #g/ml to kg/m^3
         stiffness = 1.07 *1000 *(shear_wave_velocity**2)
-        stiffness_inkPa = stiffness/(1000)
+        stiffness_inkPa = stiffness/(1000)/(100000000)
         print("Stiffness:" + str(stiffness_inkPa) + " kPa")
         return round(stiffness_inkPa, 1)    
 
@@ -417,7 +415,7 @@ while True:
     sumofk = 0
     if read_txt == "run":
         # stiffness_ls = []
-        for i in range(2):
+        for i in range(10):
             print("screening in progress...")
             time_diff = None
             while (time_diff == None): 
@@ -427,7 +425,7 @@ while True:
         for k in average_time_diff_ls:
             sumofk += k
         average_time = sumofk/len(average_time_diff_ls)
-        stiffness_val_run = run.getstiffness(average_time, 0.005)  
+        stiffness_val_run = run.getstiffness(average_time, 0.01745)  
         # stiffness_ls.append(stiffness_val_run)
         time.sleep(10) 
         # stiffness_avg = sum(stiffness_ls)/3
