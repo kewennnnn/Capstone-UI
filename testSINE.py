@@ -220,7 +220,7 @@ class PS2000A:
         # Create time data
         self.ed_time = np.linspace(0, ((cTotalSamples.value)-1) * timeIntervalns.value, cTotalSamples.value)
 
-        # commented out GRAPH
+        # # commented out GRAPH
         # plt.plot(self.ed_time, self.adc2mVChBMax, label ="rx")
         # plt.plot(self.ed_time, self.adc2mVChAMax, label ="tx")
         # plt.xlabel('Time (ns)')
@@ -253,7 +253,7 @@ class PS2000A:
         # apply filter forward and backward using filtfilt
         y_filtfilt = signal.filtfilt(b, a, signal_raw)
 
-        #commented out FILTER GRAPH
+        # #commented out FILTER GRAPH
         # plt.figure(figsize=[6.4, 2.4])
         # plt.plot(self.ed_time, signal_raw, label="Raw signal")
         # # plt.plot(self.time, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
@@ -371,7 +371,7 @@ class PS2000A:
             for i in range(len(time_rx_ls)): 
                 time_diff = time_rx_ls[i] - time_tx_ls
                 print(f"time diff {i} = ", time_diff)
-                if (time_diff > 20) and (time_diff < 600):
+                if (time_diff > 250) and (time_diff < 600):
                     print("time_diff correct")
                     return time_diff
             # else: 
@@ -395,12 +395,12 @@ class PS2000A:
             return None  
 
     def getstiffness(self, average_time, dist = 0.005):
-        shear_wave_velocity = dist/((average_time)/1000000000)
+        shear_wave_velocity = dist/((average_time)/1000000)
         print("shear wave velocity =" ,shear_wave_velocity)
         # swv_val = self.getswv_run(dist)
         #g/ml to kg/m^3
         stiffness = 1.07 *1000 *(shear_wave_velocity**2)
-        stiffness_inkPa = stiffness/(1000)/(100000000)
+        stiffness_inkPa = stiffness/(1000)
         print("Stiffness:" + str(stiffness_inkPa) + " kPa")
         return round(stiffness_inkPa, 1)    
 
@@ -422,6 +422,8 @@ while True:
                 run.automate_ps()
                 time_diff = run.gettime_run()
             average_time_diff_ls.append(time_diff)
+
+        print("ave =",average_time_diff_ls)
         for k in average_time_diff_ls:
             sumofk += k
         average_time = sumofk/len(average_time_diff_ls)
