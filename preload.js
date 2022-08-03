@@ -32,9 +32,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 colors="primary:#ffffff"
                 style="width:100%;height:100%;position:relative;bottom:10px;">
               </lord-icon>`;
-        setTimeout(()=>{
-          ipcRenderer.invoke("saveText",6+parseFloat(Math.random().toFixed(1)));
-        }, 4000);
+        // setTimeout(()=>{
+        //   ipcRenderer.invoke("saveText",6+parseFloat(Math.random().toFixed(1)));
+        // }, 4000);
         ipcRenderer.invoke("readText").then((res) => {
           console.log("readText res =",res);
           // let val = storage.getItem("elasticity");

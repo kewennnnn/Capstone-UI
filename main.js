@@ -187,7 +187,16 @@ ipcMain.handle("readText", (event) => {
     fs.unwatchFile(commandFilePath);
     if (isFinite(data)) {
       console.log("hey");
-      storage.setItem("elasticity",data.toString());  
+      let raw = data.toString();
+      let e = (raw - 1545.1) / -40.94 * 2;
+      if (e>1.5) {
+        e = e.toFixed(1);
+      } else {
+        e = 1.4;
+      }
+      
+      console.log("raw =",raw," | elasticity =",e);
+      storage.setItem("elasticity",e);  
     } else {
       console.log("not numbah");
     }
