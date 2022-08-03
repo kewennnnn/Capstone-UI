@@ -74,7 +74,12 @@ function addKey(num) {
     console.log("pressed",num);
     let prevVal = document.getElementById("input-value").innerText;
     console.log("prevVal",prevVal);
-    document.getElementById("input-value").innerHTML = prevVal + num;
+    if (prevVal=="-") {
+        document.getElementById("input-value").innerHTML = num;
+    } else {
+        document.getElementById("input-value").innerHTML = prevVal + num;
+    }
+    
     updateNextButton();
 }
 function addDec() {
@@ -91,7 +96,11 @@ function addDec() {
 function delKey(allowSkip=true) {
     console.log("pressed delete");
     let prevVal = document.getElementById("input-value").innerText;
-    document.getElementById("input-value").innerHTML = prevVal.slice(0,-1);
+    if (prevVal.length == 1) {
+        document.getElementById("input-value").innerHTML = "-";
+    } else {
+        document.getElementById("input-value").innerHTML = prevVal.slice(0,-1);
+    }
     updateNextButton(allowSkip);
 }
 
@@ -99,9 +108,9 @@ function updateNextButton(allowSkip=true) {
     let val = document.getElementById("input-value").innerText; 
     let newButton;
     if (allowSkip) {
-        newButton = (val == "") ? skipButton() : nextButton();
+        newButton = (val == "-") ? skipButton() : nextButton();
     } else {
-        newButton = (val == "") ? null : `<button>Next</button>`;
+        newButton = (val == "-") ? null : `<button>Next</button>`;
     }
     document.getElementById("next").innerHTML = newButton;
 }

@@ -49,7 +49,12 @@ function setWeight() {
 
 
 function getPlatelet() {
-    const platelet = localStorage.getItem("platelet") ? parseInt(localStorage.getItem("platelet")) : "";
+    const platelet = localStorage.getItem("platelet"); //? parseInt(localStorage.getItem("platelet")) : "-";
+    if (!platelet || platelet == "-") {
+        return "-";
+    } else {
+        parseInt(platelet);
+    }
     console.log(platelet);
     return platelet;
 }

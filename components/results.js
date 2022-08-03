@@ -82,7 +82,7 @@ function displayPlatelet(plateletResult) {
     let resultDisplay = document.getElementById("platelet-result");
     // let plateletResult = getPlatelet();
     let resultCase = (plateletResult>150) ? "good" : "bad";
-    if (plateletResult == "") {
+    if (plateletResult == "-") {
         resultDisplay.innerHTML = "NA";
         document.getElementById("platelet-section").style.borderColor = "var(--blue)";
         return;
