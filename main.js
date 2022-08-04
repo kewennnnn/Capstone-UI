@@ -188,11 +188,16 @@ ipcMain.handle("readText", (event) => {
     if (isFinite(data)) {
       console.log("hey");
       let raw = data.toString();
-      let e = (raw - 1545.1) / -40.94 * 2;
-      if (e>1.5) {
-        e = e.toFixed(1);
+      let m = 10.683;
+      let c = 4275.7;
+      // let e = (raw - 1545.1) / -40.94 * 2;
+      let e = (raw - c) / m * 2;
+      if (e>14) {
+        e = 12.7;
+      } else if (e<4) {
+        e = 6.4;
       } else {
-        e = 1.4;
+        e = e.toFixed(1);
       }
       
       console.log("raw =",raw," | elasticity =",e);
