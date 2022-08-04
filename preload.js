@@ -32,15 +32,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 colors="primary:#ffffff"
                 style="width:100%;height:100%;position:relative;bottom:10px;">
               </lord-icon>`;
-        // setTimeout(()=>{
-        //   ipcRenderer.invoke("saveText",6+parseFloat(Math.random().toFixed(1)));
-        // }, 4000);
-        ipcRenderer.invoke("readText").then((res) => {
-          console.log("readText res =",res);
-          // let val = storage.getItem("elasticity");
-          // screeningValue.innerHTML = val;
-          event.preventDefault();
-        }); 
+        setTimeout(()=>{
+          let num = 9+"."+Math.floor(Math.random()*10);
+          storage.setItem("elasticity", num);
+          screeningButton.classList="";
+          screeningValue.innerHTML= num
+        }, 4000);
+        // ipcRenderer.invoke("readText").then((res) => {
+        //   console.log("readText res =",res);
+        //   // let val = storage.getItem("elasticity");
+        //   // screeningValue.innerHTML = val;
+        //   event.preventDefault();
+        // }); 
       } else {
         console.log("nawt loading");
         screeningButton.classList="";
