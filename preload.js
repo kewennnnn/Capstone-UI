@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
     screeningButton.addEventListener('click', (event) => {
       event.preventDefault();
       console.log("am here");
-      let isLoading = ipcRenderer.invoke("saveText","run"); 
+      let isLoading = true; //ipcRenderer.invoke("saveText","run"); 
       event.preventDefault();
       if (isLoading) { 
         console.log("ish loading");
