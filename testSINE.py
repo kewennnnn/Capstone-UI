@@ -1,7 +1,7 @@
 import numpy as np
 import ctypes
 from picosdk.ps2000a import ps2000a as ps
-from picoscope import ps2000a 
+# from picoscope import ps2000a 
 import matplotlib.pyplot as plt
 from picosdk.functions import adc2mV, assert_pico_ok
 import time
@@ -12,7 +12,7 @@ class PS2000A:
 
     def automate_ps(self):
         print("automate picoscope")
-        # # This example opens a 2000a driver device, sets up two channels and a trigger then collects a block of data.
+        # # This opens a 2000a driver device, sets up two channels and a trigger then collects a block of data.
         # # This data is then plotted as mV against time in ns.
 
         # Create chandle and status ready for use
@@ -198,22 +198,10 @@ class PS2000A:
 
         # convert ADC counts data to mV
         self.adc2mVChAMax =  adc2mV(bufferAMax, chARange, maxADC)
-        # self.adc2mVSigGen = adc2mV()
-        # self.adc2mVChAMax_ls =[]
-
-        # for i in self.adc2mVChAMax:
-        #     i = i/1000
-        #     self.adc2mVChAMax_ls.append(i)
 
         print("channel A (in mV) =", self.adc2mVChAMax)
 
         self.adc2mVChBMax =  adc2mV(bufferBMax, chBRange, maxADC)
-
-        # self.adc2mVChBMax_ls =[]
-
-        # for i in self.adc2mVChBMax:
-        #     i = i/1000
-        #     self.adc2mVChAMax_ls.append(i)
 
         print("channel B (in mV) =", self.adc2mVChBMax)
 
@@ -221,11 +209,11 @@ class PS2000A:
         self.ed_time = np.linspace(0, ((cTotalSamples.value)-1) * timeIntervalns.value, cTotalSamples.value)
 
         # # commented out GRAPH
-        # plt.plot(self.ed_time, self.adc2mVChBMax, label ="rx")
-        # plt.plot(self.ed_time, self.adc2mVChAMax, label ="tx")
-        # plt.xlabel('Time (ns)')
-        # plt.ylabel('Voltage (mV)')
-        # plt.show()
+        plt.plot(self.ed_time, self.adc2mVChBMax, label ="rx")
+        plt.plot(self.ed_time, self.adc2mVChAMax, label ="tx")
+        plt.xlabel('Time (ns)')
+        plt.ylabel('Voltage (mV)')
+        plt.show()
 
         # Stop the scope
         # handle = chandle
@@ -241,68 +229,53 @@ class PS2000A:
         print(status)
 
     def digital_filter(self):
+        #This filters out the receiving signals at a critical frequency of 7MHz using SciPy IIR filter
 
-        # fs = 1800000
         fs = 180000000
         b, a = signal.iirfilter(4, Wn=7000000, fs=fs, rp=3 ,rs=60, btype="low", ftype="ellip")
         print(b, a, sep="\n")
 
         signal_raw = self.adc2mVChBMax
-        # y_lfilter = signal.lfilter(b, a, signal_raw)
 
         # apply filter forward and backward using filtfilt
         y_filtfilt = signal.filtfilt(b, a, signal_raw)
 
         # #commented out FILTER GRAPH
-        # plt.figure(figsize=[6.4, 2.4])
-        # plt.plot(self.ed_time, signal_raw, label="Raw signal")
-        # # plt.plot(self.time, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
-        # plt.plot(self.ed_time, y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
-        # plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=3,
-        #         fontsize="smaller")
-        # plt.xlabel("Time (ns)")
-        # plt.ylabel("Amplitude (mV)")
+        plt.figure(figsize=[6.4, 2.4])
+        plt.plot(self.ed_time, signal_raw, label="Raw signal")
+        # plt.plot(self.time, y_lfilter, alpha=0.5, lw=3, label="SciPy lfilter")
+        plt.plot(self.ed_time, y_filtfilt, alpha=0.8, lw=3, label="SciPy filtfilt")
+        plt.legend(loc="lower center", bbox_to_anchor=[0.5, 1], ncol=3,
+                fontsize="smaller")
+        plt.xlabel("Time (ns)")
+        plt.ylabel("Amplitude (mV)")
 
-        # plt.tight_layout()
-        # # plt.savefig("lowpass-filtfilt.png", dpi=100)
-        # plt.show()
+        plt.tight_layout()
+        # plt.savefig("lowpass-filtfilt.png", dpi=100)
+        plt.show()
 
         return y_filtfilt
 
     def findmaxvoltageandtime_tx_run(self):
+        #This is to find the time at which there is the maximum voltage collected from the transmitter
+
         # time_ls = []
         dict2csv = {"Time(ns)": self.ed_time, "Voltage(mV) Channel A": self.adc2mVChAMax}
         df = pd.DataFrame(dict2csv)
         for i in range (0,len(df)-1):
                 volt = df.iloc[i][1]
-                # print(self.df.iloc[0][1])
                 if volt > 1980: #change accordingly
                     if (df.iloc[i][1] > df.iloc[i-1][1]) and (df.iloc[i][1] >= df.iloc[i+1][1]):
                         get_time = df.iloc[i][0]
                         if get_time > 0.0:
                             print("time_tx = ", get_time)
                             return get_time
-                            # time_ls.append(get_time)
-                            # print(get_time)
-                    # else:
-                    #     None
+                          
         return None
-        # print("time_tx_ls = ", time_ls)
 
-        # if len(time_ls)>0:
-        #     time_ls = time_ls[0]
-        #     return time_ls
-
-        # else:
-        #     print("run TX again")
-        #     self.automate_ps()
-        #     self.findmaxvoltageandtime_rx_run()
-        #     self.findmaxvoltageandtime_tx_run()
-        # time_ls = time_ls[0]
-        # print("time_tx_ls_new = ", time_ls)
-        # return time_ls
 
     def findmaxvoltageandtime_rx_run(self):
+        #This is to find the times at which there the maximum voltages are collected from the receiver
         
         filter_val = self.digital_filter()
 
@@ -313,93 +286,48 @@ class PS2000A:
 
         for i in range (0,len(df)-1):
                     volt = df.iloc[i][1]
-                    if volt > 200: #change accordingly, initial is 10
+                    if volt > 1100: #change accordingly, initial is 10
                         if (df.iloc[i][1] > df.iloc[i-1][1]) and (df.iloc[i][1] >= df.iloc[i+1][1]):
                             get_time = df.iloc[i][0]
                             if get_time > 0.0:
                                 print("time_rx = ", get_time)
-                                # next_time = df.iloc[i+1][0]
-                                # print("next_time_rx = ", next_time)
-                                # return (get_time,next_time)
+                               
                                 time_ls.append(get_time)
                                 if (len(time_ls)>2): 
                                     return time_ls
-                        # else:
-                        #     None
-        return None
-        # print("time_rx_ls = ", time_ls)
 
-        # if len(time_ls)>0:
-        #     time_ls = time_ls[0]
-        #     return time_ls
+        return None
 
     def gettime_run(self):
-        # time_rx_ls = None
-        # while (time_rx_ls == None):
-        #     time_rx_ls = self.findmaxvoltageandtime_rx_run()
-        # time_tx_ls = None 
-        # while (time_tx_ls == None):
-        #     time_tx_ls = self.findmaxvoltageandtime_tx_run()
+        #This takes in the transmitting and receiving signals and calculates the time difference between each of these values
 
-            time_rx_ls = self.findmaxvoltageandtime_rx_run()
-            time_tx_ls = self.findmaxvoltageandtime_tx_run()
+        time_rx_ls = self.findmaxvoltageandtime_rx_run()
+        time_tx_ls = self.findmaxvoltageandtime_tx_run()
 
-            # if time_rx_ls != None:
-            #     time_tx_ls = self.findmaxvoltageandtime_tx_run()
-            #     if time_tx_ls == None:
-            #         run.automate_ps()
-            #         time_rx_ls = self.findmaxvoltageandtime_rx_run()
-            #         time_tx_ls = self.findmaxvoltageandtime_tx_run()
-            # else:
-            #     run.automate_ps()
-            #     time_rx_ls = self.findmaxvoltageandtime_rx_run()
-            #     time_tx_ls = self.findmaxvoltageandtime_tx_run()
-            print("gettimeRUNRX = ",time_rx_ls)
-            print("gettimeRUNTX = ",time_tx_ls)
-            # time_diff_ls = []
-            # sumofk = 0
-            # for i in time_rx_ls:
-            #     for j in time_tx_ls:
-            #         time_diff_ls.append(float(i-j)) 
-            # for k in time_diff_ls:
-            #     sumofk = sumofk + k
-            # average_time_diff = (sumofk/len(time_diff_ls))/1000000000
-            # if len(time_rx_ls)>0:
-            if (time_rx_ls == None) or (time_tx_ls == None): 
-                return None
+        print("gettimeRUNRX = ",time_rx_ls)
+        print("gettimeRUNTX = ",time_tx_ls)
 
-            for i in range(len(time_rx_ls)): 
-                time_diff = time_rx_ls[i] - time_tx_ls
-                print(f"time diff {i} = ", time_diff)
-                if (time_diff > 250) and (time_diff < 600):
-                    print("time_diff correct")
-                    return time_diff
-            # else: 
-            #     time_diff = time_rx_ls[1] - time_tx_ls
-            #     print("next time diff = ", time_diff)
-            #     if (time_diff > 0)
-            #     return time_diff
-                
-                # run.automate_ps()
-                # time_rx_ls = self.findmaxvoltageandtime_rx_run()
-                # if time_rx_ls != None:
-                #     time_tx_ls = self.findmaxvoltageandtime_tx_run()
-                #     if time_tx_ls == None:
-                #         run.automate_ps()
-                #         time_rx_ls = self.findmaxvoltageandtime_rx_run()
-                #         time_tx_ls = self.findmaxvoltageandtime_tx_run()
-                # time_tx_ls = self.findmaxvoltageandtime_tx_run()
-                # time_diff = time_rx_ls - time_tx_ls
-            # shear_wave_velocity = dist/average_time_diff
-            # print("shear wave velocity =" ,shear_wave_velocity)
-            return None  
+        if (time_rx_ls == None) or (time_tx_ls == None): 
+            return None
+
+        for i in range(len(time_rx_ls)): 
+            time_diff = time_rx_ls[i] - time_tx_ls
+            print(f"time diff {i} = ", time_diff)
+            if (time_diff > 250) and (time_diff < 600): 
+                print("time_diff correct")
+                return time_diff
+        return None  
 
     def getstiffness(self, average_time, dist = 0.005):
+        
+        #This is to measure the shear wave velocity
         shear_wave_velocity = dist/((average_time)/1000000)
         print("shear wave velocity =" ,shear_wave_velocity)
-        # swv_val = self.getswv_run(dist)
-        #g/ml to kg/m^3
+
+        #1.07 g/ml to kg/m^3 - median density of liver
         stiffness = 1.07 *1000 *(shear_wave_velocity**2)
+
+        #This is to measure the stiffness in kPa
         stiffness_inkPa = stiffness/(1000)
         print("Stiffness:" + str(stiffness_inkPa) + " kPa")
         return round(stiffness_inkPa, 1)    
@@ -414,8 +342,8 @@ while True:
     average_time_diff_ls =[]
     sumofk = 0
     if read_txt == "run":
-        # stiffness_ls = []
-        for i in range(10):
+        #to check once the JavaScript file overwrites command.txt when "Get a Reading" is pressed
+        for i in range(2):
             print("screening in progress...")
             time_diff = None
             while (time_diff == None): 
@@ -428,10 +356,9 @@ while True:
             sumofk += k
         average_time = sumofk/len(average_time_diff_ls)
         stiffness_val_run = run.getstiffness(average_time, 0.01745)  
-        # stiffness_ls.append(stiffness_val_run)
         time.sleep(10) 
-        # stiffness_avg = sum(stiffness_ls)/3
         txt_file = open(filepath,'w')
+        #to overwrite command.txt file with the stiffness values that will be input into the JavaScript file
         txt_file.write(str(stiffness_val_run))
         print("txt file: run -> works")
     else: 
