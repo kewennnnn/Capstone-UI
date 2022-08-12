@@ -1,4 +1,3 @@
-
 class KeyPad extends HTMLElement {
     constructor() {
       super();
@@ -66,9 +65,7 @@ document.getElementById("numpad-9").addEventListener("click", () => addKey(9));
 document.getElementById("numpad-0").addEventListener("click", () => addKey(0));
 if (document.getElementById("numpad-.")) {
     document.getElementById("numpad-.").addEventListener("click", () => addDec());
-
 }
-// document.getElementById("numpad-d").addEventListener("click", () => delKey());
 
 function addKey(num) {
     console.log("pressed",num);
@@ -79,7 +76,6 @@ function addKey(num) {
     } else {
         document.getElementById("input-value").innerHTML = prevVal + num;
     }
-    
     updateNextButton();
 }
 function addDec() {

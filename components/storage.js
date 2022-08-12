@@ -49,7 +49,7 @@ function setWeight() {
 
 
 function getPlatelet() {
-    const platelet = localStorage.getItem("platelet"); //? parseInt(localStorage.getItem("platelet")) : "-";
+    const platelet = localStorage.getItem("platelet");
     if (!platelet || platelet == "-") {
         return "-";
     } else {
@@ -66,14 +66,11 @@ function setPlatelet() {
 
 function getElasticity() {
     const storage = require('electron-localstorage');
-    // const elasticity = localStorage.getItem("elasticity") ?? "";
     const elasticity = storage.getItem("elasticity") ? parseFloat(storage.getItem("elasticity")) : "";
     console.log(elasticity);
     return elasticity;
 }
 function setElasticity(elasticity) {
-    // const elasticity = "";
-    // const elasticity = Math.floor(Math.random()*1000);
     console.log(elasticity);
     localStorage.setItem("elasticity",elasticity);
     displayElasticity();
@@ -82,13 +79,9 @@ function displayElasticity() {
     const elasticity = getElasticity();
     if (elasticity == "") {
         document.getElementById("input-value").innerHTML = "-";
-        // document.getElementById("screening-prompt").innerHTML = 'Press "Send Pulse" to get an elasticity reading from probe';
         document.getElementById("screening-done").innerHTML = finishButton(false);
     } else {
         document.getElementById("input-value").innerHTML = elasticity;
-        // document.getElementById("screening-prompt").innerHTML = 'Press "Send Pulse" again to get another reading';
         document.getElementById("screening-done").innerHTML = finishButton(true);
     }
 }
-
-// exports.setElasticity = setElasticity;

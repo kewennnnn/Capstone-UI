@@ -8,68 +8,49 @@
   <body>
     <progress-bar current=4></progress-bar>
 
-    <div id="app"> <!-- style="justify-content: flex-start"> -->
-      <!-- <probe-toggle></probe-toggle> -->
-      <!-- <div class="flex-row" style="width: 100%"> -->
-
-        <div class="col-left">
-          <h2>Elasticity</h2>
-          
-          <div class="flex-row" style="justify-content: center">
-            <h1 id="input-value">
-              <!-- <lord-icon
-                src="https://cdn.lordicon.com/xjovhxra.json"
-                trigger="loop"
-                colors="primary:#ffffff"
-                style="width:100%;height:100%;position:relative;bottom:10px;">
-              </lord-icon> -->
-            </h1>
-            <span id="input-unit"><h2>kPa</h2></span>
-            <div class="tooltip-positioner" style="right:130px; bottom:150px">
-              <my-tooltip 
-                content1="Elasticity is a key factor in diagnosing fatty liver."
-                content2="This value is obtained from the probe."
-                numOfTips="3"
-                tipNumber="1">
-              </my-tooltip>
-            </div>
-          </div>
-          <div>
-            <!-- <a href="./weight.html" id="back"><button class="button-hollow">Back</button></a> -->
-            <a href="./screening-intro.html" id="back"></a>
-            <span id="screening-done"></span>
-            <div class="tooltip-positioner" style="left:650px; bottom:330px">
-              <my-tooltip 
-                content1="You will be able to proceed and view the diagnosis after at least one elasticity reading has been taken."
-                numOfTips="3"
-                tipNumber="3"
-                position="tooltip-popup-left-bottom">
-              </my-tooltip>
-            </div>
+    <div id="app">
+      <div class="col-left">
+        <h2>Elasticity</h2>
+        <div class="flex-row" style="justify-content: center">
+          <h1 id="input-value"></h1>
+          <span id="input-unit"><h2>kPa</h2></span>
+          <div class="tooltip-positioner" style="right:130px; bottom:150px">
+            <my-tooltip 
+              content1="Elasticity is a key factor in diagnosing fatty liver."
+              content2="This value is obtained from the probe."
+              numOfTips="3"
+              tipNumber="1">
+            </my-tooltip>
           </div>
         </div>
-        <!-- <span id="elasticity-unit"><h2>kPa</h2></span> -->
-        <div class="col-right align-center">
-          <!-- <h3 id="screening-prompt" style="margin-top: 0;"></h3> -->
-          <div class="flex-row" style="min-width: max-content; justify-content: center;"">
-            <div class="tooltip-positioner" style="right:500px; bottom:330px">
-              <my-tooltip 
-                content1="Press this button to send a pulse from the probe into the patient's body, where the liver is located."
-                content2="The reading from the probe will then be displayed on the left."
-                numOfTips="3"
-                tipNumber="2"
-                position="tooltip-popup-right-bottom">
-              </my-tooltip>
-            </div>
-            <button id="screening-activate" class="">Get a Reading</button>
-            <!-- <span id="screening-done"></span> -->
+        <div>
+          <a href="./screening-intro.html" id="back"></a>
+          <span id="screening-done"></span>
+          <div class="tooltip-positioner" style="left:650px; bottom:330px">
+            <my-tooltip 
+              content1="You will be able to proceed and view the diagnosis after at least one elasticity reading has been taken."
+              numOfTips="3"
+              tipNumber="3"
+              position="tooltip-popup-left-bottom">
+            </my-tooltip>
           </div>
-          
         </div>
-
       </div>
-      
-    <!-- </div> -->
+      <div class="col-right align-center">
+        <div class="flex-row" style="min-width: max-content; justify-content: center;"">
+          <div class="tooltip-positioner" style="right:500px; bottom:330px">
+            <my-tooltip 
+              content1="Press this button to send a pulse from the probe into the patient's body, where the liver is located."
+              content2="The reading from the probe will then be displayed on the left."
+              numOfTips="3"
+              tipNumber="2"
+              position="tooltip-popup-right-bottom">
+            </my-tooltip>
+          </div>
+          <button id="screening-activate" class="">Get a Reading</button>
+        </div>
+      </div>
+    </div>
 
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
@@ -82,13 +63,6 @@
     <script>
       document.getElementById("back").innerHTML = backButton();
       displayElasticity();
-      // document.getElementById("screening-done").innerHTML = finishButton(false);
-      // const screeningButton = document.getElementById('screening-activate');
-      // screeningButton.addEventListener('click', (event) => {
-      //   setElasticity();
-      // });
-      // setInterval(() => {displayElasticity();console.log("refreshed")}, 10000);
-
     </script>
   </body>
 </html>

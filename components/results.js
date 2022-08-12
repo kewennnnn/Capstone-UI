@@ -25,8 +25,6 @@ function fakeML(plateletResult, elasticityResult) {
 }
 
 function SVM(platelet, lsm) {
-    // platelet = 150; 
-    // lsm = 12;
     if (platelet == "-") {
         platelet = 150;
     }
@@ -51,25 +49,8 @@ function displayResults() {
         return;
     }
     
-    
-    //TODO: give ML platelet and elasticity, then get MLResult here in terms of confidence score for cirrhosis class
+    // give ML platelet and elasticity, then get MLResult here in terms of confidence score for cirrhosis class
     let MLResult = SVM(plateletResult, elasticityResult);
-
-    // let MLResult = "high"; 
-    // switch (MLResult) {
-    //     case "high":
-    //         document.getElementById("result-stage").innerHTML = "Stage F3/F4";
-    //         document.getElementById("result-advice").innerHTML = "Please refer to specialist";
-    //         break;
-    //     case "med":
-    //         document.getElementById("result-stage").innerHTML = "Stage F2/F3";
-    //         document.getElementById("result-advice").innerHTML = "Please refer to specialist";
-    //         break;
-    //     default:
-    //         document.getElementById("result-stage").innerHTML = "Stage F0/F1";
-    //         document.getElementById("result-advice").innerHTML = "Patient has low risk of liver issues";
-    //         break;
-    // }
 
     if (MLResult >= 50) {
         document.getElementById("result-stage").innerHTML = MLResult+"% (High)";
@@ -83,7 +64,6 @@ function displayResults() {
 
 function displayPlatelet(plateletResult) {
     let resultDisplay = document.getElementById("platelet-result");
-    // let plateletResult = getPlatelet();
     let resultCase = (plateletResult>150) ? "good" : "bad";
     if (plateletResult == "-") {
         resultDisplay.innerHTML = "NA";
@@ -91,7 +71,7 @@ function displayPlatelet(plateletResult) {
         return;
     } 
     resultDisplay.innerHTML = plateletResult;
-    switch (resultCase) { //TODO: use ML to get resultCase
+    switch (resultCase) { 
         case "good":
             document.getElementById("platelet-section").style.borderColor = "var(--green)";
             document.getElementById("platelet-icon").innerHTML = goodIcon;
@@ -101,6 +81,7 @@ function displayPlatelet(plateletResult) {
             document.getElementById("platelet-section").style.borderColor = "var(--red)";
             document.getElementById("platelet-icon").innerHTML = badIcon;
             document.getElementById("platelet-details").innerHTML = "Low platelet count may indicate health issues, including fatty liver.";
+            break;
         default: 
             break;
     }
@@ -108,7 +89,6 @@ function displayPlatelet(plateletResult) {
 
 function displayElasticity(elasticityResult) {
     let resultDisplay = document.getElementById("elasticity-result");
-    // let elasticityResult = getElasticity();
     let resultCase = (elasticityResult<8) ? "good" : "bad"
     if (elasticityResult == "") {
         resultDisplay.innerHTML = "NA";
@@ -127,23 +107,8 @@ function displayElasticity(elasticityResult) {
             document.getElementById("elasticity-section").style.borderColor = "var(--red)";
             document.getElementById("elasticity-icon").innerHTML = badIcon;
             document.getElementById("elasticity-details").innerHTML = "Liver is relatively stiff, likely due to high fat composition.";
+            break;
         default: 
             break;
     }
-
-    // document.getElementById("elasticity-result").innerHTML = getElasticity();
-    // if (document.getElementById("elasticity-result").innerHTML == "") {
-    //     document.getElementById("elasticity-result").innerHTML = "NA";
-    //     document.getElementById("elasticity-section").style.borderColor = "var(--blue)";
-    // } else {
-    //     console.log(document.getElementById("elasticity-result").innerHTML);
-    //     document.getElementById("elasticity-section").style.borderColor = "var(--red)";
-    //     document.getElementById("elasticity-icon").innerHTML = `
-    //         <lord-icon
-    //             src="https://cdn.lordicon.com/rslnizbt.json"
-    //             trigger="loop"
-    //             colors="primary:#e83a30"
-    //             style="width:50px;height:50px;padding-left:30px;">
-    //         </lord-icon>`
-    // }
 }

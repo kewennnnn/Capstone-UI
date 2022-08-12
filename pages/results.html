@@ -2,7 +2,6 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <link href="../styles.css" rel="stylesheet">
     <title>LivUltra by Capstone S06</title>
   </head>
@@ -34,17 +33,8 @@
             </div>
             <div id="result-bar"></div>
           </div>
-
           <h3 id="result-advice" class="no-margin"></h3>
-          <!-- <div class="flex-row" style="align-items:flex-end;">
-            <a href="../pages/screening.html" id="back"></a>
-            <div>
-              <p class="no-margin" style="font-size: var(--text-XS);">Data will be deleted permanently</p>
-              <a href="../index.html"><button id="end-screening">End Screening</button></a>
-            </div>
-          </div> -->
         </div>
-
         <div class="col" style="width: 650px;">
           <div class="tooltip-positioner" style="right:500px; bottom:15px">
             <my-tooltip 
@@ -91,10 +81,6 @@
 
     </div>
 
-    
-
-    
-
     <script src="../renderer.js"></script>
     <script src="../components/progressbar.js"></script>
     <script src="../components/storage.js"></script>
@@ -104,18 +90,7 @@
     <script src="https://cdn.lordicon.com/xdjxvujz.js"></script> 
     <script>
       displayResults();
-      // displayPlatelet();
-      // displayElasticity();
       document.getElementById("back").innerHTML = backButton();
-
-
-      
-
-
-
-
-
-
       document.getElementById("end-screening").addEventListener("click", () => clearAll());
     </script>
   </body>

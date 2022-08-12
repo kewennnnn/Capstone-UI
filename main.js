@@ -69,76 +69,6 @@ app.on('window-all-closed', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-
-/*
-ipcMain.handle("saveText", (event, txtval) => {
-  event.preventDefault();
-  let isLoading = false;
-  let currentCommand = fs.readFileSync(commandFilePath, "utf8");
-  console.log("Initial command =",currentCommand);
-  if (currentCommand == "-") {
-    // if (currentCommand != "-") {
-    //   storage.setItem("elasticity",currentCommand);
-    // }
-    
-    // fs.unwatchFile(commandFilePath);
-    console.log("Writing file...");
-    fs.writeFileSync(commandFilePath, txtval.toString());
-      // if (!err) {
-        let data = fs.readFileSync(commandFilePath, "utf8");
-        // fs.readFile(commandFilePath, (err, data) => {
-        //   console.log("File written! currentCommand =",data.toString());
-        //   isLoading = true;
-        // });
-        console.log("File written! currentCommand =",data.toString());
-        isLoading = true;
-        
-        // let screeningButtton = document.getElementById("screening-activate");
-        // screeningButtton.classList = "button-grey";
-        fs.watchFile(commandFilePath, {interval:100}, () => {
-          fs.readFile(commandFilePath, (err, data) => {
-            if (err) throw err;
-            console.log("Data file changed to",data.toString());
-            if (isFinite(data)) {
-              console.log("hey");
-              storage.setItem("elasticity",data.toString());  
-            } else {
-              console.log("not numbah");
-            }
-            
-            fs.unwatchFile(commandFilePath);
-            fs.writeFile(commandFilePath, "-", (err) => {
-              if (err) throw err;
-              console.log('Command cleared');
-            });
-          });
-          // console.log("Data file changed to",currentCommand);
-          // storage.setItem("elasticity",currentCommand);
-        });
-    //   } else {
-    //     console.log(err);
-    //   }
-    // })
-  } else {
-    console.log("Already running");
-    isLoading = true;
-  }
-
-  // if (currentCommand != "-" && currentCommand != "run") {
-  //   console.log("hai");
-  //   storage.setItem("elasticity",currentCommand);
-  //   // fs.unwatchFile(commandFilePath);
-  //   // fs.writeFile(commandFilePath, "-", (err) => {
-  //   //   if (err) throw err;
-  //   //   console.log('Command cleared');
-  //   // });
-  // }
-  event.preventDefault();
-  console.log("returning", isLoading);
-  return isLoading;
-});
-*/
-
 ipcMain.handle("saveText", (event, txtval) => {
   event.preventDefault();
   let isLoading = false;
@@ -149,26 +79,6 @@ ipcMain.handle("saveText", (event, txtval) => {
     let data = fs.readFileSync(commandFilePath, "utf8");
     console.log("File written! currentCommand =",data.toString());
     isLoading = true;
-    // fs.watchFile(commandFilePath, {interval:100}, () => {
-    //   fs.readFile(commandFilePath, (err, data) => {
-    //     if (err) throw err;
-    //     console.log("Data file changed to",data.toString());
-    //     if (isFinite(data)) {
-    //       console.log("hey");
-    //       storage.setItem("elasticity",data.toString());  
-    //     } else {
-    //       console.log("not numbah");
-    //     }
-        
-    //     fs.unwatchFile(commandFilePath);
-    //     fs.writeFile(commandFilePath, "-", (err) => {
-    //       if (err) throw err;
-    //       console.log('Command cleared');
-    //     });
-    //   });
-    //   // console.log("Data file changed to",currentCommand);
-    //   // storage.setItem("elasticity",currentCommand);
-    // });
   } else {
     console.log("Already running");
   }
@@ -199,47 +109,13 @@ ipcMain.handle("readText", (event) => {
       } else {
         e = e.toFixed(1);
       }
-      
       console.log("raw =",raw," | elasticity =",e);
       storage.setItem("elasticity",e);  
     } else {
       console.log("not numbah");
     }
-    
     fs.writeFileSync(commandFilePath, "-");
     data = fs.readFileSync(commandFilePath, "utf8");
     console.log("File written! currentCommand =",data.toString());
-    // fs.readFileSync(commandFilePath, (err, data) => {
-    //   if (err) throw err;
-    //   console.log("Data file changed to",data.toString());
-    //   if (isFinite(data)) {
-    //     console.log("hey");
-    //     storage.setItem("elasticity",data.toString());  
-    //   } else {
-    //     console.log("not numbah");
-    //   }
-      
-    //   fs.unwatchFile(commandFilePath);
-    //   fs.writeFile(commandFilePath, "-", (err) => {
-    //     if (err) throw err;
-    //     console.log('Command cleared');
-    //   });
-    // });
-    // console.log("Data file changed to",currentCommand);
   });
-  // let currentVal = Math.floor(Math.random()*1000);
-  // storage.setItem("elasticity",currentVal);
-  
-  return;// currentVal
-  // });
 });
-
-// ipcMain.on("clearMemory", (event) => {
-//   storage.clear();
-//   fs.writeFile(commandFilePath, "-", (err) => {
-//     if (err) throw err;
-//     console.log('Command cleared');
-//   });
-//   // window.location.href='./pages/platelet.html';
-//   // console.log(window.location.href);
-// });
