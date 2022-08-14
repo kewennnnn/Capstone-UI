@@ -1,2 +1,2 @@
 START npm start 
-python testSINE.py
+python PT2207A.py

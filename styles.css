@@ -2,7 +2,6 @@
 
 :root {
     --bg: #203047;
-    /* --bg: #303030; */
     --blue: #3B6DB2;
     --secondary: #26497A;
     --orange: #EB8432;
@@ -14,13 +13,7 @@
     --text-M: 40px; 
     --text-S: 30px; 
     --text-XS: 20px; 
-    /* --font-fam: verdana; */
-    /* --font-fam: "times new roman"; */
-    /* --font-fam: lato; */
-    /* --font-fam: roboto; */
-    /* --font-fam: sans-serif; */
     --font-fam: 'Montserrat';
-    /* --font-fam: 'Poppins'; */
 }  
 
 body {
@@ -36,8 +29,7 @@ body {
 #app {
     height: 100%;
     display: flex;
-    justify-content: center; /*space-around;*/
-    /* padding-top: 20px; */
+    justify-content: center; 
     padding: 20px 50px;
     align-items: center;
 }
@@ -54,7 +46,6 @@ h1 {
     font-size: var(--text-XL);
 }
 h2 {
-    /* font-size: 40px; */
     color: var(--orange);
     font-size: var(--text-L);
 }
@@ -64,7 +55,6 @@ h3 {
 
 
 .col-left {
-    /* width: 50vw; */
     align-items: center;
     text-align: center;
     margin-right: 30px;
@@ -93,8 +83,6 @@ h3 {
 }
 
 button {
-    /* height: 30px; */
-    /* width: 80px; */
     width: max-content;
     padding: 20px 60px;
     margin: 5px 15px;
@@ -120,7 +108,6 @@ button:active {
 }
 .button-secondary {
     background-color: var(--secondary);
-    /* border: var(--text) solid 2px; */
     padding: 20px 60px;
 }
 .button-grey {
@@ -164,7 +151,6 @@ my-keypad button {
     display: inline-block;
     position: relative;
     right: 250px;
-    /* bottom: 12px; */
     align-items: flex-end;
 } 
 #input-unit h2 {
@@ -201,13 +187,11 @@ my-keypad button {
     margin-top: 10px;
 }
 .pb img {
-    /* height: 20px; */
     padding: 10px;
     border-radius: 50%;
     background-color: var(--blue);
     position: relative;
     bottom: 54px;
-    /* filter: opacity(0); */
 }
 .pb p {
     height: 34px;
@@ -227,7 +211,6 @@ my-keypad button {
 }
 .pb-current {
     height: 50px;
-    /* width: 30px; */
     padding: 5px;
     border-radius: 50%;
     border: solid var(--orange) 5px;
@@ -265,8 +248,6 @@ my-keypad button {
     width: 60px;
     height: 60px;
     padding: 0 10px;
-    /* padding: 25px; */
-    /* padding: 25px 60px 25px 0; */
 }
 .tooltip-positioner {
     position: relative;
@@ -280,7 +261,6 @@ my-keypad button {
     padding: 30px;
     border: var(--text) 3px solid;
     border-radius: 20px;
-    /* position: fixed; */
     background-color:rgba(32, 48, 71, 0.7);
     backdrop-filter: blur(40px);
     text-align: right;
@@ -383,18 +363,12 @@ my-keypad button {
     width: 100%;
 }
 #instruction4 {
-    /* max-width: 40%; */
     width: auto;
     max-height: 50vh;
 }
 #elasticity-value {
     margin: 0;
 }
-/* #elasticity-unit {
-    margin: 0;
-    position: relative;
-    top: 20px;
-} */
 #elasticity-unit {
     height: 90px;
     width: 0px;
@@ -424,7 +398,6 @@ probe-toggle {
     background: linear-gradient(90deg, #14FF00 0%, #FFA800 50%, #FF0000 100%, rgba(217, 217, 217, 0) 100%, #FF000F 100%);
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     margin: 0;
-    /* transform: rotate(-90deg); */
 }
 #result-bar-pointer-container {
     position: relative;
